@@ -10,6 +10,8 @@ import Appointment from "@/components/Appointment";
 import WhyChooseUs from "@/components/WhyChooseUs";
 import Testimonials from "@/components/Testimonials";
 import Doctors from "@/components/Doctors";
+import OrbitalSlider2 from "@/components/OrbitalSlider2";
+import Clinicpipeline from "@/components/Clinicpipeline";
 
 
 
@@ -20,7 +22,9 @@ export default function Home() {
       <Categories/>
       <AboutSection />
       <OrbitalSlider />
+      {/* <OrbitalSlider2 /> */}
       <SkinShuffle />
+      {/* <Clinicpipeline /> */}
       <ResultSlider />
        <Appointment />
        <WhyChooseUs />
