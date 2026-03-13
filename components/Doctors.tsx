@@ -3,8 +3,33 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 
-// ── Doctor Data ─────────────────────────────────────────
-const DOCTORS = [
+/* ── Type Definitions ─────────────────────────────────── */
+
+type Doctor = {
+  name: string;
+  spec: string;
+  qual: string;
+  exp: string;
+  tag: string;
+  accent: string;
+  accentRgb: string;
+  bio: string;
+  img: string;
+  socials: {
+    linkedin: string;
+    instagram: string;
+  };
+  treats: string[];
+};
+
+type DoctorCardProps = {
+  doc: Doctor;
+  i: number;
+};
+
+/* ── Doctor Data ───────────────────────────────────────── */
+
+const DOCTORS: Doctor[] = [
   {
     name: "Dr. Aradhana Rao",
     spec: "Senior Dermatologist",
@@ -46,8 +71,9 @@ const DOCTORS = [
   },
 ];
 
-// ── Card Component ──────────────────────────────────────
-function DoctorCard({ doc, i }) {
+/* ── Card Component ────────────────────────────────────── */
+
+function DoctorCard({ doc, i }: DoctorCardProps) {
   const [hovered, setHovered] = useState(false);
 
   return (
@@ -163,7 +189,8 @@ function DoctorCard({ doc, i }) {
   );
 }
 
-// ── Main Section ────────────────────────────────────────
+/* ── Main Section ──────────────────────────────────────── */
+
 export default function Doctors() {
   return (
     <section
@@ -228,12 +255,12 @@ export default function Doctors() {
 
         {/* DOCTORS GRID */}
         <div
+          className="doctors-grid"
           style={{
             display: "grid",
             gridTemplateColumns: "repeat(3,1fr)",
             gap: "30px",
           }}
-          className="doctors-grid"
         >
           {DOCTORS.map((doc, i) => (
             <DoctorCard key={doc.name} doc={doc} i={i} />

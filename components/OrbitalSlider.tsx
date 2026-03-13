@@ -35,10 +35,13 @@ const SERVICES = [
 
 export default function ServicesArc() {
   const [active, setActive] = useState(0);
-  const timerRef = useRef(null);
+
+  // ✅ FIXED TYPE
+  const timerRef = useRef<NodeJS.Timeout | null>(null);
 
   const startTimer = () => {
     if (timerRef.current) clearInterval(timerRef.current);
+
     timerRef.current = setInterval(() => {
       setActive((prev) => (prev + 1) % SERVICES.length);
     }, 6000);
@@ -46,12 +49,15 @@ export default function ServicesArc() {
 
   useEffect(() => {
     startTimer();
-    return () => clearInterval(timerRef.current);
+
+    return () => {
+      if (timerRef.current) clearInterval(timerRef.current);
+    };
   }, []);
 
   const current = SERVICES[active];
 
-  const getLabelStyle = (index) => {
+  const getLabelStyle = (index: number) => {
     const total = SERVICES.length;
     const arcSpread = 160;
     const startAngle = -arcSpread / 2;
@@ -63,7 +69,7 @@ export default function ServicesArc() {
     const y = Math.sin(rad) * radiusPx;
 
     return {
-      position: "absolute",
+      position: "absolute" as const,
       left: `calc(50% + ${x}px)`,
       bottom: `${-y + 0}px`,
       transform: `translateX(-50%) rotate(${angle}deg)`,
@@ -208,7 +214,6 @@ export default function ServicesArc() {
                 }}
               />
 
-              {/* overlay */}
               <div
                 style={{
                   position: "absolute",
@@ -217,7 +222,6 @@ export default function ServicesArc() {
                 }}
               />
 
-              {/* TEXT */}
               <div
                 style={{
                   position: "absolute",

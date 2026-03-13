@@ -2,7 +2,13 @@
 
 import { useState } from "react";
 
-const RESULTS = [
+type ResultItem = {
+  id: number;
+  before: string;
+  after: string;
+};
+
+const RESULTS: ResultItem[] = [
   {
     id: 1,
     before:
@@ -26,8 +32,13 @@ const RESULTS = [
   },
 ];
 
-function Slider({ before, after }) {
-  const [sliderPos, setSliderPos] = useState(50);
+type SliderProps = {
+  before: string;
+  after: string;
+};
+
+function Slider({ before, after }: SliderProps) {
+  const [sliderPos, setSliderPos] = useState<number>(50);
 
   return (
     <div className="relative w-full aspect-square md:aspect-[4/3] overflow-hidden rounded-2xl shadow-xl bg-gray-200">
@@ -78,6 +89,7 @@ function Slider({ before, after }) {
           </div>
         </div>
       </div>
+
     </div>
   );
 }
