@@ -1,330 +1,218 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { useEffect, useRef, useState } from "react";
 
-// ─── Brand Colors (60-30-10) ───────────────────────────────────────────────────
-// 60% → #FAF9F6 off-white bg
-// 30% → #292E4B navy  #5B326A deep purple
-// 10% → #DFAA5E gold  #D95CB9 pink  #F9DB9F light gold
-// Neutral → #414042
-// ──────────────────────────────────────────────────────────────────────────────
-
-const JOURNEY = [
+const STATS = [
   {
-    phase: "Consult",
-    title: "Expert Consultation",
-    desc: "A personalised skin analysis with our dermatologist to map your unique skin journey and understand your goals.",
-    accent: "#DFAA5E",
-    step: "01",
-    icon: (
-      <svg viewBox="0 0 40 40" fill="none" className="w-7 h-7">
-        <circle cx="20" cy="14" r="6" stroke="#DFAA5E" strokeWidth="2" fill="none"/>
-        <path d="M8 36c0-7 5-12 12-12s12 5 12 12" stroke="#DFAA5E" strokeWidth="2" strokeLinecap="round" fill="none"/>
-        <path d="M28 8 L29.2 11 L32 12.2 L29.2 13.4 L28 16.4 L26.8 13.4 L24 12.2 L26.8 11Z" fill="#DFAA5E" opacity="0.9"/>
-      </svg>
-    ),
+    number: "250+",
+    label: "Commercial Products",
+    image: "https://api.lotuspharm.com/storage/sections/home/our-pipeline/01K8WAVSM0FWPKJ2VA414GHKM0.png",
+    fallback: "https://images.unsplash.com/photo-1587854692152-cbe660dbde88?w=600&q=80",
   },
   {
-    phase: "Diagnose",
-    title: "Clinical Diagnosis",
-    desc: "Advanced imaging and assessment tools to identify underlying skin conditions with clinical precision before any treatment.",
-    accent: "#D95CB9",
-    step: "02",
-    icon: (
-      <svg viewBox="0 0 40 40" fill="none" className="w-7 h-7">
-        <circle cx="18" cy="18" r="10" stroke="#D95CB9" strokeWidth="2" fill="none"/>
-        <line x1="25" y1="25" x2="34" y2="34" stroke="#D95CB9" strokeWidth="2.5" strokeLinecap="round"/>
-        <line x1="18" y1="12" x2="18" y2="24" stroke="#D95CB9" strokeWidth="1.8" strokeLinecap="round"/>
-        <line x1="12" y1="18" x2="24" y2="18" stroke="#D95CB9" strokeWidth="1.8" strokeLinecap="round"/>
-      </svg>
-    ),
+    number: "80+",
+    label: "R&D Pipelines",
+    image: "https://api.lotuspharm.com/storage/sections/home/our-pipeline/01K8WAVSM18SJS6HW2GC8BN6K6.png",
+    fallback: "https://images.unsplash.com/photo-1532187863486-abf9dbad1b69?w=600&q=80",
   },
   {
-    phase: "Treat",
-    title: "Targeted Treatment",
-    desc: "Medical-grade laser, injectable, or skincare protocol — precision-chosen and calibrated exclusively for your skin type.",
-    accent: "#9B6DB5",
-    step: "03",
-    icon: (
-      <svg viewBox="0 0 40 40" fill="none" className="w-7 h-7">
-        <circle cx="20" cy="20" r="10" stroke="#9B6DB5" strokeWidth="2" fill="none" strokeDasharray="4 3"/>
-        <circle cx="20" cy="20" r="4" fill="#9B6DB5"/>
-        <line x1="33" y1="20" x2="36" y2="20" stroke="#9B6DB5" strokeWidth="2" strokeLinecap="round"/>
-        <line x1="26.5" y1="31.2583" x2="28" y2="33.8564" stroke="#9B6DB5" strokeWidth="2" strokeLinecap="round"/>
-        <line x1="13.5" y1="31.2583" x2="12" y2="33.8564" stroke="#9B6DB5" strokeWidth="2" strokeLinecap="round"/>
-        <line x1="7" y1="20" x2="4" y2="20" stroke="#9B6DB5" strokeWidth="2" strokeLinecap="round"/>
-        <line x1="13.5" y1="8.7417" x2="12" y2="6.1436" stroke="#9B6DB5" strokeWidth="2" strokeLinecap="round"/>
-        <line x1="26.5" y1="8.7417" x2="28" y2="6.1436" stroke="#9B6DB5" strokeWidth="2" strokeLinecap="round"/>
-      </svg>
-    ),
+    number: "100+",
+    label: "Global Partnerships",
+    image: "https://api.lotuspharm.com/storage/sections/home/our-pipeline/getty-images-ulToeFfq338-unsplash.jpg",
+    fallback: "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=600&q=80",
   },
   {
-    phase: "Maintain",
-    title: "Lasting Results",
-    desc: "Ongoing care plans, prescription skincare and scheduled follow-ups to protect and preserve your skin's radiant results.",
-    accent: "#5B326A",
-    step: "04",
-    icon: (
-      <svg viewBox="0 0 40 40" fill="none" className="w-7 h-7">
-        <path d="M20 4 L22.5 15 L34 20 L22.5 25 L20 36 L17.5 25 L6 20 L17.5 15Z" fill="#5B326A"/>
-        <path d="M20 11 L21.5 18 L28 20 L21.5 22 L20 29 L18.5 22 L12 20 L18.5 18Z" fill="#F9DB9F" opacity="0.8"/>
-      </svg>
-    ),
+    number: "265+",
+    label: "Licensing Deals Signed",
+    image: "https://api.lotuspharm.com/storage/sections/home/our-pipeline/gabrielle-henderson-HJckKnwCXxQ-unsplash.jpg.jpg",
+    fallback: "https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=600&q=80",
   },
 ];
 
-export default function SkinPipeline() {
-  const [activeStep, setActiveStep] = useState(0);
+function AnimatedNumber({ target, triggerKey, duration = 1600 }) {
+  const [display, setDisplay] = useState("0");
+  const rafRef = useRef(null);
+  const startRef = useRef(null);
+  const numeric = parseInt(target.replace(/\D/g, ""), 10);
+  const suffix = target.replace(/[0-9]/g, "");
 
   useEffect(() => {
-    const t = setInterval(() => setActiveStep((p) => (p + 1) % JOURNEY.length), 3500);
-    return () => clearInterval(t);
+    startRef.current = null;
+    cancelAnimationFrame(rafRef.current);
+    const animate = (ts) => {
+      if (!startRef.current) startRef.current = ts;
+      const p = Math.min((ts - startRef.current) / duration, 1);
+      const eased = 1 - Math.pow(1 - p, 3);
+      setDisplay(Math.floor(eased * numeric) + suffix);
+      if (p < 1) rafRef.current = requestAnimationFrame(animate);
+    };
+    rafRef.current = requestAnimationFrame(animate);
+    return () => cancelAnimationFrame(rafRef.current);
+  }, [triggerKey, numeric, suffix, duration]);
+
+  return <span>{display}</span>;
+}
+
+// Slot visual config: [far-left, near-left, CENTER, near-right]
+const SLOT_CONFIG = [
+  { size: 120, numSize: "1.5rem", labelSize: "0.68rem", opacity: 0.45, shadow: "0 2px 8px rgba(0,0,0,0.07)" },
+  { size: 155, numSize: "1.9rem", labelSize: "0.75rem", opacity: 0.65, shadow: "0 3px 14px rgba(0,0,0,0.09)" },
+  { size: 230, numSize: "3rem",   labelSize: "0.85rem", opacity: 1,    shadow: "0 10px 48px rgba(0,0,0,0.16)" },
+  { size: 140, numSize: "1.7rem", labelSize: "0.72rem", opacity: 0.55, shadow: "0 2px 10px rgba(0,0,0,0.08)" },
+];
+
+export default function OurPipeline() {
+  const sectionRef = useRef(null);
+  const [inView, setInView] = useState(false);
+  const [active, setActive] = useState(0);
+  const [imgSrcs, setImgSrcs] = useState(STATS.map((s) => s.image));
+
+  useEffect(() => {
+    const obs = new IntersectionObserver(
+      ([e]) => { if (e.isIntersecting) { setInView(true); obs.disconnect(); } },
+      { threshold: 0.2 }
+    );
+    if (sectionRef.current) obs.observe(sectionRef.current);
+    return () => obs.disconnect();
   }, []);
 
-  const current = JOURNEY[activeStep];
+  const handleImgError = (i) => {
+    setImgSrcs((prev) => { const n = [...prev]; n[i] = STATS[i].fallback; return n; });
+  };
+
+  // Build display order: active card always in slot index 2 (center)
+  // Remaining 3 fill slots 0,1,3 in their original relative order
+  const others = STATS.map((_, i) => i).filter((i) => i !== active);
+  // Spread: others[0]=slot0(far-left), others[1]=slot1(near-left), CENTER=slot2, others[2]=slot3(near-right)
+  const displayOrder = [others[0], others[1], active, others[2]];
 
   return (
     <section
-      className="relative w-full overflow-hidden py-20 sm:py-28"
-      style={{ background: "#FAF9F6" }}
+      ref={sectionRef}
+      style={{ width: "100%", backgroundColor: "#fff", padding: "80px 24px 100px", fontFamily: "Arial, sans-serif", overflow: "hidden" }}
     >
-      {/* ── Background decorations ── */}
-      <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute top-0 right-0 w-[500px] h-[500px] rounded-full"
-          style={{ background: "radial-gradient(circle, rgba(223,170,94,0.07) 0%, transparent 65%)" }}/>
-        <div className="absolute bottom-0 left-0 w-[400px] h-[400px] rounded-full"
-          style={{ background: "radial-gradient(circle, rgba(91,50,106,0.06) 0%, transparent 65%)" }}/>
+      {/* ── Header ── */}
+      <div
+        style={{
+          textAlign: "center", maxWidth: "720px", margin: "0 auto 72px",
+          opacity: inView ? 1 : 0, transform: inView ? "translateY(0)" : "translateY(20px)",
+          transition: "opacity 0.7s ease, transform 0.7s ease",
+        }}
+      >
+        <h2 style={{ fontFamily: "'Georgia', serif", fontSize: "clamp(1.6rem,3vw,2.4rem)", fontWeight: "700", color: "#1a1a2e", marginBottom: "20px", lineHeight: 1.25 }}>
+          Our Pipeline: Innovating for a Healthier Tomorrow
+        </h2>
+        <p style={{ fontSize: "0.92rem", color: "#777", lineHeight: "1.75", margin: 0 }}>
+          Lotus builds an optimised and sustainable pipeline through its hybrid portfolio strategy
+          through developing high-barrier medicines in-house and forging strategic partnerships — we
+          focus on expanding access to essential therapies and improving patient health globally.
+        </p>
       </div>
 
-      <div className="relative max-w-7xl mx-auto px-5 sm:px-8">
+      {/* ── Cards Row ── */}
+      <div
+        style={{
+          display: "flex", alignItems: "center", justifyContent: "center",
+          gap: "clamp(16px, 3vw, 40px)", maxWidth: "1100px", margin: "0 auto", minHeight: "340px",
+        }}
+      >
+        {displayOrder.map((statIdx, slot) => {
+          const stat = STATS[statIdx];
+          const cfg = SLOT_CONFIG[slot];
+          const isCenter = slot === 2;
 
-        {/* ── Section Header ── */}
-        <div className="text-center mb-12 sm:mb-16">
-          <div className="inline-flex items-center gap-3 mb-4">
-            <div className="h-px w-8" style={{ background: "#DFAA5E" }}/>
-            <span className="text-[11px] font-bold uppercase tracking-[0.3em]" style={{ color: "#DFAA5E" }}>
-              The Luminox Journey
-            </span>
-            <div className="h-px w-8" style={{ background: "#DFAA5E" }}/>
-          </div>
-          <h2
-            className="text-3xl sm:text-4xl md:text-5xl font-extrabold leading-tight"
-            style={{ color: "#292E4B", fontFamily: "'Georgia', serif" }}
-          >
-            Your Skin.{" "}
-            <span className="italic" style={{ color: "#DFAA5E" }}>Our Pipeline.</span>
-            <br />
-            <span style={{ color: "#5B326A" }}>Your Results.</span>
-          </h2>
-          <p className="mt-4 text-sm sm:text-base max-w-xl mx-auto" style={{ color: "#414042" }}>
-            From your first consultation to lasting results — every step crafted around your skin.
-          </p>
-        </div>
-
-        {/* ══════════════════════════════════
-            Main Panel — two-column layout
-            Left: large active step detail
-            Right: step selector list
-        ══════════════════════════════════ */}
-        <div
-          className="rounded-3xl overflow-hidden"
-          style={{
-            background: "linear-gradient(135deg, #292E4B 0%, #5B326A 100%)",
-            boxShadow: "0 24px 80px rgba(41,46,75,0.3)",
-          }}
-        >
-          <div className="flex flex-col lg:flex-row">
-
-            {/* ── LEFT — Active step detail ── */}
-            <div className="relative w-full lg:w-[55%] p-8 sm:p-12 flex flex-col justify-between min-h-[340px] lg:min-h-[460px]">
-
-              {/* Decorative arcs */}
-              <div className="absolute inset-0 overflow-hidden pointer-events-none">
-                <svg className="absolute -bottom-10 -left-10 w-80 h-80 opacity-[0.07]" viewBox="0 0 200 200">
-                  <circle cx="0" cy="200" r="130" fill="none" stroke="white" strokeWidth="1"/>
-                  <circle cx="0" cy="200" r="90" fill="none" stroke="white" strokeWidth="0.7"/>
-                  <circle cx="0" cy="200" r="55" fill="none" stroke="white" strokeWidth="0.5"/>
-                </svg>
-              </div>
-
-              <AnimatePresence mode="wait">
-                <motion.div
-                  key={activeStep}
-                  initial={{ opacity: 0, x: -24 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: 24 }}
-                  transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
-                  className="relative z-10"
-                >
-                  {/* Step counter */}
-                  <p className="text-[11px] font-bold uppercase tracking-[0.35em] mb-5"
-                     style={{ color: current.accent }}>
-                    Step {current.step} — of 04
-                  </p>
-
-                  {/* Icon + heading row */}
-                  <div className="flex items-start gap-4 mb-6">
-                    <div
-                      className="shrink-0 w-14 h-14 rounded-2xl flex items-center justify-center"
-                      style={{
-                        background: `${current.accent}20`,
-                        border: `1.5px solid ${current.accent}50`,
-                      }}
-                    >
-                      {current.icon}
-                    </div>
-                    <div>
-                      <span
-                        className="inline-block px-3 py-1 text-[10px] font-bold uppercase tracking-widest rounded-full mb-2"
-                        style={{
-                          background: `${current.accent}25`,
-                          border: `1px solid ${current.accent}60`,
-                          color: current.accent,
-                        }}
-                      >
-                        {current.phase}
-                      </span>
-                      <h3
-                        className="text-2xl sm:text-3xl font-extrabold text-white leading-tight"
-                        style={{ fontFamily: "'Georgia', serif" }}
-                      >
-                        {current.title}
-                      </h3>
-                    </div>
-                  </div>
-
-                  {/* Description */}
-                  <p className="text-sm sm:text-base leading-relaxed max-w-md"
-                     style={{ color: "rgba(255,255,255,0.62)" }}>
-                    {current.desc}
-                  </p>
-
-                  {/* Progress bar */}
-                  <div className="mt-8 h-[3px] rounded-full overflow-hidden w-full max-w-xs"
-                       style={{ background: "rgba(255,255,255,0.1)" }}>
-                    <motion.div
-                      key={`bar-${activeStep}`}
-                      className="h-full rounded-full"
-                      style={{ background: current.accent }}
-                      initial={{ width: "0%" }}
-                      animate={{ width: "100%" }}
-                      transition={{ duration: 3.5, ease: "linear" }}
-                    />
-                  </div>
-                </motion.div>
-              </AnimatePresence>
-
-              {/* CTA */}
-              <div className="mt-10 relative z-10">
-                <a
-                  href="/contact"
-                  className="inline-flex items-center gap-2 px-6 py-3 text-[11px] font-extrabold uppercase tracking-widest rounded-sm transition-all duration-200"
-                  style={{ background: "#DFAA5E", color: "#292E4B" }}
-                  onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = "#F9DB9F"; }}
-                  onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = "#DFAA5E"; }}
-                >
-                  Start Your Journey
-                  <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
-                  </svg>
-                </a>
-              </div>
-            </div>
-
-            {/* ── RIGHT — Step selector list ── */}
-            <div className="w-full lg:w-[45%] flex flex-col lg:border-l"
-                 style={{ borderColor: "rgba(255,255,255,0.08)" }}>
-              {JOURNEY.map((step, i) => (
-                <motion.button
-                  key={i}
-                  onClick={() => setActiveStep(i)}
-                  className="group relative flex items-start gap-4 p-6 sm:p-7 text-left transition-all duration-300"
-                  style={{
-                    background: activeStep === i ? "rgba(255,255,255,0.09)" : "transparent",
-                    borderBottom: i < JOURNEY.length - 1 ? "1px solid rgba(255,255,255,0.08)" : "none",
-                  }}
-                  whileHover={{ background: "rgba(255,255,255,0.05)" }}
-                >
-                  {/* Active left bar */}
-                  <motion.div
-                    className="absolute left-0 top-0 bottom-0 w-[3px]"
-                    style={{ background: step.accent }}
-                    animate={{ opacity: activeStep === i ? 1 : 0, scaleY: activeStep === i ? 1 : 0.3 }}
-                    transition={{ duration: 0.3 }}
-                  />
-
-                  {/* Icon */}
-                  <div
-                    className="shrink-0 w-10 h-10 rounded-xl flex items-center justify-center mt-0.5 transition-all duration-300"
-                    style={{
-                      background: activeStep === i ? `${step.accent}22` : "rgba(255,255,255,0.06)",
-                      border: `1px solid ${activeStep === i ? `${step.accent}50` : "rgba(255,255,255,0.1)"}`,
-                    }}
-                  >
-                    {step.icon}
-                  </div>
-
-                  {/* Text */}
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2 mb-1">
-                      <span
-                        className="text-[10px] font-bold uppercase tracking-[0.25em]"
-                        style={{ color: activeStep === i ? step.accent : "rgba(255,255,255,0.28)" }}
-                      >
-                        {step.step}
-                      </span>
-                      <span
-                        className="text-[10px] px-2 py-0.5 rounded-full font-bold uppercase tracking-wider"
-                        style={{
-                          background: activeStep === i ? `${step.accent}20` : "transparent",
-                          color: activeStep === i ? step.accent : "rgba(255,255,255,0.22)",
-                        }}
-                      >
-                        {step.phase}
-                      </span>
-                    </div>
-                    <p
-                      className="text-sm font-extrabold text-white"
-                      style={{ opacity: activeStep === i ? 1 : 0.4 }}
-                    >
-                      {step.title}
-                    </p>
-                  </div>
-
-                  {/* Chevron arrow */}
-                  <svg
-                    className="shrink-0 w-4 h-4 mt-1 transition-all duration-200"
-                    style={{
-                      color: activeStep === i ? step.accent : "rgba(255,255,255,0.2)",
-                      transform: activeStep === i ? "translateX(3px)" : "none",
-                    }}
-                    fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}
-                  >
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7"/>
-                  </svg>
-                </motion.button>
-              ))}
-            </div>
-          </div>
-        </div>
-
-        {/* ── Dot nav below (mobile-friendly) ── */}
-        <div className="flex justify-center gap-2 mt-8">
-          {JOURNEY.map((step, i) => (
-            <button
-              key={i}
-              onClick={() => setActiveStep(i)}
-              className="h-[3px] rounded-full transition-all duration-400"
+          return (
+            <div
+              key={statIdx}
+              onClick={() => !isCenter && setActive(statIdx)}
               style={{
-                width: activeStep === i ? 36 : 14,
-                background: activeStep === i ? step.accent : "rgba(41,46,75,0.2)",
+                display: "flex", flexDirection: "column", alignItems: "center",
+                gap: isCenter ? "20px" : "12px",
+                cursor: isCenter ? "default" : "pointer",
+                opacity: inView ? cfg.opacity : 0,
+                transform: inView ? "translateY(0)" : "translateY(32px)",
+                transition: `opacity 0.55s ease ${slot * 0.08}s, transform 0.55s ease ${slot * 0.08}s`,
+                zIndex: isCenter ? 10 : slot,
+                position: "relative",
               }}
-              aria-label={`Go to step ${i + 1}`}
-            />
-          ))}
-        </div>
+            >
+              {/* Circle */}
+              <div
+                style={{
+                  width: `${cfg.size}px`, height: `${cfg.size}px`,
+                  borderRadius: "50%", overflow: "hidden", flexShrink: 0,
+                  boxShadow: cfg.shadow,
+                  border: isCenter ? "3px solid #ebebeb" : "2px solid #f2f2f2",
+                  transition: "width 0.55s cubic-bezier(0.4,0,0.2,1), height 0.55s cubic-bezier(0.4,0,0.2,1), box-shadow 0.4s, border 0.4s",
+                }}
+              >
+                <img
+                  src={imgSrcs[statIdx]}
+                  alt={stat.label}
+                  onError={() => handleImgError(statIdx)}
+                  style={{
+                    width: "100%", height: "100%", objectFit: "cover",
+                    transition: "transform 0.55s ease, filter 0.4s ease",
+                    transform: isCenter ? "scale(1.06)" : "scale(1)",
+                    filter: isCenter ? "none" : "grayscale(30%) brightness(0.95)",
+                  }}
+                />
+              </div>
 
+              {/* Number */}
+              <div style={{
+                fontFamily: "'Georgia', serif",
+                fontSize: cfg.numSize,
+                fontWeight: "700",
+                color: isCenter ? "#1a1a2e" : "#aaa",
+                lineHeight: 1,
+                letterSpacing: "-0.02em",
+                transition: "font-size 0.5s ease, color 0.4s ease",
+              }}>
+                {inView
+                  ? <AnimatedNumber target={stat.number} triggerKey={`${statIdx}-${isCenter}`} />
+                  : "0+"}
+              </div>
+
+              {/* Label */}
+              <div style={{
+                fontFamily: "Arial, sans-serif",
+                fontSize: cfg.labelSize,
+                color: isCenter ? "#555" : "#bbb",
+                textTransform: "uppercase",
+                letterSpacing: "0.13em",
+                textAlign: "center",
+                fontWeight: isCenter ? "600" : "400",
+                maxWidth: `${cfg.size + 24}px`,
+                transition: "font-size 0.4s ease, color 0.4s ease, font-weight 0.3s ease",
+              }}>
+                {stat.label}
+              </div>
+
+              {/* Active gold dot */}
+              {isCenter && (
+                <div style={{ width: "6px", height: "6px", borderRadius: "50%", backgroundColor: "#C8A96E", marginTop: "-4px" }} />
+              )}
+            </div>
+          );
+        })}
+      </div>
+
+      {/* ── Dot navigation ── */}
+      <div style={{ display: "flex", justifyContent: "center", gap: "10px", marginTop: "48px" }}>
+        {STATS.map((_, i) => (
+          <button
+            key={i}
+            onClick={() => setActive(i)}
+            style={{
+              width: active === i ? "26px" : "8px", height: "8px",
+              borderRadius: "999px",
+              backgroundColor: active === i ? "#C8A96E" : "#ddd",
+              border: "none", cursor: "pointer", padding: 0,
+              transition: "width 0.35s ease, background-color 0.3s ease",
+            }}
+          />
+        ))}
       </div>
     </section>
   );
