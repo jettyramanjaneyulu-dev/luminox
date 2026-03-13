@@ -346,13 +346,18 @@ export default function Testimonials() {
                         onClick={btn.fn}
                         aria-label={btn.label}
                         style={{
-                          width: "40px", height: "40px", borderRadius: "50%", border: "none",
-                          cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center",
-                          background: bi === 1 ? "#292E4B" : "transparent",
-                          border: bi === 0 ? "1.5px solid rgba(41,46,75,0.2)" : "none",
-                          color: bi === 1 ? "#FFFFFF" : "#292E4B",
-                          transition: "all 0.2s ease",
-                        }}
+  width: "40px",
+  height: "40px",
+  borderRadius: "50%",
+  cursor: "pointer",
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  background: bi === 1 ? "#292E4B" : "transparent",
+  border: bi === 0 ? "1.5px solid rgba(41,46,75,0.2)" : "none",
+  color: bi === 1 ? "#FFFFFF" : "#292E4B",
+  transition: "all 0.2s ease",
+}}
                         onMouseEnter={e => {
                           if (bi === 1) (e.currentTarget as HTMLElement).style.background = current.accent;
                           else { (e.currentTarget as HTMLElement).style.background = "#292E4B"; (e.currentTarget as HTMLElement).style.color = "#FFF"; }
