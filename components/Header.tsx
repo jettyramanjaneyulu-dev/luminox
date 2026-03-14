@@ -187,7 +187,7 @@ const Header = () => {
           {/* ── Right Side: CTA + Hamburger/Close ── */}
           <div className="flex items-center gap-4 relative z-[80]">
             <Link
-              href="/contact"
+              href="#"
               className={`hidden lg:inline-flex items-center px-5 py-2 text-[11px] font-bold uppercase tracking-widest rounded-sm transition-all duration-200
                 ${scrolled
                   ? "bg-[#292E4B] text-white hover:bg-[#DFAA5E] hover:text-[#292E4B]"
@@ -289,19 +289,19 @@ const Header = () => {
 
           <div className="mt-8 space-y-3">
             <Link
-              href="/contact"
+              href="#"
               onClick={() => setMobileOpen(false)}
               className="block w-full text-center py-4 bg-[#292E4B] text-white text-xs font-bold uppercase tracking-widest rounded-sm"
             >
               Book Appointment
             </Link>
-            <Link
+            {/* <Link
               href="/about"
               onClick={() => setMobileOpen(false)}
               className="block w-full text-center py-4 border border-[#5B326A]/30 text-[#5B326A] text-xs font-bold uppercase tracking-widest rounded-sm"
             >
               Explore Our Clinic
-            </Link>
+            </Link> */}
           </div>
         </div>
       </div>
