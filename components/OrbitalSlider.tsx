@@ -57,12 +57,10 @@ export default function ServicesArc() {
     startTimer();
   };
 
-  // Arc label positions — active label is always center (index 1 position)
   const getArcStyle = (index: number) => {
     const total = SERVICES.length;
     const arcSpread = 140;
     const startAngle = -arcSpread / 2;
-    // Shift so active is always in center slot
     const offset = active - 1;
     const shiftedIndex = index - offset;
     const angle = startAngle + (shiftedIndex / (total - 1)) * arcSpread;
@@ -72,8 +70,6 @@ export default function ServicesArc() {
     const y = Math.sin(rad) * radiusPx;
     return { x, y, angle };
   };
-
-  const current = SERVICES[active];
 
   return (
     <>
@@ -105,7 +101,7 @@ export default function ServicesArc() {
           font-size: 11px;
           letter-spacing: 0.3em;
           text-transform: uppercase;
-          padding: 10px 20px;
+          padding: 8px 16px;
           transition: color 0.3s;
           position: relative;
         }
@@ -133,27 +129,47 @@ export default function ServicesArc() {
           transition-delay: 0.15s;
         }
 
+        /* ── Tablet ≤ 860px ── */
         @media (max-width: 860px) {
           .arc-desktop-labels { display: none !important; }
           .arc-svg-bg { display: none !important; }
           .labels-row { display: flex !important; }
+          .luminox-section { padding-top: 36px !important; padding-bottom: 36px !important; }
+          .luminox-header { margin-bottom: 20px !important; }
+          .arc-stage { height: 380px !important; }
         }
 
+        /* ── Mobile ≤ 560px ── */
         @media (max-width: 560px) {
-          .image-card { width: 92vw !important; }
-          .slide-content-pad { padding: 16px 20px 48px !important; }
+          .luminox-section { padding-top: 28px !important; padding-bottom: 28px !important; }
+          .luminox-header { margin-bottom: 14px !important; }
+          .image-card { width: 96vw !important; }
+          .slide-content-pad { padding: 14px 18px 44px !important; }
+          .arc-stage { height: 320px !important; }
+          .labels-row { margin-bottom: 12px !important; }
+        }
+
+        /* ── Very small ≤ 380px ── */
+        @media (max-width: 380px) {
+          .luminox-section { padding-top: 20px !important; padding-bottom: 20px !important; }
+          .arc-stage { height: 280px !important; }
+          .slide-content-pad { padding: 10px 14px 36px !important; }
         }
       `}</style>
 
       <section
-        className="luminox-section relative w-full bg-white py-16 overflow-hidden"
+        className="luminox-section relative w-full bg-white overflow-hidden"
+        style={{ paddingTop: 64, paddingBottom: 72 }}
       >
         {/* HEADER */}
-        <div className="text-center mb-12 px-4">
+        <div
+          className="luminox-header text-center px-4"
+          style={{ marginBottom: 40 }}
+        >
           <h2
             style={{
               color: "#1a1a2e",
-              fontSize: "clamp(1.6rem, 3vw, 2.5rem)",
+              fontSize: "clamp(1.5rem, 3vw, 2.5rem)",
               fontWeight: 700,
               letterSpacing: "0.02em",
             }}
@@ -165,10 +181,10 @@ export default function ServicesArc() {
               color: "#777",
               fontFamily: "'Jost', sans-serif",
               fontWeight: 300,
-              fontSize: "0.88rem",
-              maxWidth: "560px",
-              margin: "12px auto 0",
-              lineHeight: 1.8,
+              fontSize: "clamp(0.78rem, 1.2vw, 0.88rem)",
+              maxWidth: "520px",
+              margin: "10px auto 0",
+              lineHeight: 1.75,
             }}
           >
             Together, these form the philosophy of{" "}
@@ -181,7 +197,7 @@ export default function ServicesArc() {
         {/* MOBILE/TABLET LABEL ROW */}
         <div
           className="labels-row"
-          style={{ display: "none", justifyContent: "center", marginBottom: 24 }}
+          style={{ display: "none", justifyContent: "center", marginBottom: 18 }}
         >
           {SERVICES.map((s, i) => (
             <button
@@ -200,10 +216,11 @@ export default function ServicesArc() {
 
         {/* ARC STAGE */}
         <div
+          className="arc-stage"
           style={{
             position: "relative",
             width: "min(1000px, 100%)",
-            height: isMobile ? "460px" : "560px",
+            height: isMobile ? "380px" : "520px",
             margin: "0 auto",
             display: "flex",
             alignItems: "flex-end",
@@ -301,9 +318,9 @@ export default function ServicesArc() {
                     style={{
                       color: "#fff",
                       fontFamily: "'Cormorant Garamond', serif",
-                      fontSize: "clamp(1.1rem, 2vw, 1.55rem)",
+                      fontSize: "clamp(1rem, 2vw, 1.55rem)",
                       fontWeight: 600,
-                      marginBottom: 12,
+                      marginBottom: 10,
                       letterSpacing: "0.03em",
                     }}
                   >
@@ -315,9 +332,9 @@ export default function ServicesArc() {
                       color: "rgba(255,255,255,0.88)",
                       fontFamily: "'Jost', sans-serif",
                       fontWeight: 300,
-                      fontSize: "clamp(0.78rem, 1.2vw, 0.88rem)",
-                      lineHeight: 1.75,
-                      maxWidth: 440,
+                      fontSize: "clamp(0.72rem, 1.2vw, 0.88rem)",
+                      lineHeight: 1.7,
+                      maxWidth: 420,
                     }}
                   >
                     {s.desc}
@@ -330,11 +347,11 @@ export default function ServicesArc() {
             <div
               style={{
                 position: "absolute",
-                bottom: 20,
+                bottom: 16,
                 left: "50%",
                 transform: "translateX(-50%)",
                 display: "flex",
-                gap: 10,
+                gap: 8,
                 zIndex: 20,
               }}
             >
@@ -343,8 +360,8 @@ export default function ServicesArc() {
                   key={i}
                   onClick={() => handleSelect(i)}
                   style={{
-                    height: 7,
-                    width: active === i ? 24 : 7,
+                    height: 6,
+                    width: active === i ? 22 : 6,
                     borderRadius: 999,
                     background: active === i ? "#DFAA5E" : "rgba(255,255,255,0.4)",
                     border: "none",
