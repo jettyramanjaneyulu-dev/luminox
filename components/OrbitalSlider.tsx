@@ -15,7 +15,7 @@ const SERVICES = [
     tag: "HAIR",
     headline: "Strength. Density. Vitality.",
     desc: "Modern hair restoration solutions guided by dermatology science. Our treatments address hair thinning, hair loss, and scalp health with advanced medical therapies and regenerative solutions.",
-    image: "https://images.unsplash.com/photo-1594824475544-3c6e2d62c3f4?w=1200&q=80",
+    image: "https://ix-marketing.imgix.net/case-study_2.png?auto=format,compress&w=1946",
   },
   {
     id: 2,

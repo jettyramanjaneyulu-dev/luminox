@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef, useCallback } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 
 type Doctor = {
   name: string;
@@ -107,7 +107,6 @@ const DOCTORS: Doctor[] = [
 
 const AUTO_PLAY_INTERVAL = 4000;
 
-/* ─── SVG Icons ─────────────────────────────────────── */
 const LinkedInIcon = () => (
   <svg width="14" height="14" fill="white" viewBox="0 0 24 24">
     <path d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6zM2 9h4v12H2z" />
@@ -135,7 +134,6 @@ const ChevronRight = () => (
   </svg>
 );
 
-/* ─── Individual Card ────────────────────────────────── */
 function DoctorCard({ doc }: { doc: Doctor }) {
   const [hovered, setHovered] = useState(false);
 
@@ -157,47 +155,64 @@ function DoctorCard({ doc }: { doc: Doctor }) {
         flexShrink: 0,
       }}
     >
-      {/* Photo */}
       <img
         src={doc.img}
         alt={doc.name}
         style={{
-          width: "100%", height: "100%",
-          objectFit: "cover", objectPosition: "top", display: "block",
+          width: "100%",
+          height: "100%",
+          objectFit: "cover",
+          objectPosition: "top",
+          display: "block",
           transform: hovered ? "scale(1.07)" : "scale(1)",
           transition: "transform .6s cubic-bezier(.22,1,.36,1)",
         }}
       />
 
-      {/* Gradient overlay */}
-      <div style={{
-        position: "absolute", inset: 0,
-        background: hovered
-          ? "linear-gradient(to top,rgba(41,46,75,.97) 0%,rgba(41,46,75,.45) 65%,transparent 100%)"
-          : "linear-gradient(to top,rgba(41,46,75,.92) 0%,rgba(41,46,75,.28) 55%,transparent 100%)",
-        transition: "background .4s ease",
-      }} />
+      <div
+        style={{
+          position: "absolute",
+          inset: 0,
+          background: hovered
+            ? "linear-gradient(to top,rgba(41,46,75,.97) 0%,rgba(41,46,75,.45) 65%,transparent 100%)"
+            : "linear-gradient(to top,rgba(41,46,75,.92) 0%,rgba(41,46,75,.28) 55%,transparent 100%)",
+          transition: "background .4s ease",
+        }}
+      />
 
-      {/* Social buttons */}
-      <div style={{
-        position: "absolute", top: 16, right: 16,
-        display: "flex", gap: 8, zIndex: 10,
-        opacity: hovered ? 1 : 0,
-        transform: hovered ? "translateY(0)" : "translateY(-6px)",
-        transition: "opacity .3s ease, transform .3s ease",
-      }}>
+      <div
+        style={{
+          position: "absolute",
+          top: 16,
+          right: 16,
+          display: "flex",
+          gap: 8,
+          zIndex: 10,
+          opacity: hovered ? 1 : 0,
+          transform: hovered ? "translateY(0)" : "translateY(-6px)",
+          transition: "opacity .3s ease, transform .3s ease",
+        }}
+      >
         {[
           { href: doc.socials.linkedin, icon: <LinkedInIcon />, label: "LinkedIn" },
           { href: doc.socials.instagram, icon: <InstaIcon />, label: "Instagram" },
         ].map((s) => (
-          <a key={s.label} href={s.href} aria-label={s.label}
+          <a
+            key={s.label}
+            href={s.href}
+            aria-label={s.label}
             style={{
-              width: 34, height: 34, borderRadius: "50%",
+              width: 34,
+              height: 34,
+              borderRadius: "50%",
               background: "rgba(255,255,255,.15)",
               backdropFilter: "blur(8px)",
               border: "1px solid rgba(255,255,255,.2)",
-              display: "flex", alignItems: "center", justifyContent: "center",
-              textDecoration: "none", transition: "background .2s",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              textDecoration: "none",
+              transition: "background .2s",
             }}
             onMouseEnter={(e) => (e.currentTarget.style.background = "rgba(255,255,255,.28)")}
             onMouseLeave={(e) => (e.currentTarget.style.background = "rgba(255,255,255,.15)")}
@@ -207,32 +222,66 @@ function DoctorCard({ doc }: { doc: Doctor }) {
         ))}
       </div>
 
-      {/* Card body */}
-      <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, padding: "clamp(18px,2.5vw,26px)", color: "#fff" }}>
-        {/* Specialty tag */}
-        <div style={{
-          display: "inline-block", borderRadius: 100,
-          padding: "4px 12px", marginBottom: 8,
-          background: doc.accentBg, color: doc.accent,
-          fontSize: 10, fontWeight: 700, letterSpacing: ".12em", textTransform: "uppercase",
-        }}>
+      <div
+        style={{
+          position: "absolute",
+          bottom: 0,
+          left: 0,
+          right: 0,
+          padding: "clamp(18px,2.5vw,26px)",
+          color: "#fff",
+        }}
+      >
+        <div
+          style={{
+            display: "inline-block",
+            borderRadius: 100,
+            padding: "4px 12px",
+            marginBottom: 8,
+            background: doc.accentBg,
+            color: doc.accent,
+            fontSize: 10,
+            fontWeight: 700,
+            letterSpacing: ".12em",
+            textTransform: "uppercase",
+          }}
+        >
           {doc.tag}
         </div>
 
-        <div style={{ fontSize: 10, letterSpacing: ".2em", textTransform: "uppercase", opacity: .7, marginBottom: 3, fontWeight: 500 }}>
+        <div
+          style={{
+            fontSize: 10,
+            letterSpacing: ".2em",
+            textTransform: "uppercase",
+            opacity: 0.7,
+            marginBottom: 3,
+            fontWeight: 500,
+          }}
+        >
           {doc.spec}
         </div>
-        <div style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: "clamp(17px,2vw,21px)", fontWeight: 700, lineHeight: 1.2, marginBottom: 3 }}>
+        <div
+          style={{
+            fontFamily: "'Cormorant Garamond',serif",
+            fontSize: "clamp(17px,2vw,21px)",
+            fontWeight: 700,
+            lineHeight: 1.2,
+            marginBottom: 3,
+          }}
+        >
           {doc.name}
         </div>
-        <div style={{ fontSize: 11, opacity: .7, marginBottom: 2 }}>{doc.qual}</div>
+        <div style={{ fontSize: 11, opacity: 0.7, marginBottom: 2 }}>{doc.qual}</div>
         <div style={{ fontSize: 11, fontWeight: 600, color: doc.accent }}>{doc.exp} Experience</div>
 
-        {/* Bio */}
         <div
           className="doctor-bio"
           style={{
-            fontSize: 12, lineHeight: 1.65, marginTop: 12, fontWeight: 300,
+            fontSize: 12,
+            lineHeight: 1.65,
+            marginTop: 12,
+            fontWeight: 300,
             opacity: hovered ? 1 : 0,
             transform: hovered ? "translateY(0)" : "translateY(10px)",
             transition: "opacity .35s ease, transform .35s ease",
@@ -241,22 +290,31 @@ function DoctorCard({ doc }: { doc: Doctor }) {
           {doc.bio}
         </div>
 
-        {/* Treat pills */}
         <div
           className="doctor-treats"
           style={{
-            display: "flex", flexWrap: "wrap", gap: 6, marginTop: 10,
+            display: "flex",
+            flexWrap: "wrap",
+            gap: 6,
+            marginTop: 10,
             opacity: hovered ? 1 : 0,
             transform: hovered ? "translateY(0)" : "translateY(8px)",
             transition: "opacity .35s .05s ease, transform .35s .05s ease",
           }}
         >
           {doc.treats.map((t) => (
-            <span key={t} style={{
-              fontSize: 10, background: "rgba(255,255,255,.12)",
-              border: "1px solid rgba(255,255,255,.2)", borderRadius: 100,
-              padding: "3px 10px", color: "rgba(255,255,255,.85)", fontWeight: 500,
-            }}>
+            <span
+              key={t}
+              style={{
+                fontSize: 10,
+                background: "rgba(255,255,255,.12)",
+                border: "1px solid rgba(255,255,255,.2)",
+                borderRadius: 100,
+                padding: "3px 10px",
+                color: "rgba(255,255,255,.85)",
+                fontWeight: 500,
+              }}
+            >
               {t}
             </span>
           ))}
@@ -266,30 +324,10 @@ function DoctorCard({ doc }: { doc: Doctor }) {
   );
 }
 
-/* ─── Progress Bar ───────────────────────────────────── */
-function ProgressBar({ accent, running }: { accent: string; running: boolean }) {
-  return (
-    <div style={{ width: "100%", height: 2, background: "rgba(255,255,255,.12)", borderRadius: 2, overflow: "hidden" }}>
-      <div
-        key={accent + running}
-        style={{
-          height: "100%", background: accent, borderRadius: 2,
-          animation: running ? `progressFill ${AUTO_PLAY_INTERVAL}ms linear forwards` : "none",
-          width: running ? undefined : "0%",
-        }}
-      />
-    </div>
-  );
-}
-
-/* ─── Main Component ─────────────────────────────────── */
 export default function Doctors() {
   const [activeIdx, setActiveIdx] = useState(0);
   const [isPlaying, setIsPlaying] = useState(true);
-  const [direction, setDirection] = useState<1 | -1>(1);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
-
-  /* how many cards to show based on screen width */
   const [visibleCount, setVisibleCount] = useState(3);
 
   useEffect(() => {
@@ -305,29 +343,23 @@ export default function Doctors() {
   const total = DOCTORS.length;
   const maxIdx = total - visibleCount;
 
-  const goTo = useCallback((idx: number, dir: 1 | -1 = 1) => {
-    setDirection(dir);
-    setActiveIdx(Math.max(0, Math.min(idx, maxIdx)));
-  }, [maxIdx]);
-
   const next = useCallback(() => {
-    setDirection(1);
     setActiveIdx((prev) => (prev >= maxIdx ? 0 : prev + 1));
   }, [maxIdx]);
 
   const prev = useCallback(() => {
-    setDirection(-1);
     setActiveIdx((prev) => (prev <= 0 ? maxIdx : prev - 1));
   }, [maxIdx]);
 
-  /* Auto-play */
   useEffect(() => {
-    if (!isPlaying) { if (timerRef.current) clearInterval(timerRef.current); return; }
+    if (!isPlaying) {
+      if (timerRef.current) clearInterval(timerRef.current);
+      return;
+    }
     timerRef.current = setInterval(next, AUTO_PLAY_INTERVAL);
     return () => { if (timerRef.current) clearInterval(timerRef.current); };
   }, [isPlaying, next]);
 
-  /* Pause on user interaction, resume after 8s */
   const pauseAndResume = useCallback(() => {
     setIsPlaying(false);
     setTimeout(() => setIsPlaying(true), 8000);
@@ -335,9 +367,11 @@ export default function Doctors() {
 
   const handlePrev = () => { pauseAndResume(); prev(); };
   const handleNext = () => { pauseAndResume(); next(); };
-  const handleDot = (i: number) => { pauseAndResume(); goTo(i, i > activeIdx ? 1 : -1); };
+  const handleDot = (i: number) => {
+    pauseAndResume();
+    setActiveIdx(Math.max(0, Math.min(i, maxIdx)));
+  };
 
-  /* Touch / swipe support */
   const touchStartX = useRef(0);
   const onTouchStart = (e: React.TouchEvent) => { touchStartX.current = e.touches[0].clientX; };
   const onTouchEnd = (e: React.TouchEvent) => {
@@ -345,7 +379,7 @@ export default function Doctors() {
     if (Math.abs(diff) > 40) { if (diff > 0) handleNext(); else handlePrev(); }
   };
 
-  const gapPx = 28;
+  const gapPx = 24;
 
   return (
     <>
@@ -357,16 +391,26 @@ export default function Doctors() {
           to   { width: 100%; }
         }
 
-        .doctors-section { font-family: 'Jost', sans-serif; }
+        /*
+          ROOT FIX: Clip any overflow at the html/body level so the page
+          never gets a horizontal scrollbar regardless of child positioning.
+        */
+        html, body { overflow-x: hidden; }
+
+        .doctors-section {
+          font-family: 'Jost', sans-serif;
+          /* Also clip at section level as a safety net */
+          overflow: hidden;
+        }
 
         /* Mobile: always show bio + treats */
         @media (max-width: 600px) {
-          .doctor-bio   { opacity: 1 !important; transform: translateY(0) !important; }
-          .doctor-treats{ opacity: 1 !important; transform: translateY(0) !important; }
+          .doctor-bio    { opacity: 1 !important; transform: translateY(0) !important; }
+          .doctor-treats { opacity: 1 !important; transform: translateY(0) !important; }
           .doctors-section { padding: 52px 0 68px !important; }
         }
 
-        .nav-btn:hover { background: rgba(255,255,255,.18) !important; }
+        .nav-btn:hover { background: rgba(41,46,75,1) !important; }
         .dot-btn:hover { transform: scale(1.2); }
         .cta-btn:hover { background: #F9DB9F !important; transform: translateY(-2px); }
       `}</style>
@@ -375,42 +419,91 @@ export default function Doctors() {
         className="doctors-section"
         style={{ padding: "90px 0 100px", background: "#fff" }}
       >
-        <div style={{ maxWidth: 1280, margin: "0 auto", padding: "0 clamp(16px,4vw,24px)" }}>
+        <div style={{ maxWidth: 1280, margin: "0 auto", padding: "0 clamp(16px,4vw,48px)" }}>
 
-          {/* ── Header ── */}
+          {/* Header */}
           <div style={{ textAlign: "center", marginBottom: "clamp(44px,6vw,68px)" }}>
-            <p style={{ color: "#DFAA5E", letterSpacing: ".35em", fontSize: 11, fontWeight: 700, textTransform: "uppercase", marginBottom: 12 }}>
+            <p
+              style={{
+                color: "#DFAA5E",
+                letterSpacing: ".35em",
+                fontSize: 11,
+                fontWeight: 700,
+                textTransform: "uppercase",
+                marginBottom: 12,
+              }}
+            >
               Meet Our Experts
             </p>
-            <h2 style={{
-              fontFamily: "'Cormorant Garamond',serif",
-              fontSize: "clamp(28px,4vw,52px)",
-              color: "#292E4B", fontWeight: 700, lineHeight: 1.15,
-            }}>
+            <h2
+              style={{
+                fontFamily: "'Cormorant Garamond',serif",
+                fontSize: "clamp(28px,4vw,52px)",
+                color: "#292E4B",
+                fontWeight: 700,
+                lineHeight: 1.15,
+              }}
+            >
               Science Behind the Beauty
             </h2>
-            <p style={{
-              maxWidth: 580, margin: "16px auto 0",
-              fontSize: 14, lineHeight: 1.85, color: "#414042", fontWeight: 300,
-            }}>
-              Behind every transformation is dermatology expertise. Our clinical approach combines medical diagnosis, advanced technologies, and personalised treatment design to ensure every patient receives care that is thoughtful, precise, and safe.
+            <p
+              style={{
+                maxWidth: 580,
+                margin: "16px auto 0",
+                fontSize: 14,
+                lineHeight: 1.85,
+                color: "#414042",
+                fontWeight: 300,
+              }}
+            >
+              Behind every transformation is dermatology expertise. Our clinical approach combines
+              medical diagnosis, advanced technologies, and personalised treatment design to ensure
+              every patient receives care that is thoughtful, precise, and safe.
             </p>
           </div>
 
-          {/* ── Carousel Wrapper ── */}
-          <div style={{ position: "relative" }}>
+          {/*
+            ── CAROUSEL WRAPPER ──────────────────────────────────────────────────
+            KEY FIX: In the original code the nav arrows used `left: -20px` and
+            `right: -20px`. Those negative offsets placed the buttons OUTSIDE the
+            container bounds, which caused the browser to extend the scrollable
+            area and create a horizontal scrollbar.
 
-            {/* Left arrow */}
+            Solution: add `padding: "0 52px"` to this wrapper so the arrow buttons
+            have a dedicated lane to sit in (left:0 / right:0 within the padded box)
+            and can never escape the container width. The slide window sits inside
+            that padding and clips its own overflow normally.
+          */}
+          <div
+            style={{
+              position: "relative",
+              width: "100%",
+              padding: "0 52px",
+              boxSizing: "border-box",
+            }}
+          >
+            {/* Left arrow — anchored inside padding lane */}
             <button
               className="nav-btn"
               onClick={handlePrev}
               aria-label="Previous"
               style={{
-                position: "absolute", left: -20, top: "50%", transform: "translateY(-50%)",
-                zIndex: 20, width: 44, height: 44, borderRadius: "50%",
-                background: "rgba(41,46,75,.85)", border: "1px solid rgba(255,255,255,.12)",
-                color: "#fff", display: "flex", alignItems: "center", justifyContent: "center",
-                cursor: "pointer", backdropFilter: "blur(8px)",
+                position: "absolute",
+                left: 0,
+                top: "50%",
+                transform: "translateY(-50%)",
+                zIndex: 20,
+                width: 44,
+                height: 44,
+                borderRadius: "50%",
+                background: "rgba(41,46,75,.85)",
+                border: "1px solid rgba(255,255,255,.12)",
+                color: "#fff",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                cursor: "pointer",
+                backdropFilter: "blur(8px)",
                 transition: "background .2s",
                 boxShadow: "0 4px 16px rgba(41,46,75,.25)",
               }}
@@ -418,17 +511,28 @@ export default function Doctors() {
               <ChevronLeft />
             </button>
 
-            {/* Right arrow */}
+            {/* Right arrow — anchored inside padding lane */}
             <button
               className="nav-btn"
               onClick={handleNext}
               aria-label="Next"
               style={{
-                position: "absolute", right: -20, top: "50%", transform: "translateY(-50%)",
-                zIndex: 20, width: 44, height: 44, borderRadius: "50%",
-                background: "rgba(41,46,75,.85)", border: "1px solid rgba(255,255,255,.12)",
-                color: "#fff", display: "flex", alignItems: "center", justifyContent: "center",
-                cursor: "pointer", backdropFilter: "blur(8px)",
+                position: "absolute",
+                right: 0,
+                top: "50%",
+                transform: "translateY(-50%)",
+                zIndex: 20,
+                width: 44,
+                height: 44,
+                borderRadius: "50%",
+                background: "rgba(41,46,75,.85)",
+                border: "1px solid rgba(255,255,255,.12)",
+                color: "#fff",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                cursor: "pointer",
+                backdropFilter: "blur(8px)",
                 transition: "background .2s",
                 boxShadow: "0 4px 16px rgba(41,46,75,.25)",
               }}
@@ -436,27 +540,37 @@ export default function Doctors() {
               <ChevronRight />
             </button>
 
-            {/* Slide window */}
+            {/* Slide window — clips the moving strip */}
             <div
-              style={{ overflow: "hidden", borderRadius: 8 }}
+              style={{ overflow: "hidden", borderRadius: 8, width: "100%" }}
               onTouchStart={onTouchStart}
               onTouchEnd={onTouchEnd}
             >
               <motion.div
                 animate={{
-                  x: `calc(-${activeIdx * (100 / visibleCount)}% - ${activeIdx * gapPx / visibleCount}px)`,
+                  /*
+                    FIX: translate is based on the slide-window width (100%),
+                    not the outer wrapper width, so the math stays correct at
+                    every breakpoint. Each step moves exactly one card width
+                    plus its share of the gap.
+                  */
+                  x: `calc(-${activeIdx * (100 / visibleCount)}% - ${(activeIdx * gapPx) / visibleCount}px)`,
                 }}
                 transition={{ type: "spring", stiffness: 280, damping: 30 }}
-                style={{
-                  display: "flex",
-                  gap: gapPx,
-                }}
+                style={{ display: "flex", gap: gapPx }}
               >
                 {DOCTORS.map((doc, i) => (
                   <div
                     key={doc.name}
                     style={{
-                      minWidth: `calc(${100 / visibleCount}% - ${gapPx * (visibleCount - 1) / visibleCount}px)`,
+                      /*
+                        FIX: card width = (100% of slide-window minus all gaps) ÷ visibleCount
+                        Using both minWidth AND maxWidth (and flexShrink:0) prevents
+                        any card from growing or shrinking and leaking outside the window.
+                      */
+                      minWidth: `calc((100% - ${gapPx * (visibleCount - 1)}px) / ${visibleCount})`,
+                      maxWidth: `calc((100% - ${gapPx * (visibleCount - 1)}px) / ${visibleCount})`,
+                      flexShrink: 0,
                     }}
                   >
                     <motion.div
@@ -473,10 +587,16 @@ export default function Doctors() {
             </div>
           </div>
 
-          {/* ── Controls: dots + progress ── */}
-          <div style={{ marginTop: 32, display: "flex", flexDirection: "column", alignItems: "center", gap: 16 }}>
-
-            {/* Dots */}
+          {/* Dots */}
+          <div
+            style={{
+              marginTop: 32,
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              gap: 16,
+            }}
+          >
             <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
               {Array.from({ length: maxIdx + 1 }).map((_, i) => (
                 <button
@@ -486,93 +606,21 @@ export default function Doctors() {
                   aria-label={`Go to slide ${i + 1}`}
                   style={{
                     width: i === activeIdx ? 28 : 8,
-                    height: 8, borderRadius: 4,
-                    background: i === activeIdx ? DOCTORS[activeIdx + Math.floor(visibleCount / 2)]?.accent ?? "#DFAA5E" : "rgba(41,46,75,.2)",
-                    border: "none", cursor: "pointer", padding: 0,
+                    height: 8,
+                    borderRadius: 4,
+                    background:
+                      i === activeIdx
+                        ? DOCTORS[activeIdx + Math.floor(visibleCount / 2)]?.accent ?? "#DFAA5E"
+                        : "rgba(41,46,75,.2)",
+                    border: "none",
+                    cursor: "pointer",
+                    padding: 0,
                     transition: "width .3s ease, background .3s ease, transform .2s",
                   }}
                 />
               ))}
             </div>
-
-            {/* Progress bar + play/pause */}
-            {/* <div style={{ display: "flex", alignItems: "center", gap: 12, width: "100%", maxWidth: 320 }}>
-              <button
-                onClick={() => setIsPlaying((p) => !p)}
-                aria-label={isPlaying ? "Pause auto-play" : "Resume auto-play"}
-                style={{
-                  width: 28, height: 28, borderRadius: "50%",
-                  background: "rgba(41,46,75,.08)",
-                  border: "1px solid rgba(41,46,75,.12)",
-                  display: "flex", alignItems: "center", justifyContent: "center",
-                  cursor: "pointer", flexShrink: 0,
-                  transition: "background .2s",
-                }}
-              >
-                {isPlaying ? (
-                  <svg width="10" height="12" fill="#292E4B" viewBox="0 0 24 24">
-                    <rect x="4" y="2" width="5" height="20" rx="2" />
-                    <rect x="15" y="2" width="5" height="20" rx="2" />
-                  </svg>
-                ) : (
-                  <svg width="10" height="12" fill="#292E4B" viewBox="0 0 24 24">
-                    <polygon points="5,3 19,12 5,21" />
-                  </svg>
-                )}
-              </button>
-              <div style={{ flex: 1, background: "rgba(41,46,75,.1)", height: 3, borderRadius: 2, overflow: "hidden" }}>
-                <div
-                  key={`${activeIdx}-${isPlaying}`}
-                  style={{
-                    height: "100%",
-                    background: DOCTORS[activeIdx + Math.floor(visibleCount / 2)]?.accent ?? "#DFAA5E",
-                    borderRadius: 2,
-                    animation: isPlaying ? `progressFill ${AUTO_PLAY_INTERVAL}ms linear forwards` : "none",
-                    width: isPlaying ? undefined : "0%",
-                  }}
-                />
-              </div>
-              <span style={{ fontSize: 11, color: "rgba(41,46,75,.45)", fontWeight: 500, flexShrink: 0 }}>
-                {activeIdx + 1} / {maxIdx + 1}
-              </span>
-            </div> */}
           </div>
-
-          {/* ── CTA Banner ── */}
-          {/* <div style={{
-            marginTop: "clamp(48px,6vw,72px)",
-            borderRadius: 24,
-            padding: "clamp(36px,6vw,64px) clamp(24px,5vw,64px)",
-            textAlign: "center",
-            background: "linear-gradient(135deg,#292E4B 0%,#5B326A 100%)",
-          }}>
-            <h3 style={{
-              color: "#fff",
-              fontFamily: "'Cormorant Garamond',serif",
-              fontSize: "clamp(22px,3vw,38px)",
-              fontWeight: 700, lineHeight: 1.25, marginBottom: 14,
-            }}>
-              Your Skin Has Potential.<br />
-              <em style={{ color: "#F9DB9F", fontStyle: "italic" }}>Let's Reveal It.</em>
-            </h3>
-            <p style={{ color: "rgba(255,255,255,.82)", maxWidth: 500, margin: "0 auto 26px", lineHeight: 1.75, fontSize: 14, fontWeight: 300 }}>
-              Experience dermatology designed for clarity, confidence, and natural beauty.
-            </p>
-            <a
-              href="/contact"
-              className="cta-btn"
-              style={{
-                display: "inline-block",
-                background: "#DFAA5E", color: "#292E4B",
-                padding: "15px 38px",
-                fontSize: 11, letterSpacing: ".14em", fontWeight: 800,
-                textTransform: "uppercase", borderRadius: 4, textDecoration: "none",
-                transition: "background .2s, transform .2s",
-              }}
-            >
-              Book Your Consultation
-            </a>
-          </div> */}
 
         </div>
       </section>
