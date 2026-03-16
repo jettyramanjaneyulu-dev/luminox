@@ -6,13 +6,10 @@ import { useState, useEffect } from "react";
 const slides = [
   {
     id: 1,
-    src: "https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=1600&q=80",
+    src: "/home/banner.png",
     alt: "Advanced skin laser treatment",
     heading: "Look",
-    italic: "Luminox",
-    desc1: "Not brighter skin.",
-    desc2: "Not younger skin.",
-    desc3: "Just skin that finally looks like you.",
+    italic: "Luminox",  
     desc4:
       "At Luminox – Skin | Hair | Laser, we don't chase trends or temporary fixes. We work with science, technology, and dermatology expertise to restore what your skin and hair were always meant to be.",
     highlight: "Healthy. Balanced. Radiant.",
@@ -21,23 +18,23 @@ const slides = [
     cta2: "Book Consultation",
     cta2Href: "/contact",
   },
-  {
-    id: 2,
-    src: "https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?w=1600&q=80",
-    alt: "Skin care clinic",
-    heading: "Look",
-    italic: "Luminox",
-    desc1: "Not brighter skin.",
-    desc2: "Not younger skin.",
-    desc3: "Just skin that finally looks like you.",
-    desc4:
-      "At Luminox – Skin | Hair | Laser, we don't chase trends or temporary fixes. We work with science, technology, and dermatology expertise to restore what your skin and hair were always meant to be.",
-    highlight: "Healthy. Balanced. Radiant.",
-    cta1: "Discover Luminox",
-    cta1Href: "/about",
-    cta2: "Book Consultation",
-    cta2Href: "/contact",
-  },
+  // {
+  //   id: 2,
+  //   src: "https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?w=1600&q=80",
+  //   alt: "Skin care clinic",
+  //   heading: "Look",
+  //   italic: "Luminox",
+  //   desc1: "Not brighter skin.",
+  //   desc2: "Not younger skin.",
+  //   desc3: "Just skin that finally looks like you.",
+  //   desc4:
+  //     "At Luminox – Skin | Hair | Laser, we don't chase trends or temporary fixes. We work with science, technology, and dermatology expertise to restore what your skin and hair were always meant to be.",
+  //   highlight: "Healthy. Balanced. Radiant.",
+  //   cta1: "Discover Luminox",
+  //   cta1Href: "/about",
+  //   cta2: "Book Consultation",
+  //   cta2Href: "/contact",
+  // },
 ];
 
 const SLIDE_DURATION = 5000;
@@ -89,8 +86,8 @@ const Hero = () => {
           />
 
           {/* Overlay */}
-          <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/50 to-transparent lg:from-black/70 lg:via-black/40" />
-          <div className="absolute bottom-0 left-0 w-full h-1/2 bg-gradient-to-t from-black/80 to-transparent lg:hidden" />
+          {/* <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/50 to-transparent lg:from-black/70 lg:via-black/40" /> */}
+          {/* <div className="absolute bottom-0 left-0 w-full h-1/2 bg-gradient-to-t from-black/80 to-transparent lg:hidden" /> */}
         </div>
       ))}
 
@@ -123,9 +120,9 @@ const Hero = () => {
             className="text-white font-extrabold leading-[1.1] mb-6 flex flex-wrap items-baseline gap-x-3"
             style={{ fontFamily: "'Georgia', serif" }}
           >
-            <span className="bg-[#DFAA5E] text-[#292E4B] px-3 py-1 text-3xl md:text-5xl lg:text-6xl shrink-0">
+            {/* <span className="bg-[#DFAA5E] text-[#292E4B] px-3 py-1 text-3xl md:text-5xl lg:text-6xl shrink-0">
               {slides[current].heading}
-            </span>
+            </span> */}
 
             <span className="text-white italic text-5xl md:text-7xl lg:text-[7rem] font-serif block sm:inline mt-2 sm:mt-0">
               {slides[current].italic}
@@ -137,9 +134,9 @@ const Hero = () => {
             key={`desc-${current}`}
             className="text-gray-200 text-lg md:text-xl lg:text-2xl leading-snug mb-6 space-y-1 font-light"
           >
-            <p>{slides[current].desc1}</p>
+            {/* <p>{slides[current].desc1}</p>
             <p>{slides[current].desc2}</p>
-            <p className="font-semibold text-white">{slides[current].desc3}</p>
+            <p className="font-semibold text-white">{slides[current].desc3}</p> */}
           </div>
 
           {/* Paragraph */}

@@ -43,7 +43,7 @@ export default function Appointment() {
           <div className="text-white space-y-6">
             <h1 className="text-4xl md:text-6xl font-serif leading-tight">
               Premium Care <br />
-              <span className="text-blue-300">Tailored to You.</span>
+              <span className="text-[#292E4B]">Tailored to You.</span>
             </h1>
             <p className="text-lg text-gray-200 max-w-md leading-relaxed">
               Experience world-class skin treatments in a relaxing environment.
@@ -67,7 +67,7 @@ export default function Appointment() {
               <h2 className="text-3xl font-serif text-[#292E4B] mb-2">
                 Book Appointment
               </h2>
-              <div className="w-16 h-1 bg-blue-500 rounded-full mb-4"></div>
+              <div className="w-16 h-1 bg-[#292E4B] rounded-full mb-4"></div>
               <p className="text-gray-500 text-sm">
                 Please fill out the form below. We will call you within 24 hours to confirm.
               </p>
@@ -133,7 +133,7 @@ export default function Appointment() {
 
               <button
                 type="submit"
-                className="w-full bg-blue-600 text-white py-4 rounded-xl font-bold uppercase tracking-widest hover:bg-blue-700 active:scale-[0.98] transition-all shadow-xl shadow-blue-600/20 mt-4"
+                className="w-full bg-[#292E4B] text-white py-4 rounded-xl font-bold uppercase tracking-widest hover:bg-blue-700 active:scale-[0.98] transition-all shadow-xl shadow-blue-600/20 mt-4"
               >
                 Request Call Back
               </button>

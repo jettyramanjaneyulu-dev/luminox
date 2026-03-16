@@ -26,6 +26,7 @@ export default function Home() {
       <Categories/>
       <AboutSection />
       <OrbitalSlider />
+       <Doctors />
       {/* <OrbitalSlider2 /> */}
       <SkinShuffle />
       {/* <Clinicpipeline /> */}
@@ -33,7 +34,7 @@ export default function Home() {
        <Appointment />
        <WhyChooseUs />
        <Testimonials />
-       <Doctors />
+      
     </>
   );
 }

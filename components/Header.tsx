@@ -79,7 +79,7 @@ const menuItems = [
     ],
   },
   { label: "About Us", href: "#" },
-  { label: "Contact", href: "#" },
+  { label: "Contact", href: "/contact" },
 ];
 
 const Header = () => {
@@ -154,7 +154,7 @@ const Header = () => {
                   className={`flex items-center gap-1 px-3 py-2 rounded-sm transition-colors duration-200 whitespace-nowrap
                     ${scrolled
                       ? activeMenu === item.label ? "text-[#DFAA5E]" : "text-[#292E4B] hover:text-[#DFAA5E]"
-                      : activeMenu === item.label ? "text-[#F9DB9F]" : "text-white hover:text-[#F9DB9F]"
+                      : activeMenu === item.label ? "text-[#F9DB9F]" : "text-[#292E4B] hover:text-[#F9DB9F]"
                     }`}
                 >
                   {item.label}

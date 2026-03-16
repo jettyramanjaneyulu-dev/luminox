@@ -2,6 +2,7 @@
 
 import { useRef } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
+import Link from "next/link";
 
 const AboutSection = () => {
   const ref = useRef(null);
@@ -73,15 +74,13 @@ const AboutSection = () => {
             </p>
 
             {/* Button */}
-            <button
-              className="px-8 py-3 text-sm font-semibold border transition-all hover:bg-[#292E4B] hover:text-white"
-              style={{
-                borderColor: "#292E4B",
-                color: "#292E4B",
-              }}
-            >
-              Discover Our Approach
-            </button>
+       <Link href="/contact">
+  <button
+    className="px-8 py-3 text-sm font-semibold border border-[#292E4B] text-[#292E4B] transition-all hover:bg-[#292E4B] hover:text-white"
+  >
+    Discover Our Approach
+  </button>
+</Link>
 
           </div>
         </div>
