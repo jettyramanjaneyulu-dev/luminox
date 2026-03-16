@@ -88,17 +88,14 @@ const AboutSection = () => {
 
         {/* CENTER ROTATING CIRCLE */}
         <div className="hidden md:flex absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-20">
-          <motion.div
-            style={{ rotate }}
-            className="w-32 h-32 lg:w-44 lg:h-44 rounded-full flex items-center justify-center shadow-xl"
-            style={{
-              rotate,
-              background: "linear-gradient(135deg, #DFAA5E 50%, #FFFFFF 50%)",
-              border: "4px solid #DFAA5E",
-              borderRadius: "9999px",
-              boxShadow: "0 8px 32px rgba(223,170,94,0.35)",
-            }}
-          >
+      <motion.div
+  style={{
+    rotate,
+    background: "linear-gradient(135deg, #DFAA5E 50%, #FFFFFF 50%)",
+    border: "4px solid #DFAA5E",
+  }}
+  className="w-32 h-32 lg:w-44 lg:h-44 rounded-full flex items-center justify-center shadow-xl"
+>
             {/* Counter-rotate the logo so it stays upright while circle spins */}
             <motion.div
               style={{ rotate: useTransform(scrollYProgress, [0, 1], [0, -360]) }}
