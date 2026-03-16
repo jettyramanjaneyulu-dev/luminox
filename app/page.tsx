@@ -14,7 +14,7 @@ import OrbitalSlider2 from "@/components/OrbitalSlider2";
 import Clinicpipeline from "@/components/Clinicpipeline";
 import Bookappointmentbutton from "@/components/Bookappointmentbutton";
 import Whatsappbutton from "@/components/Whatsappbutton";
-
+import CustomersCount from "@/components/CustomersCount";
 
 
 export default function Home() {
@@ -25,14 +25,16 @@ export default function Home() {
       <Hero /> 
       <Categories/>
       <AboutSection />
-      <OrbitalSlider />
        <Doctors />
+      <OrbitalSlider />
+      
       {/* <OrbitalSlider2 /> */}
       <SkinShuffle />
       {/* <Clinicpipeline /> */}
       <ResultSlider />
        <Appointment />
        <WhyChooseUs />
+       <CustomersCount />
        <Testimonials />
       
     </>

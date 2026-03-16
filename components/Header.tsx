@@ -78,7 +78,7 @@ const menuItems = [
       { label: "Skin Cancer Screening", href: "#", desc: "Early detection & care" },
     ],
   },
-  { label: "About Us", href: "#" },
+  { label: "About Us", href: "/about" },
   { label: "Contact", href: "/contact" },
 ];
 

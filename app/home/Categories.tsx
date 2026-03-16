@@ -39,7 +39,7 @@ const card: Variants = {
 
 export default function TreatmentSection() {
   return (
-    <section className="w-full py-5 bg-[#292E4B]">
+    <section className="w-full py-5 bg-[#5B326A]">
       <div className="max-w-4xl mx-auto px-6">
         <motion.div
           variants={container}

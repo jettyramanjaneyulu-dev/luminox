@@ -1,627 +1,620 @@
 "use client";
 
-import { useState, useEffect, useRef, useCallback } from "react";
-import { motion } from "framer-motion";
+import { useState, useEffect } from "react";
 
-type Doctor = {
-  name: string;
-  spec: string;
-  qual: string;
-  exp: string;
-  tag: string;
-  accent: string;
-  accentBg: string;
-  accentRgb: string;
-  bio: string;
-  img: string;
-  socials: { linkedin: string; instagram: string };
-  treats: string[];
+const doctor = {
+  name: "Dr. Aradhana Rao",
+  spec: "Senior Dermatologist",
+  qual: "MD (Dermatology), AIIMS Delhi",
+  exp: "12+ Years",
+  tag: "Laser Specialist",
+  accent: "#DFAA5E",
+  accentBg: "rgba(223,170,94,.15)",
+  accentRgb: "223,170,94",
+  bio: "Pioneer in advanced laser therapies and clinical dermatology, with over 5,000 successful procedures and multiple national awards for excellence in dermatological care. Dr. Rao blends deep scientific expertise with an artist's eye — ensuring every patient's outcome is both medically sound and aesthetically refined.",
+  img: "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=800&q=85",
+  socials: { linkedin: "#", instagram: "#" },
+  treats: ["Laser Resurfacing", "Acne Scars", "Pigmentation", "Skin Rejuvenation"],
+  stats: [
+    { value: "5,000+", label: "Procedures" },
+    { value: "12+", label: "Years Exp." },
+    { value: "98%", label: "Satisfaction" },
+    { value: "15+", label: "Awards" },
+  ],
 };
 
-const DOCTORS: Doctor[] = [
-  {
-    name: "Dr. Aradhana Rao",
-    spec: "Senior Dermatologist",
-    qual: "MD (Dermatology), AIIMS Delhi",
-    exp: "12+ Years",
-    tag: "Laser Specialist",
-    accent: "#DFAA5E",
-    accentBg: "rgba(223,170,94,.18)",
-    accentRgb: "223,170,94",
-    bio: "Pioneer in advanced laser therapies and clinical dermatology, with over 5,000 successful procedures and multiple national awards for excellence in dermatological care.",
-    img: "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=600&q=80",
-    socials: { linkedin: "#", instagram: "#" },
-    treats: ["Laser Resurfacing", "Acne Scars", "Pigmentation"],
-  },
-  {
-    name: "Dr. Sanjay Gupta",
-    spec: "Trichologist",
-    qual: "MD, Fellowship in Trichology",
-    exp: "8+ Years",
-    tag: "Hair & Scalp Expert",
-    accent: "#D95CB9",
-    accentBg: "rgba(217,92,185,.18)",
-    accentRgb: "217,92,185",
-    bio: "Leading expert in hair restoration and scalp health, combining PRP therapy with cutting-edge transplantation techniques for natural, lasting results.",
-    img: "https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=600&q=80",
-    socials: { linkedin: "#", instagram: "#" },
-    treats: ["PRP Therapy", "Hair Transplant", "Scalp Analysis"],
-  },
-  {
-    name: "Dr. Meera Iyer",
-    spec: "Aesthetic Cosmetologist",
-    qual: "MBBS, Diploma in Cosmetology",
-    exp: "10+ Years",
-    tag: "Rejuvenation Expert",
-    accent: "#9B6DB5",
-    accentBg: "rgba(155,109,181,.18)",
-    accentRgb: "155,109,181",
-    bio: "Renowned for her artistry in holistic skin rejuvenation and non-surgical aesthetics, delivering naturally enhanced results with precision injectables and regenerative treatments.",
-    img: "https://images.unsplash.com/photo-1651008376811-b90baee60c1f?w=600&q=80",
-    socials: { linkedin: "#", instagram: "#" },
-    treats: ["Fillers", "Botox", "Skin Rejuvenation"],
-  },
-  // {
-  //   name: "Dr. Rohan Mehta",
-  //   spec: "Cosmetic Surgeon",
-  //   qual: "MS (Surgery), FACS",
-  //   exp: "14+ Years",
-  //   tag: "Surgical Artistry",
-  //   accent: "#5B9BD5",
-  //   accentBg: "rgba(91,155,213,.18)",
-  //   accentRgb: "91,155,213",
-  //   bio: "A meticulous cosmetic surgeon celebrated for his sculptor's eye, Dr. Mehta blends anatomical expertise with refined aesthetics to deliver natural, harmonious outcomes across face and body.",
-  //   img: "https://images.unsplash.com/photo-1622253692010-333f2da6031d?w=600&q=80",
-  //   socials: { linkedin: "#", instagram: "#" },
-  //   treats: ["Rhinoplasty", "Liposuction", "Eyelid Surgery"],
-  // },
-  // {
-  //   name: "Dr. Priya Nambiar",
-  //   spec: "Clinical Dermatologist",
-  //   qual: "MD, DNB (Dermatology)",
-  //   exp: "9+ Years",
-  //   tag: "Skin Health Expert",
-  //   accent: "#5EBF9A",
-  //   accentBg: "rgba(94,191,154,.18)",
-  //   accentRgb: "94,191,154",
-  //   bio: "Specialising in chronic skin conditions and evidence-based dermatology, Dr. Nambiar is known for her compassionate approach and transformative results in complex skin cases.",
-  //   img: "https://images.unsplash.com/photo-1594824476967-48c8b964273f?w=600&q=80",
-  //   socials: { linkedin: "#", instagram: "#" },
-  //   treats: ["Eczema", "Psoriasis", "Vitiligo"],
-  // },
-  // {
-  //   name: "Dr. Aditya Sharma",
-  //   spec: "Anti-Ageing Specialist",
-  //   qual: "MBBS, Fellowship in Aesthetic Medicine",
-  //   exp: "11+ Years",
-  //   tag: "Youth Architect",
-  //   accent: "#E0735A",
-  //   accentBg: "rgba(224,115,90,.18)",
-  //   accentRgb: "224,115,90",
-  //   bio: "Internationally trained in regenerative and anti-ageing medicine, Dr. Sharma crafts personalised longevity protocols that restore youthful vitality through cutting-edge, minimally invasive techniques.",
-  //   img: "https://images.unsplash.com/photo-1537368910025-700350fe46c7?w=600&q=80",
-  //   socials: { linkedin: "#", instagram: "#" },
-  //   treats: ["Thread Lifts", "Vampire Facial", "Collagen Induction"],
-  // },
-];
-
-const AUTO_PLAY_INTERVAL = 4000;
-
 const LinkedInIcon = () => (
-  <svg width="14" height="14" fill="white" viewBox="0 0 24 24">
+  <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24">
     <path d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6zM2 9h4v12H2z" />
     <circle cx="4" cy="4" r="2" />
   </svg>
 );
 
 const InstaIcon = () => (
-  <svg width="14" height="14" fill="none" stroke="white" strokeWidth={2} viewBox="0 0 24 24">
+  <svg width="16" height="16" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
     <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
     <circle cx="12" cy="12" r="4" />
-    <circle cx="17.5" cy="6.5" r="1" fill="white" stroke="none" />
+    <circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none" />
   </svg>
 );
 
-const ChevronLeft = () => (
-  <svg width="20" height="20" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
-    <polyline points="15 18 9 12 15 6" />
+const CalendarIcon = () => (
+  <svg width="16" height="16" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+    <rect x="3" y="4" width="18" height="18" rx="2" />
+    <line x1="16" y1="2" x2="16" y2="6" />
+    <line x1="8" y1="2" x2="8" y2="6" />
+    <line x1="3" y1="10" x2="21" y2="10" />
   </svg>
 );
 
-const ChevronRight = () => (
-  <svg width="20" height="20" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
-    <polyline points="9 18 15 12 9 6" />
+const StarIcon = () => (
+  <svg width="14" height="14" fill="#DFAA5E" viewBox="0 0 24 24">
+    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
   </svg>
 );
 
-function DoctorCard({ doc }: { doc: Doctor }) {
-  const [hovered, setHovered] = useState(false);
-
-  return (
-    <div
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
-      style={{
-        height: "clamp(360px,42vw,440px)",
-        borderRadius: 22,
-        overflow: "hidden",
-        position: "relative",
-        cursor: "pointer",
-        boxShadow: hovered
-          ? `0 32px 64px rgba(${doc.accentRgb},.25)`
-          : "0 8px 32px rgba(41,46,75,.10)",
-        transition: "box-shadow .4s ease",
-        width: "100%",
-        flexShrink: 0,
-      }}
-    >
-      <img
-        src={doc.img}
-        alt={doc.name}
-        style={{
-          width: "100%",
-          height: "100%",
-          objectFit: "cover",
-          objectPosition: "top",
-          display: "block",
-          transform: hovered ? "scale(1.07)" : "scale(1)",
-          transition: "transform .6s cubic-bezier(.22,1,.36,1)",
-        }}
-      />
-
-      <div
-        style={{
-          position: "absolute",
-          inset: 0,
-          background: hovered
-            ? "linear-gradient(to top,rgba(41,46,75,.97) 0%,rgba(41,46,75,.45) 65%,transparent 100%)"
-            : "linear-gradient(to top,rgba(41,46,75,.92) 0%,rgba(41,46,75,.28) 55%,transparent 100%)",
-          transition: "background .4s ease",
-        }}
-      />
-
-      <div
-        style={{
-          position: "absolute",
-          top: 16,
-          right: 16,
-          display: "flex",
-          gap: 8,
-          zIndex: 10,
-          opacity: hovered ? 1 : 0,
-          transform: hovered ? "translateY(0)" : "translateY(-6px)",
-          transition: "opacity .3s ease, transform .3s ease",
-        }}
-      >
-        {[
-          { href: doc.socials.linkedin, icon: <LinkedInIcon />, label: "LinkedIn" },
-          { href: doc.socials.instagram, icon: <InstaIcon />, label: "Instagram" },
-        ].map((s) => (
-          <a
-            key={s.label}
-            href={s.href}
-            aria-label={s.label}
-            style={{
-              width: 34,
-              height: 34,
-              borderRadius: "50%",
-              background: "rgba(255,255,255,.15)",
-              backdropFilter: "blur(8px)",
-              border: "1px solid rgba(255,255,255,.2)",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              textDecoration: "none",
-              transition: "background .2s",
-            }}
-            onMouseEnter={(e) => (e.currentTarget.style.background = "rgba(255,255,255,.28)")}
-            onMouseLeave={(e) => (e.currentTarget.style.background = "rgba(255,255,255,.15)")}
-          >
-            {s.icon}
-          </a>
-        ))}
-      </div>
-
-      <div
-        style={{
-          position: "absolute",
-          bottom: 0,
-          left: 0,
-          right: 0,
-          padding: "clamp(18px,2.5vw,26px)",
-          color: "#fff",
-        }}
-      >
-        <div
-          style={{
-            display: "inline-block",
-            borderRadius: 100,
-            padding: "4px 12px",
-            marginBottom: 8,
-            background: doc.accentBg,
-            color: doc.accent,
-            fontSize: 10,
-            fontWeight: 700,
-            letterSpacing: ".12em",
-            textTransform: "uppercase",
-          }}
-        >
-          {doc.tag}
-        </div>
-
-        <div
-          style={{
-            fontSize: 10,
-            letterSpacing: ".2em",
-            textTransform: "uppercase",
-            opacity: 0.7,
-            marginBottom: 3,
-            fontWeight: 500,
-          }}
-        >
-          {doc.spec}
-        </div>
-        <div
-          style={{
-            fontFamily: "'Cormorant Garamond',serif",
-            fontSize: "clamp(17px,2vw,21px)",
-            fontWeight: 700,
-            lineHeight: 1.2,
-            marginBottom: 3,
-          }}
-        >
-          {doc.name}
-        </div>
-        <div style={{ fontSize: 11, opacity: 0.7, marginBottom: 2 }}>{doc.qual}</div>
-        <div style={{ fontSize: 11, fontWeight: 600, color: doc.accent }}>{doc.exp} Experience</div>
-
-        <div
-          className="doctor-bio"
-          style={{
-            fontSize: 12,
-            lineHeight: 1.65,
-            marginTop: 12,
-            fontWeight: 300,
-            opacity: hovered ? 1 : 0,
-            transform: hovered ? "translateY(0)" : "translateY(10px)",
-            transition: "opacity .35s ease, transform .35s ease",
-          }}
-        >
-          {doc.bio}
-        </div>
-
-        <div
-          className="doctor-treats"
-          style={{
-            display: "flex",
-            flexWrap: "wrap",
-            gap: 6,
-            marginTop: 10,
-            opacity: hovered ? 1 : 0,
-            transform: hovered ? "translateY(0)" : "translateY(8px)",
-            transition: "opacity .35s .05s ease, transform .35s .05s ease",
-          }}
-        >
-          {doc.treats.map((t) => (
-            <span
-              key={t}
-              style={{
-                fontSize: 10,
-                background: "rgba(255,255,255,.12)",
-                border: "1px solid rgba(255,255,255,.2)",
-                borderRadius: 100,
-                padding: "3px 10px",
-                color: "rgba(255,255,255,.85)",
-                fontWeight: 500,
-              }}
-            >
-              {t}
-            </span>
-          ))}
-        </div>
-      </div>
-    </div>
-  );
-}
-
-export default function Doctors() {
-  const [activeIdx, setActiveIdx] = useState(0);
-  const [isPlaying, setIsPlaying] = useState(true);
-  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
-  const [visibleCount, setVisibleCount] = useState(3);
+export default function DoctorProfile() {
+  const [visible, setVisible] = useState(false);
+  const [imgLoaded, setImgLoaded] = useState(false);
 
   useEffect(() => {
-    const update = () => {
-      const w = window.innerWidth;
-      setVisibleCount(w <= 600 ? 1 : w <= 960 ? 2 : 3);
-    };
-    update();
-    window.addEventListener("resize", update);
-    return () => window.removeEventListener("resize", update);
+    const t = setTimeout(() => setVisible(true), 80);
+    return () => clearTimeout(t);
   }, []);
-
-  const total = DOCTORS.length;
-  const maxIdx = total - visibleCount;
-
-  const next = useCallback(() => {
-    setActiveIdx((prev) => (prev >= maxIdx ? 0 : prev + 1));
-  }, [maxIdx]);
-
-  const prev = useCallback(() => {
-    setActiveIdx((prev) => (prev <= 0 ? maxIdx : prev - 1));
-  }, [maxIdx]);
-
-  useEffect(() => {
-    if (!isPlaying) {
-      if (timerRef.current) clearInterval(timerRef.current);
-      return;
-    }
-    timerRef.current = setInterval(next, AUTO_PLAY_INTERVAL);
-    return () => { if (timerRef.current) clearInterval(timerRef.current); };
-  }, [isPlaying, next]);
-
-  const pauseAndResume = useCallback(() => {
-    setIsPlaying(false);
-    setTimeout(() => setIsPlaying(true), 8000);
-  }, []);
-
-  const handlePrev = () => { pauseAndResume(); prev(); };
-  const handleNext = () => { pauseAndResume(); next(); };
-  const handleDot = (i: number) => {
-    pauseAndResume();
-    setActiveIdx(Math.max(0, Math.min(i, maxIdx)));
-  };
-
-  const touchStartX = useRef(0);
-  const onTouchStart = (e: React.TouchEvent) => { touchStartX.current = e.touches[0].clientX; };
-  const onTouchEnd = (e: React.TouchEvent) => {
-    const diff = touchStartX.current - e.changedTouches[0].clientX;
-    if (Math.abs(diff) > 40) { if (diff > 0) handleNext(); else handlePrev(); }
-  };
-
-  const gapPx = 24;
 
   return (
     <>
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,700;1,600&family=Jost:wght@300;400;500;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,500&family=DM+Sans:wght@300;400;500&display=swap');
 
-        @keyframes progressFill {
-          from { width: 0%; }
-          to   { width: 100%; }
+        /* ── All variables scoped to this component only ── */
+        .doctor-section {
+          --gold: #DFAA5E;
+          --gold-light: #F9DB9F;
+          --gold-dark: #B8843A;
+          --navy: #292E4B;
+          --navy-light: #3D4369;
+          --cream: #FAF7F2;
+          --white: #FFFFFF;
+          --text-muted: #7A7D8C;
+          --border: rgba(41,46,75,.08);
         }
 
-        /*
-          ROOT FIX: Clip any overflow at the html/body level so the page
-          never gets a horizontal scrollbar regardless of child positioning.
-        */
-        html, body { overflow-x: hidden; }
+        /* ── Scoped box-sizing — only affects children of this component ── */
+        .doctor-section *,
+        .doctor-section *::before,
+        .doctor-section *::after {
+          box-sizing: border-box;
+        }
 
-        .doctors-section {
-          font-family: 'Jost', sans-serif;
-          /* Also clip at section level as a safety net */
+        /* ── Prevent horizontal overflow only within this section ── */
+        .doctor-section {
+          overflow-x: hidden;
+        }
+
+        /* ── Entrance animations ── */
+        @keyframes fadeUp {
+          from { opacity:0; transform:translateY(28px); }
+          to   { opacity:1; transform:translateY(0); }
+        }
+        @keyframes fadeIn {
+          from { opacity:0; }
+          to   { opacity:1; }
+        }
+        @keyframes shimmer {
+          0%   { background-position: -200% center; }
+          100% { background-position:  200% center; }
+        }
+        @keyframes pulse-ring {
+          0%   { transform:scale(.95); box-shadow:0 0 0 0 rgba(223,170,94,.5); }
+          70%  { transform:scale(1);   box-shadow:0 0 0 12px rgba(223,170,94,0); }
+          100% { transform:scale(.95); box-shadow:0 0 0 0 rgba(223,170,94,0); }
+        }
+
+        .section-enter { animation: fadeIn .6s ease both; }
+        .card-enter    { animation: fadeUp .7s cubic-bezier(.22,1,.36,1) both; }
+        .delay-1 { animation-delay: .1s; }
+        .delay-2 { animation-delay: .2s; }
+        .delay-3 { animation-delay: .3s; }
+        .delay-4 { animation-delay: .4s; }
+        .delay-5 { animation-delay: .5s; }
+
+        /* ── Section ── */
+        .doctor-section {
+          font-family: 'DM Sans', sans-serif;
+          background: var(--cream);
+          min-height: 100vh;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          padding: clamp(48px,8vw,100px) clamp(16px,5vw,48px);
+        }
+
+        /* ── Outer wrapper ── */
+        .doctor-wrapper {
+          width: 100%;
+          max-width: 1120px;
+          margin: 0 auto;
+        }
+
+        /* ── Header text ── */
+        .section-eyebrow {
+          color: var(--gold);
+          letter-spacing: .35em;
+          font-size: 11px;
+          font-weight: 500;
+          text-transform: uppercase;
+          text-align: center;
+          margin-bottom: 10px;
+        }
+        .section-title {
+          font-family: 'Cormorant Garamond', serif;
+          font-size: clamp(30px,4.5vw,54px);
+          font-weight: 700;
+          color: var(--navy);
+          text-align: center;
+          line-height: 1.12;
+          margin-bottom: clamp(40px,6vw,72px);
+        }
+
+        /* ── Card ── */
+        .doctor-card {
+          background: var(--white);
+          border-radius: 28px;
+          overflow: hidden;
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          box-shadow:
+            0 2px 4px rgba(41,46,75,.04),
+            0 12px 40px rgba(41,46,75,.08),
+            0 40px 80px rgba(41,46,75,.06);
+          position: relative;
+        }
+
+        /* ── Image pane ── */
+        .doctor-image-pane {
+          position: relative;
+          min-height: clamp(400px, 52vw, 620px);
           overflow: hidden;
         }
-
-        /* Mobile: always show bio + treats */
-        @media (max-width: 600px) {
-          .doctor-bio    { opacity: 1 !important; transform: translateY(0) !important; }
-          .doctor-treats { opacity: 1 !important; transform: translateY(0) !important; }
-          .doctors-section { padding: 52px 0 68px !important; }
+        .doctor-img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+          object-position: top center;
+          display: block;
+          transition: transform .7s cubic-bezier(.22,1,.36,1);
+        }
+        .doctor-image-pane:hover .doctor-img {
+          transform: scale(1.04);
+        }
+        .img-overlay {
+          position: absolute;
+          inset: 0;
+          background: linear-gradient(
+            160deg,
+            transparent 40%,
+            rgba(41,46,75,.55) 100%
+          );
+          pointer-events: none;
         }
 
-        .nav-btn:hover { background: rgba(41,46,75,1) !important; }
-        .dot-btn:hover { transform: scale(1.2); }
-        .cta-btn:hover { background: #F9DB9F !important; transform: translateY(-2px); }
+        /* Gold decorative bar on image */
+        .img-accent-bar {
+          position: absolute;
+          bottom: 0;
+          left: 0;
+          width: 100%;
+          height: 5px;
+          background: linear-gradient(90deg, var(--gold-dark), var(--gold), var(--gold-light));
+        }
+
+        /* Social icons overlaid on image */
+        .img-socials {
+          position: absolute;
+          top: 24px;
+          right: 24px;
+          display: flex;
+          flex-direction: column;
+          gap: 10px;
+          z-index: 10;
+        }
+        .social-btn {
+          width: 40px;
+          height: 40px;
+          border-radius: 50%;
+          background: rgba(255,255,255,.18);
+          backdrop-filter: blur(10px);
+          border: 1px solid rgba(255,255,255,.3);
+          color: #fff;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          text-decoration: none;
+          transition: background .25s, transform .25s;
+          cursor: pointer;
+        }
+        .social-btn:hover {
+          background: rgba(223,170,94,.7);
+          transform: scale(1.1);
+        }
+
+        /* Tag badge on image */
+        .img-tag {
+          position: absolute;
+          bottom: 24px;
+          left: 24px;
+          background: var(--gold);
+          color: var(--navy);
+          font-size: 10px;
+          font-weight: 700;
+          letter-spacing: .18em;
+          text-transform: uppercase;
+          border-radius: 100px;
+          padding: 6px 14px;
+        }
+
+        /* ── Info pane ── */
+        .doctor-info-pane {
+          padding: clamp(32px,4vw,56px) clamp(28px,4vw,52px);
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          gap: 0;
+          position: relative;
+        }
+
+        /* Decorative corner accent */
+        .info-corner-accent {
+          position: absolute;
+          top: -2px;
+          right: -2px;
+          width: 120px;
+          height: 120px;
+          background: radial-gradient(circle at top right, rgba(223,170,94,.12), transparent 70%);
+          pointer-events: none;
+        }
+
+        .info-speciality {
+          font-size: 11px;
+          font-weight: 500;
+          letter-spacing: .25em;
+          text-transform: uppercase;
+          color: var(--text-muted);
+          margin-bottom: 8px;
+        }
+        .info-name {
+          font-family: 'Cormorant Garamond', serif;
+          font-size: clamp(28px,3.2vw,42px);
+          font-weight: 700;
+          color: var(--navy);
+          line-height: 1.1;
+          margin-bottom: 6px;
+        }
+        .info-qual-row {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          margin-bottom: 20px;
+          flex-wrap: wrap;
+        }
+        .info-qual {
+          font-size: 13px;
+          color: var(--text-muted);
+          font-weight: 400;
+        }
+        .qual-dot {
+          width: 3px;
+          height: 3px;
+          border-radius: 50%;
+          background: var(--gold);
+          flex-shrink: 0;
+        }
+        .info-exp {
+          font-size: 13px;
+          color: var(--gold-dark);
+          font-weight: 600;
+        }
+
+        /* Divider */
+        .info-divider {
+          height: 1px;
+          background: linear-gradient(90deg, var(--gold), transparent);
+          margin-bottom: 20px;
+          opacity: .35;
+        }
+
+        /* Stars + review line */
+        .stars-row {
+          display: flex;
+          align-items: center;
+          gap: 4px;
+          margin-bottom: 16px;
+        }
+        .stars-label {
+          font-size: 12px;
+          color: var(--text-muted);
+          margin-left: 6px;
+        }
+
+        /* Bio */
+        .info-bio {
+          font-size: 14px;
+          line-height: 1.85;
+          color: #4E5268;
+          font-weight: 300;
+          margin-bottom: 24px;
+        }
+
+        /* Stats row */
+        .stats-grid {
+          display: grid;
+          grid-template-columns: repeat(4, 1fr);
+          gap: 1px;
+          background: var(--border);
+          border-radius: 16px;
+          overflow: hidden;
+          margin-bottom: 24px;
+          border: 1px solid var(--border);
+        }
+        .stat-cell {
+          background: var(--white);
+          padding: 16px 8px;
+          text-align: center;
+          transition: background .2s;
+        }
+        .stat-cell:hover { background: rgba(223,170,94,.06); }
+        .stat-value {
+          font-family: 'Cormorant Garamond', serif;
+          font-size: clamp(18px,2vw,26px);
+          font-weight: 700;
+          color: var(--navy);
+          line-height: 1;
+          margin-bottom: 4px;
+        }
+        .stat-label {
+          font-size: 10px;
+          letter-spacing: .1em;
+          text-transform: uppercase;
+          color: var(--text-muted);
+          font-weight: 400;
+        }
+
+        /* Treats */
+        .treats-label {
+          font-size: 10px;
+          letter-spacing: .2em;
+          text-transform: uppercase;
+          color: var(--text-muted);
+          font-weight: 500;
+          margin-bottom: 10px;
+        }
+        .treats-row {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 8px;
+          margin-bottom: 28px;
+        }
+        .treat-chip {
+          font-size: 11px;
+          border-radius: 100px;
+          padding: 5px 14px;
+          background: rgba(223,170,94,.1);
+          color: var(--gold-dark);
+          font-weight: 500;
+          border: 1px solid rgba(223,170,94,.25);
+          transition: background .2s, border-color .2s;
+          cursor: default;
+        }
+        .treat-chip:hover {
+          background: rgba(223,170,94,.2);
+          border-color: var(--gold);
+        }
+
+        /* CTA Buttons */
+        .cta-row {
+          display: flex;
+          gap: 12px;
+          flex-wrap: wrap;
+        }
+        .btn-primary {
+          display: inline-flex;
+          align-items: center;
+          gap: 8px;
+          background: var(--navy);
+          color: #fff;
+          border: none;
+          border-radius: 100px;
+          padding: 13px 28px;
+          font-size: 13px;
+          font-weight: 500;
+          font-family: 'DM Sans', sans-serif;
+          letter-spacing: .04em;
+          cursor: pointer;
+          transition: background .25s, transform .2s, box-shadow .25s;
+          box-shadow: 0 4px 20px rgba(41,46,75,.18);
+          text-decoration: none;
+        }
+        .btn-primary:hover {
+          background: var(--navy-light);
+          transform: translateY(-2px);
+          box-shadow: 0 8px 28px rgba(41,46,75,.25);
+        }
+        .btn-secondary {
+          display: inline-flex;
+          align-items: center;
+          gap: 8px;
+          background: transparent;
+          color: var(--navy);
+          border: 1.5px solid rgba(41,46,75,.2);
+          border-radius: 100px;
+          padding: 13px 28px;
+          font-size: 13px;
+          font-weight: 500;
+          font-family: 'DM Sans', sans-serif;
+          letter-spacing: .04em;
+          cursor: pointer;
+          transition: border-color .25s, background .25s, transform .2s;
+          text-decoration: none;
+        }
+        .btn-secondary:hover {
+          border-color: var(--gold);
+          background: rgba(223,170,94,.06);
+          transform: translateY(-2px);
+        }
+
+        /* Availability indicator */
+        .availability-dot {
+          width: 8px;
+          height: 8px;
+          border-radius: 50%;
+          background: #4CAF7D;
+          animation: pulse-ring 2.2s ease-in-out infinite;
+          flex-shrink: 0;
+          display: inline-block;
+        }
+        .availability-text {
+          font-size: 12px;
+          color: #4CAF7D;
+          font-weight: 500;
+          display: flex;
+          align-items: center;
+          gap: 6px;
+          margin-bottom: 16px;
+        }
+
+        /* ── RESPONSIVE ── */
+        @media (max-width: 768px) {
+          .doctor-card {
+            grid-template-columns: 1fr;
+          }
+          .doctor-image-pane {
+            min-height: clamp(280px, 70vw, 400px);
+          }
+          .img-socials {
+            flex-direction: row;
+            top: 16px;
+            right: 16px;
+          }
+          .stats-grid {
+            grid-template-columns: repeat(2, 1fr);
+          }
+          .cta-row {
+            flex-direction: column;
+          }
+          .btn-primary, .btn-secondary {
+            justify-content: center;
+          }
+        }
+
+        @media (max-width: 400px) {
+          .doctor-info-pane {
+            padding: 24px 20px;
+          }
+        }
       `}</style>
 
-      <section
-        className="doctors-section"
-        style={{ padding: "90px 0 100px", background: "#fff" }}
-      >
-        <div style={{ maxWidth: 1280, margin: "0 auto", padding: "0 clamp(16px,4vw,48px)" }}>
+      <section className={`doctor-section${visible ? " section-enter" : ""}`}>
+        <div className="doctor-wrapper">
 
-          {/* Header */}
-          <div style={{ textAlign: "center", marginBottom: "clamp(44px,6vw,68px)" }}>
-            <p
-              style={{
-                color: "#DFAA5E",
-                letterSpacing: ".35em",
-                fontSize: 11,
-                fontWeight: 700,
-                textTransform: "uppercase",
-                marginBottom: 12,
-              }}
-            >
-              Meet Our Experts
-            </p>
-            <h2
-              style={{
-                fontFamily: "'Cormorant Garamond',serif",
-                fontSize: "clamp(28px,4vw,52px)",
-                color: "#292E4B",
-                fontWeight: 700,
-                lineHeight: 1.15,
-              }}
-            >
-              Science Behind the Beauty
-            </h2>
-            <p
-              style={{
-                maxWidth: 580,
-                margin: "16px auto 0",
-                fontSize: 14,
-                lineHeight: 1.85,
-                color: "#414042",
-                fontWeight: 300,
-              }}
-            >
-              Behind every transformation is dermatology expertise. Our clinical approach combines
-              medical diagnosis, advanced technologies, and personalised treatment design to ensure
-              every patient receives care that is thoughtful, precise, and safe.
-            </p>
-          </div>
+          {/* Section Header */}
+          <p className={`section-eyebrow${visible ? " card-enter" : ""}`}>
+            Meet Our Expert
+          </p>
+          <h2 className={`section-title${visible ? " card-enter delay-1" : ""}`}>
+            Science Behind the Beauty
+          </h2>
 
-          {/*
-            ── CAROUSEL WRAPPER ──────────────────────────────────────────────────
-            KEY FIX: In the original code the nav arrows used `left: -20px` and
-            `right: -20px`. Those negative offsets placed the buttons OUTSIDE the
-            container bounds, which caused the browser to extend the scrollable
-            area and create a horizontal scrollbar.
+          {/* Card */}
+          <div className={`doctor-card${visible ? " card-enter delay-2" : ""}`}>
 
-            Solution: add `padding: "0 52px"` to this wrapper so the arrow buttons
-            have a dedicated lane to sit in (left:0 / right:0 within the padded box)
-            and can never escape the container width. The slide window sits inside
-            that padding and clips its own overflow normally.
-          */}
-          <div
-            style={{
-              position: "relative",
-              width: "100%",
-              padding: "0 52px",
-              boxSizing: "border-box",
-            }}
-          >
-            {/* Left arrow — anchored inside padding lane */}
-            <button
-              className="nav-btn"
-              onClick={handlePrev}
-              aria-label="Previous"
-              style={{
-                position: "absolute",
-                left: 0,
-                top: "50%",
-                transform: "translateY(-50%)",
-                zIndex: 20,
-                width: 44,
-                height: 44,
-                borderRadius: "50%",
-                background: "rgba(41,46,75,.85)",
-                border: "1px solid rgba(255,255,255,.12)",
-                color: "#fff",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                cursor: "pointer",
-                backdropFilter: "blur(8px)",
-                transition: "background .2s",
-                boxShadow: "0 4px 16px rgba(41,46,75,.25)",
-              }}
-            >
-              <ChevronLeft />
-            </button>
+            {/* ── Image Pane ── */}
+            <div className="doctor-image-pane">
+              <img
+                className="doctor-img"
+                src={doctor.img}
+                alt={doctor.name}
+                onLoad={() => setImgLoaded(true)}
+                style={{ opacity: imgLoaded ? 1 : 0, transition: "opacity .5s ease" }}
+              />
+              <div className="img-overlay" />
+              <div className="img-accent-bar" />
 
-            {/* Right arrow — anchored inside padding lane */}
-            <button
-              className="nav-btn"
-              onClick={handleNext}
-              aria-label="Next"
-              style={{
-                position: "absolute",
-                right: 0,
-                top: "50%",
-                transform: "translateY(-50%)",
-                zIndex: 20,
-                width: 44,
-                height: 44,
-                borderRadius: "50%",
-                background: "rgba(41,46,75,.85)",
-                border: "1px solid rgba(255,255,255,.12)",
-                color: "#fff",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                cursor: "pointer",
-                backdropFilter: "blur(8px)",
-                transition: "background .2s",
-                boxShadow: "0 4px 16px rgba(41,46,75,.25)",
-              }}
-            >
-              <ChevronRight />
-            </button>
+              {/* Socials */}
+              <div className="img-socials">
+                <a href={doctor.socials.linkedin} aria-label="LinkedIn" className="social-btn">
+                  <LinkedInIcon />
+                </a>
+                <a href={doctor.socials.instagram} aria-label="Instagram" className="social-btn">
+                  <InstaIcon />
+                </a>
+              </div>
 
-            {/* Slide window — clips the moving strip */}
-            <div
-              style={{ overflow: "hidden", borderRadius: 8, width: "100%" }}
-              onTouchStart={onTouchStart}
-              onTouchEnd={onTouchEnd}
-            >
-              <motion.div
-                animate={{
-                  /*
-                    FIX: translate is based on the slide-window width (100%),
-                    not the outer wrapper width, so the math stays correct at
-                    every breakpoint. Each step moves exactly one card width
-                    plus its share of the gap.
-                  */
-                  x: `calc(-${activeIdx * (100 / visibleCount)}% - ${(activeIdx * gapPx) / visibleCount}px)`,
-                }}
-                transition={{ type: "spring", stiffness: 280, damping: 30 }}
-                style={{ display: "flex", gap: gapPx }}
-              >
-                {DOCTORS.map((doc, i) => (
-                  <div
-                    key={doc.name}
-                    style={{
-                      /*
-                        FIX: card width = (100% of slide-window minus all gaps) ÷ visibleCount
-                        Using both minWidth AND maxWidth (and flexShrink:0) prevents
-                        any card from growing or shrinking and leaking outside the window.
-                      */
-                      minWidth: `calc((100% - ${gapPx * (visibleCount - 1)}px) / ${visibleCount})`,
-                      maxWidth: `calc((100% - ${gapPx * (visibleCount - 1)}px) / ${visibleCount})`,
-                      flexShrink: 0,
-                    }}
-                  >
-                    <motion.div
-                      initial={{ opacity: 0, y: 36 }}
-                      whileInView={{ opacity: 1, y: 0 }}
-                      transition={{ delay: i * 0.1, duration: 0.65, ease: [0.22, 1, 0.36, 1] }}
-                      viewport={{ once: true }}
-                    >
-                      <DoctorCard doc={doc} />
-                    </motion.div>
+              {/* Tag */}
+              <span className="img-tag">{doctor.tag}</span>
+            </div>
+
+            {/* ── Info Pane ── */}
+            <div className="doctor-info-pane">
+              <div className="info-corner-accent" />
+
+              <p className="info-speciality">{doctor.spec}</p>
+              <h3 className="info-name">{doctor.name}</h3>
+
+              <div className="info-qual-row">
+                <span className="info-qual">{doctor.qual}</span>
+                <span className="qual-dot" />
+                <span className="info-exp">{doctor.exp} Experience</span>
+              </div>
+
+              <div className="info-divider" />
+
+              {/* Stars */}
+              <div className="stars-row">
+                {[1,2,3,4,5].map(i => <StarIcon key={i} />)}
+                <span className="stars-label">4.9 · 320+ patient reviews</span>
+              </div>
+
+              {/* Availability */}
+              <div className="availability-text">
+                <span className="availability-dot" />
+                Available for consultations this week
+              </div>
+
+              {/* Bio */}
+              <p className="info-bio">{doctor.bio}</p>
+
+              {/* Stats */}
+              <div className="stats-grid">
+                {doctor.stats.map((s) => (
+                  <div className="stat-cell" key={s.label}>
+                    <div className="stat-value">{s.value}</div>
+                    <div className="stat-label">{s.label}</div>
                   </div>
                 ))}
-              </motion.div>
-            </div>
-          </div>
+              </div>
 
-          {/* Dots */}
-          <div
-            style={{
-              marginTop: 32,
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              gap: 16,
-            }}
-          >
-            <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
-              {Array.from({ length: maxIdx + 1 }).map((_, i) => (
-                <button
-                  key={i}
-                  className="dot-btn"
-                  onClick={() => handleDot(i)}
-                  aria-label={`Go to slide ${i + 1}`}
-                  style={{
-                    width: i === activeIdx ? 28 : 8,
-                    height: 8,
-                    borderRadius: 4,
-                    background:
-                      i === activeIdx
-                        ? DOCTORS[activeIdx + Math.floor(visibleCount / 2)]?.accent ?? "#DFAA5E"
-                        : "rgba(41,46,75,.2)",
-                    border: "none",
-                    cursor: "pointer",
-                    padding: 0,
-                    transition: "width .3s ease, background .3s ease, transform .2s",
-                  }}
-                />
-              ))}
-            </div>
-          </div>
+              {/* Treats */}
+              <p className="treats-label">Specialises In</p>
+              <div className="treats-row">
+                {doctor.treats.map((t) => (
+                  <span className="treat-chip" key={t}>{t}</span>
+                ))}
+              </div>
 
+              {/* CTA */}
+              <div className="cta-row">
+                <a href="#" className="btn-primary">
+                  <CalendarIcon />
+                  Book Consultation
+                </a>
+                <a href="#" className="btn-secondary">
+                  View Full Profile
+                </a>
+              </div>
+            </div>
+
+          </div>
         </div>
       </section>
     </>
