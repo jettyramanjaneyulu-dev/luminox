@@ -36,14 +36,6 @@ const STATS: Stat[] = [
   },
 ];
 
-// ── Slot visual config (desktop → tablet → mobile via CSS) ──
-const SLOT_CONFIG = [
-  { numSize: "1.45rem", labelSize: "0.67rem", opacity: 0.45 },
-  { numSize: "1.85rem", labelSize: "0.74rem", opacity: 0.65 },
-  { numSize: "3rem",    labelSize: "0.86rem", opacity: 1    },
-  { numSize: "1.65rem", labelSize: "0.70rem", opacity: 0.55 },
-];
-
 // ── Animated counter ──
 function AnimatedNumber({
   target,
@@ -55,248 +47,413 @@ function AnimatedNumber({
   duration?: number;
 }) {
   const [display, setDisplay] = useState("0");
-  const rafRef = useRef<number | null>(null);
+  const rafRef   = useRef<number | null>(null);
   const startRef = useRef<number | null>(null);
-  const numeric = parseInt(target.replace(/\D/g, ""), 10);
-  const suffix = target.replace(/[0-9]/g, "");
+  const numeric  = parseInt(target.replace(/\D/g, ""), 10);
+  const suffix   = target.replace(/[0-9]/g, "");
 
   useEffect(() => {
     startRef.current = null;
     if (rafRef.current) cancelAnimationFrame(rafRef.current);
-
-    const animate = (ts: number) => {
+    const tick = (ts: number) => {
       if (!startRef.current) startRef.current = ts;
-      const progress = Math.min((ts - startRef.current) / duration, 1);
-      const eased = 1 - Math.pow(1 - progress, 3);
-      setDisplay(Math.floor(eased * numeric) + suffix);
-      if (progress < 1) rafRef.current = requestAnimationFrame(animate);
+      const p = Math.min((ts - startRef.current) / duration, 1);
+      setDisplay(Math.floor((1 - Math.pow(1 - p, 3)) * numeric) + suffix);
+      if (p < 1) rafRef.current = requestAnimationFrame(tick);
     };
-
-    rafRef.current = requestAnimationFrame(animate);
+    rafRef.current = requestAnimationFrame(tick);
     return () => { if (rafRef.current) cancelAnimationFrame(rafRef.current); };
   }, [triggerKey, numeric, suffix, duration]);
 
   return <span>{display}</span>;
 }
 
-export default function OurPipeline() {
-  const sectionRef = useRef<HTMLDivElement | null>(null);
-  const [inView, setInView] = useState(false);
-  const [active, setActive] = useState(2); // index in STATS
-  const [imgSrcs, setImgSrcs] = useState(STATS.map((s) => s.image));
-  // triggerKey per stat to re-fire animation on click
-  const [triggerKeys, setTriggerKeys] = useState(STATS.map((_, i) => `${i}-0`));
+// ─────────────────────────────────────────────────────────────────
+// Each STAT has a fixed "position index" in a circular track:
+//   position 0 = far-left (smallest)
+//   position 1 = mid-left
+//   position 2 = CENTER  (largest)
+//   position 3 = mid-right
+//
+// We store `centerIdx` (which STAT is at center) and compute
+// each stat's position from that.  On click we just change centerIdx
+// and every stat slides to its new position via CSS transform.
+//
+// Track layout (desktop px from section center-x):
+//   pos 0: -340px   size 112   opacity 0.38
+//   pos 1: -190px   size 150   opacity 0.58
+//   pos 2:    0px   size 230   opacity 1.00   ← center
+//   pos 3: +195px   size 130   opacity 0.48
+//
+// Each stat sits at its OWN absolute position calculated from center.
+// ─────────────────────────────────────────────────────────────────
 
+const POSITIONS = [
+  // [translateX from center,  circleSize,  numSize,  labelSize, opacity, zIndex]
+  { x: -345, size: 112, num: "1.2rem",  label: "0.62rem", op: 0.38, z: 1 },
+  { x: -192, size: 150, num: "1.65rem", label: "0.70rem", op: 0.58, z: 2 },
+  { x:    0, size: 230, num: "2.85rem", label: "0.85rem", op: 1.00, z: 4 },
+  { x:  197, size: 130, num: "1.38rem", label: "0.65rem", op: 0.48, z: 2 },
+];
+
+// tablet positions
+const POSITIONS_MD = [
+  { x: -248, size:  82, num: "1.0rem",  label: "0.60rem", op: 0.38, z: 1 },
+  { x: -138, size: 108, num: "1.3rem",  label: "0.67rem", op: 0.58, z: 2 },
+  { x:    0, size: 166, num: "2.1rem",  label: "0.80rem", op: 1.00, z: 4 },
+  { x:  143, size:  94, num: "1.15rem", label: "0.62rem", op: 0.48, z: 2 },
+];
+
+// mobile positions (3 visible, slot-0 hidden)
+const POSITIONS_SM = [
+  { x: -999, size:  0,   num: "0",       label: "0",       op: 0,    z: 0 }, // hidden
+  { x: -112, size:  86, num: "1.05rem", label: "0.60rem", op: 0.58, z: 2 },
+  { x:    0, size: 140, num: "1.7rem",  label: "0.78rem", op: 1.00, z: 4 },
+  { x:  116, size:  80, num: "1.0rem",  label: "0.60rem", op: 0.48, z: 2 },
+];
+
+// Given centerIdx and statIdx, return that stat's slot position (0–3)
+function getSlot(statIdx: number, centerIdx: number): number {
+  // center = slot 2, going left: slot 1, slot 0; going right: slot 3
+  // distance = (statIdx - centerIdx + 4) % 4
+  const dist = (statIdx - centerIdx + STATS.length) % STATS.length;
+  // dist 0 → slot 2 (center)
+  // dist 1 → slot 3 (right)
+  // dist 2 → slot 0 (far-left)  ← "opposite side"
+  // dist 3 → slot 1 (mid-left)
+  const map: Record<number, number> = { 0: 2, 1: 3, 2: 0, 3: 1 };
+  return map[dist];
+}
+
+export default function OurPipeline() {
+  const sectionRef                    = useRef<HTMLDivElement | null>(null);
+  const [inView,      setInView]      = useState(false);
+  const [centerIdx,   setCenterIdx]   = useState(2);          // which STAT is center
+  const [imgSrcs,     setImgSrcs]     = useState(STATS.map((s) => s.image));
+  const [triggerKeys, setTriggerKeys] = useState(STATS.map((_, i) => `${i}-0`));
+  const [entered,     setEntered]     = useState(false);
+  const [breakpoint,  setBreakpoint]  = useState<"lg" | "md" | "sm">("lg");
+
+  // breakpoint detector
+  useEffect(() => {
+    const measure = () => {
+      const w = window.innerWidth;
+      setBreakpoint(w <= 580 ? "sm" : w <= 860 ? "md" : "lg");
+    };
+    measure();
+    window.addEventListener("resize", measure);
+    return () => window.removeEventListener("resize", measure);
+  }, []);
+
+  // intersection observer — entrance once
   useEffect(() => {
     const obs = new IntersectionObserver(
-      ([entry]) => { if (entry.isIntersecting) { setInView(true); obs.disconnect(); } },
-      { threshold: 0.2 }
+      ([e]) => { if (e.isIntersecting) { setInView(true); setTimeout(() => setEntered(true), 80); obs.disconnect(); } },
+      { threshold: 0.15 }
     );
     if (sectionRef.current) obs.observe(sectionRef.current);
     return () => obs.disconnect();
   }, []);
 
-  const handleImgError = (i: number) => {
-    setImgSrcs((prev) => { const n = [...prev]; n[i] = STATS[i].fallback; return n; });
-  };
+  const handleImgError = (i: number) =>
+    setImgSrcs((p) => { const n = [...p]; n[i] = STATS[i].fallback; return n; });
 
   const handleSelect = useCallback((statIdx: number) => {
-    setActive(statIdx);
-    // Re-trigger all number animations on selection
+    if (statIdx === centerIdx) return;
+    setCenterIdx(statIdx);
     setTriggerKeys((prev) =>
       prev.map((k, i) => {
-        const [idx, count] = k.split("-");
-        return i === statIdx ? `${idx}-${parseInt(count) + 1}` : k;
+        const [idx, c] = k.split("-");
+        return i === statIdx ? `${idx}-${parseInt(c) + 1}` : k;
       })
     );
-  }, []);
+  }, [centerIdx]);
 
-  const others = STATS.map((_, i) => i).filter((i) => i !== active);
-  const displayOrder = [others[0], others[1], active, others[2]];
+  const posTable =
+    breakpoint === "sm" ? POSITIONS_SM :
+    breakpoint === "md" ? POSITIONS_MD :
+    POSITIONS;
+
+  // track height = tallest circle + text area
+  const trackH =
+    breakpoint === "sm" ? 220 :
+    breakpoint === "md" ? 280 :
+    360;
 
   return (
     <>
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Jost:wght@300;400;500&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Jost:wght@300;400;500;600&display=swap');
 
-        .pipeline-bubble-circle {
+        .lp-wrap {
+          width: 100%;
+          background: #fff;
+          padding: 80px 0 96px;
+          overflow: hidden;
+          position: relative;
+        }
+        .lp-wrap::before {
+          content: '';
+          position: absolute;
+          top: 0; left: 50%;
+          transform: translateX(-50%);
+          width: 72px; height: 2px;
+          background: linear-gradient(90deg, transparent, #DFAA5E, transparent);
+        }
+
+        /* Header */
+        .lp-hd {
+          text-align: center;
+          max-width: 620px;
+          margin: 0 auto 64px;
+          padding: 0 24px;
+        }
+        .lp-eye {
+          font-family: 'Jost', sans-serif;
+          font-size: 0.68rem;
+          font-weight: 600;
+          letter-spacing: 0.2em;
+          text-transform: uppercase;
+          color: #DFAA5E;
+          margin-bottom: 12px;
+        }
+        .lp-ttl {
+          font-family: 'Cormorant Garamond', serif;
+          font-size: clamp(1.55rem, 3vw, 2.45rem);
+          font-weight: 700;
+          color: #1a1a2e;
+          line-height: 1.2;
+          margin: 0 0 14px;
+        }
+        .lp-desc {
+          font-family: 'Jost', sans-serif;
+          font-weight: 300;
+          font-size: 0.875rem;
+          color: #888;
+          line-height: 1.8;
+          margin: 0;
+        }
+
+        /*
+          TRACK — a relative container whose center is the reference point.
+          Each bubble is absolutely positioned with translateX from center.
+          On centerIdx change, all bubbles slide to their new X + resize.
+          This is what gives the true carousel feel.
+        */
+        .lp-track {
+          position: relative;
+          width: 100%;
+          /* height set inline */
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+
+        /* Each bubble is absolute, centered at 50% then shifted by X */
+        .lp-bubble {
+          position: absolute;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          /* ALL positional + size changes animate together — single smooth motion */
+          transition:
+            transform  0.6s cubic-bezier(0.4, 0, 0.2, 1),
+            opacity    0.6s cubic-bezier(0.4, 0, 0.2, 1),
+            z-index    0s;
+        }
+
+        /* Entrance: bubbles start invisible+below, slide up once */
+        .lp-bubble {
+          --entrance-y: 48px;
+        }
+        .lp-bubble.pre-enter {
+          opacity: 0 !important;
+          transform: var(--tx) translateY(var(--entrance-y)) !important;
+        }
+        .lp-bubble.entered {
+          /* transform and opacity are driven by inline style + transition */
+        }
+
+        .lp-bubble.clickable { cursor: pointer; }
+
+        /* Circle */
+        .lp-circ {
           border-radius: 50%;
           overflow: hidden;
+          flex-shrink: 0;
           transition:
-            width 0.28s cubic-bezier(0.34,1.56,0.64,1),
-            height 0.28s cubic-bezier(0.34,1.56,0.64,1),
-            box-shadow 0.28s ease,
-            opacity 0.28s ease;
+            width      0.6s cubic-bezier(0.4, 0, 0.2, 1),
+            height     0.6s cubic-bezier(0.4, 0, 0.2, 1),
+            box-shadow 0.5s ease-out;
+          will-change: width, height;
+        }
+        .lp-circ img {
+          width: 100%; height: 100%;
+          object-fit: cover; display: block;
+          transition: transform 0.55s ease-out;
+        }
+        .lp-bubble.clickable:hover .lp-circ img { transform: scale(1.05); }
+        .lp-bubble.clickable:hover .lp-circ {
+          box-shadow: 0 18px 48px rgba(0,0,0,0.14) !important;
         }
 
-        .pipeline-bubble-circle img {
-          width: 100%; height: 100%; object-fit: cover; display: block;
-          transition: transform 0.35s ease;
+        /* Gold ring breathe — center only */
+        @keyframes lp-breathe {
+          0%,100% { box-shadow: 0 0 0 3px #fff, 0 0 0 5px #DFAA5E,             0 14px 50px rgba(0,0,0,0.15); }
+          50%     { box-shadow: 0 0 0 3px #fff, 0 0 0 9px rgba(223,170,94,0.35), 0 14px 50px rgba(0,0,0,0.15); }
+        }
+        .lp-circ-center { animation: lp-breathe 3.2s ease-in-out infinite; }
+
+        /* Number */
+        .lp-num {
+          font-family: 'Cormorant Garamond', serif;
+          font-weight: 700;
+          color: #1a1a2e;
+          line-height: 1;
+          margin-top: 12px;
+          transition:
+            font-size 0.6s cubic-bezier(0.4, 0, 0.2, 1),
+            opacity   0.6s cubic-bezier(0.4, 0, 0.2, 1);
+          white-space: nowrap;
         }
 
-        .pipeline-bubble-item:hover .pipeline-bubble-circle img { transform: scale(1.05); }
-        .pipeline-bubble-item {
-          transition: transform 0.25s cubic-bezier(0.34,1.56,0.64,1);
-        }
-        .pipeline-bubble-item:hover { transform: translateY(-5px); }
-
-        /* Desktop slots */
-        .pipeline-slot-0 .pipeline-bubble-circle { width: 118px; height: 118px; }
-        .pipeline-slot-1 .pipeline-bubble-circle { width: 155px; height: 155px; }
-        .pipeline-slot-2 .pipeline-bubble-circle { width: 232px; height: 232px; }
-        .pipeline-slot-3 .pipeline-bubble-circle { width: 138px; height: 138px; }
-
-        /* Tablet */
-        @media (max-width: 860px) {
-          .pipeline-slot-0 .pipeline-bubble-circle { width: 86px;  height: 86px;  }
-          .pipeline-slot-1 .pipeline-bubble-circle { width: 110px; height: 110px; }
-          .pipeline-slot-2 .pipeline-bubble-circle { width: 164px; height: 164px; }
-          .pipeline-slot-3 .pipeline-bubble-circle { width: 100px; height: 100px; }
-          .pipeline-bubbles-row { gap: 20px !important; }
-          .pipeline-slot-0 .pipeline-num { font-size: 1.1rem !important; }
-          .pipeline-slot-1 .pipeline-num { font-size: 1.4rem !important; }
-          .pipeline-slot-2 .pipeline-num { font-size: 2.1rem !important; }
-          .pipeline-slot-3 .pipeline-num { font-size: 1.25rem !important; }
+        /* Label */
+        .lp-lbl {
+          font-family: 'Jost', sans-serif;
+          margin-top: 5px;
+          letter-spacing: 0.04em;
+          text-align: center;
+          transition:
+            font-size   0.6s cubic-bezier(0.4, 0, 0.2, 1),
+            color       0.6s cubic-bezier(0.4, 0, 0.2, 1),
+            opacity     0.6s cubic-bezier(0.4, 0, 0.2, 1),
+            max-width   0.6s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        /* Mobile */
-        @media (max-width: 560px) {
-          .pipeline-slot-0 { display: none !important; }
-          .pipeline-bubbles-row { gap: 14px !important; }
-          .pipeline-slot-1 .pipeline-bubble-circle { width: 90px;  height: 90px;  }
-          .pipeline-slot-2 .pipeline-bubble-circle { width: 140px; height: 140px; }
-          .pipeline-slot-3 .pipeline-bubble-circle { width: 84px;  height: 84px;  }
-          .pipeline-slot-1 .pipeline-num { font-size: 1.15rem !important; }
-          .pipeline-slot-2 .pipeline-num { font-size: 1.75rem !important; }
-          .pipeline-slot-3 .pipeline-num { font-size: 1.1rem  !important; }
-          .pipeline-slot-1 .pipeline-label { font-size: 0.62rem !important; }
-          .pipeline-slot-3 .pipeline-label { font-size: 0.62rem !important; }
+        /* Dot nav */
+        .lp-dots {
+          display: flex;
+          gap: 7px;
+          justify-content: center;
+          margin-top: 44px;
+        }
+        .lp-dot {
+          width: 6px; height: 6px;
+          border-radius: 50%;
+          background: #ddd;
+          cursor: pointer;
+          transition: background 0.35s ease, transform 0.35s ease;
+        }
+        .lp-dot.on {
+          background: #DFAA5E;
+          transform: scale(1.5);
         }
 
-        @media (max-width: 380px) {
-          .pipeline-slot-1 .pipeline-bubble-circle { width: 76px;  height: 76px;  }
-          .pipeline-slot-2 .pipeline-bubble-circle { width: 118px; height: 118px; }
-          .pipeline-slot-2 .pipeline-num { font-size: 1.5rem !important; }
-          .pipeline-slot-3 .pipeline-bubble-circle { width: 70px;  height: 70px;  }
+        @media (max-width: 580px) {
+          .lp-wrap { padding: 56px 0 72px; }
+          .lp-hd   { margin-bottom: 44px; }
         }
       `}</style>
 
-      <section
-        ref={sectionRef}
-        style={{
-          width: "100%",
-          backgroundColor: "#fff",
-          padding: "72px 24px 90px",
-          overflow: "hidden",
-        }}
-      >
+      <section ref={sectionRef} className="lp-wrap">
+
         {/* Header */}
-        <div style={{ textAlign: "center", maxWidth: 680, margin: "0 auto 64px" }}>
-          <h2
-            style={{
-              fontFamily: "'Cormorant Garamond', serif",
-              fontSize: "clamp(1.5rem,3vw,2.4rem)",
-              fontWeight: 700,
-              color: "#1a1a2e",
-              lineHeight: 1.25,
-            }}
-          >
-            Our Pipeline: Innovating for a Healthier Tomorrow
-          </h2>
-          <p
-            style={{
-              fontFamily: "'Jost', sans-serif",
-              fontWeight: 300,
-              fontSize: "0.88rem",
-              color: "#888",
-              marginTop: 12,
-              lineHeight: 1.75,
-            }}
-          >
-            Driven by science, powered by partnerships — delivering better outcomes across the globe.
+        <div className="lp-hd">
+          {/* <p className="lp-eye">Our Pipeline</p> */}
+          <h2 className="lp-ttl">Our Happy Customers</h2>
+          <p className="lp-desc">
+            Driven by science, powered by partnerships — delivering better outcomes
+            across the globe through an optimised, sustainable pipeline.
           </p>
         </div>
 
-        {/* Bubbles row */}
-        <div
-          className="pipeline-bubbles-row"
-          style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            gap: 32,
-            flexWrap: "nowrap",
-          }}
-        >
-          {displayOrder.map((statIdx, slot) => {
-            const stat = STATS[statIdx];
-            const cfg = SLOT_CONFIG[slot];
-            const isCenter = slot === 2;
+        {/* ── Carousel Track ── */}
+        <div className="lp-track" style={{ height: trackH }}>
+          {STATS.map((stat, statIdx) => {
+            const slot       = getSlot(statIdx, centerIdx);
+            const pos        = posTable[slot];
+            const isCenter   = slot === 2;
+            const isHidden   = breakpoint === "sm" && slot === 0;
+
+            // entrance stagger: center first
+            const stagger =
+              slot === 2 ? 0    :
+              slot === 1 ? 0.10 :
+              slot === 3 ? 0.16 :
+              0.22;
+
+            // The bubble translates to its slot's X position from center
+            const tx = `translateX(${pos.x}px)`;
 
             return (
               <div
                 key={statIdx}
-                className={`pipeline-bubble-item pipeline-slot-${slot}`}
-                onClick={() => !isCenter && handleSelect(statIdx)}
+                className={[
+                  "lp-bubble",
+                  entered ? "entered" : "pre-enter",
+                  !isCenter ? "clickable" : "",
+                ].join(" ")}
                 style={{
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "center",
-                  cursor: isCenter ? "default" : "pointer",
+                  // position from center of track
+                  left:      "50%",
+                  transform: entered
+                    ? `translateX(calc(-50% + ${pos.x}px))`
+                    : `translateX(calc(-50% + ${pos.x}px)) translateY(48px)`,
+                  opacity:   entered ? (isHidden ? 0 : pos.op) : 0,
+                  zIndex:    pos.z,
+                  transitionDelay: entered ? `${stagger}s` : "0s",
+                  pointerEvents: isHidden ? "none" : "auto",
+                  // width anchors the bubble column
+                  width: pos.size + 40,
+                }}
+                onClick={() => !isCenter && handleSelect(statIdx)}
+                role={isCenter ? undefined : "button"}
+                tabIndex={isCenter ? undefined : 0}
+                aria-label={isCenter ? undefined : `Select ${stat.label}`}
+                onKeyDown={(e) => {
+                  if (!isCenter && (e.key === "Enter" || e.key === " ")) handleSelect(statIdx);
                 }}
               >
                 {/* Circle */}
                 <div
-                  className="pipeline-bubble-circle"
+                  className={["lp-circ", isCenter ? "lp-circ-center" : ""].join(" ")}
                   style={{
-                    opacity: cfg.opacity,
-                    boxShadow: isCenter
-                      ? "0 0 0 3px #fff, 0 0 0 5px #DFAA5E, 0 12px 48px rgba(0,0,0,0.18)"
-                      : "0 4px 16px rgba(0,0,0,0.09)",
+                    width:     pos.size,
+                    height:    pos.size,
+                    boxShadow: isCenter ? undefined : "0 4px 16px rgba(0,0,0,0.09)",
                   }}
                 >
                   <img
                     src={imgSrcs[statIdx]}
                     alt={stat.label}
                     onError={() => handleImgError(statIdx)}
+                    loading="lazy"
                   />
                 </div>
 
                 {/* Number */}
                 <div
-                  className="pipeline-num"
-                  style={{
-                    fontFamily: "'Cormorant Garamond', serif",
-                    fontWeight: 700,
-                    fontSize: cfg.numSize,
-                    color: "#1a1a2e",
-                    opacity: cfg.opacity,
-                    marginTop: 10,
-                    lineHeight: 1,
-                    transition: "font-size 0.25s ease, opacity 0.25s ease",
-                  }}
+                  className="lp-num"
+                  style={{ fontSize: pos.num, opacity: pos.op }}
                 >
                   {inView ? (
                     <AnimatedNumber
                       target={stat.number}
                       triggerKey={triggerKeys[statIdx]}
-                      duration={isCenter ? 900 : 600}
+                      duration={isCenter ? 950 : 650}
                     />
                   ) : "0+"}
                 </div>
 
                 {/* Label */}
                 <div
-                  className="pipeline-label"
+                  className="lp-lbl"
                   style={{
-                    fontFamily: "'Jost', sans-serif",
-                    fontSize: cfg.labelSize,
+                    fontSize:   pos.label,
                     fontWeight: isCenter ? 500 : 400,
-                    color: isCenter ? "#555" : "#999",
-                    marginTop: 5,
-                    letterSpacing: "0.03em",
-                    textAlign: "center",
-                    transition: "font-size 0.25s ease, color 0.25s ease",
+                    color:      isCenter ? "#555" : "#999",
+                    opacity:    pos.op,
+                    maxWidth:   isCenter ? 140 : 90,
                   }}
                 >
                   {stat.label}
@@ -305,6 +462,25 @@ export default function OurPipeline() {
             );
           })}
         </div>
+
+        {/* Dot nav */}
+        <div className="lp-dots" role="tablist">
+          {STATS.map((stat, i) => (
+            <div
+              key={i}
+              className={["lp-dot", centerIdx === i ? "on" : ""].join(" ")}
+              onClick={() => handleSelect(i)}
+              role="tab"
+              aria-selected={centerIdx === i}
+              aria-label={stat.label}
+              tabIndex={0}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" || e.key === " ") handleSelect(i);
+              }}
+            />
+          ))}
+        </div>
+
       </section>
     </>
   );

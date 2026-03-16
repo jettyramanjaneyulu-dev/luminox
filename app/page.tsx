@@ -12,13 +12,17 @@ import Testimonials from "@/components/Testimonials";
 import Doctors from "@/components/Doctors";
 import OrbitalSlider2 from "@/components/OrbitalSlider2";
 import Clinicpipeline from "@/components/Clinicpipeline";
+import Bookappointmentbutton from "@/components/Bookappointmentbutton";
+import Whatsappbutton from "@/components/Whatsappbutton";
 
 
 
 export default function Home() {
   return (
     <>
-      <Hero />
+    <Whatsappbutton/>
+    <Bookappointmentbutton/>
+      <Hero /> 
       <Categories/>
       <AboutSection />
       <OrbitalSlider />

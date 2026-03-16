@@ -26,16 +26,34 @@ const SERVICES = [
   },
 ];
 
+// Gap between inner and outer arc circles (tight, like in reference)
+const ARC_SPREAD_DEG = 160;
+const INNER_ARC_RADIUS = 340;
+const OUTER_ARC_RADIUS = 390; // was 490 — reduced to tighten the gap
+const STAGE_W = 1100;
+
+function getLabelPosition(index: number, total: number, activeIndex: number) {
+  const halfSpread = ARC_SPREAD_DEG / 2;
+  const baseAngle = -halfSpread + (index / (total - 1)) * ARC_SPREAD_DEG;
+  const activeBase = -halfSpread + (activeIndex / (total - 1)) * ARC_SPREAD_DEG;
+  const angle = baseAngle - activeBase;
+  const labelRadius = (INNER_ARC_RADIUS + OUTER_ARC_RADIUS) / 2;
+  const rad = (angle * Math.PI) / 180;
+  const x = Math.sin(rad) * labelRadius;
+  const y = -Math.cos(rad) * labelRadius;
+  return { x, y, angle };
+}
+
 export default function ServicesArc() {
   const [active, setActive] = useState(0);
-  const [isMobile, setIsMobile] = useState(false);
+  const [viewportW, setViewportW] = useState(1100);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
-    const checkMobile = () => setIsMobile(window.innerWidth <= 860);
-    checkMobile();
-    window.addEventListener("resize", checkMobile);
-    return () => window.removeEventListener("resize", checkMobile);
+    const update = () => setViewportW(window.innerWidth);
+    update();
+    window.addEventListener("resize", update);
+    return () => window.removeEventListener("resize", update);
   }, []);
 
   const startTimer = () => {
@@ -47,129 +65,123 @@ export default function ServicesArc() {
 
   useEffect(() => {
     startTimer();
-    return () => {
-      if (timerRef.current) clearInterval(timerRef.current);
-    };
+    return () => { if (timerRef.current) clearInterval(timerRef.current); };
   }, []);
 
-  const handleSelect = (i: number) => {
-    setActive(i);
-    startTimer();
-  };
+  const handleSelect = (i: number) => { setActive(i); startTimer(); };
 
-  const getArcStyle = (index: number) => {
-    const total = SERVICES.length;
-    const arcSpread = 140;
-    const startAngle = -arcSpread / 2;
-    const offset = active - 1;
-    const shiftedIndex = index - offset;
-    const angle = startAngle + (shiftedIndex / (total - 1)) * arcSpread;
-    const radiusPx = 400;
-    const rad = ((angle - 90) * Math.PI) / 180;
-    const x = Math.cos(rad) * radiusPx;
-    const y = Math.sin(rad) * radiusPx;
-    return { x, y, angle };
-  };
+  // Breakpoints
+  const isMobile = viewportW <= 860;
+  const isSmall = viewportW <= 560;
+  const isTiny = viewportW <= 380;
+
+  // Responsive card dimensions
+  // On desktop: fixed 680×340
+  // On tablet/mobile: scale with viewport
+  let cardWidth: number;
+  let cardHeight: number;
+  if (isTiny) {
+    cardWidth = viewportW * 0.92;
+  } else if (isSmall) {
+    cardWidth = viewportW * 0.92;
+  } else if (isMobile) {
+    cardWidth = Math.min(600, viewportW * 0.9);
+  } else {
+    cardWidth = INNER_ARC_RADIUS * 2; // 680
+  }
+  cardHeight = cardWidth / 2;
+
+  // Stage height on desktop must accommodate outer arc label zone above inner arc top
+  // inner arc top is at: stageH - INNER_ARC_RADIUS (from bottom)
+  // outer arc top is at: stageH - OUTER_ARC_RADIUS
+  // we need a little buffer above outer arc for the label text
+  const LABEL_CLEARANCE = 36; // px above outer arc circle top
+  const desktopStageH = OUTER_ARC_RADIUS + LABEL_CLEARANCE;
+  const mobileStageH = cardHeight + 10;
+
+  const stageHeight = isMobile ? mobileStageH : desktopStageH;
+
+  // Content padding inside the card (responsive)
+  const contentPadH = isSmall ? 16 : isMobile ? 36 : 60;
+  const contentPadB = isTiny ? 28 : isSmall ? 36 : 38;
+  const headlineFontSize = isSmall
+    ? "clamp(0.95rem, 5vw, 1.2rem)"
+    : isMobile
+    ? "clamp(1rem, 3.5vw, 1.4rem)"
+    : "clamp(1rem, 2vw, 1.55rem)";
+  const descFontSize = isSmall
+    ? "clamp(0.68rem, 3vw, 0.8rem)"
+    : "clamp(0.72rem, 1.2vw, 0.88rem)";
 
   return (
     <>
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Jost:wght@300;400;500&display=swap');
-
         .luminox-section { font-family: 'Cormorant Garamond', serif; }
-
         .arc-label-btn {
-          background: none;
-          border: none;
-          cursor: pointer;
-          font-family: 'Jost', sans-serif;
-          font-size: 11px;
-          letter-spacing: 0.3em;
-          text-transform: uppercase;
-          white-space: nowrap;
-          position: absolute;
-          transform-origin: center bottom;
-          transition: color 0.4s, font-weight 0.3s;
-          z-index: 30;
+          background: none; border: none; cursor: pointer;
+          font-family: 'Jost', sans-serif; font-size: 11px;
+          letter-spacing: 0.3em; text-transform: uppercase;
+          white-space: nowrap; position: absolute;
+          transform-origin: center center;
+          transition: color 0.4s ease, font-weight 0.3s ease, opacity 0.4s ease;
+          z-index: 30; padding: 0;
         }
-
         .row-label-btn {
-          background: none;
-          border: none;
-          cursor: pointer;
-          font-family: 'Jost', sans-serif;
-          font-size: 11px;
-          letter-spacing: 0.3em;
-          text-transform: uppercase;
-          padding: 8px 16px;
-          transition: color 0.3s;
-          position: relative;
+          background: none; border: none; cursor: pointer;
+          font-family: 'Jost', sans-serif; font-size: 11px;
+          letter-spacing: 0.3em; text-transform: uppercase;
+          padding: 8px 16px; transition: color 0.3s; position: relative;
         }
-
         .row-label-btn.active::after {
-          content: '';
-          position: absolute;
-          bottom: 0; left: 50%;
-          transform: translateX(-50%);
-          width: 20px; height: 2px;
-          background: #DFAA5E;
-          border-radius: 2px;
+          content: ''; position: absolute; bottom: 0; left: 50%;
+          transform: translateX(-50%); width: 20px; height: 2px;
+          background: #DFAA5E; border-radius: 2px;
         }
-
         .slide-content-inner {
-          opacity: 0;
-          transform: translateY(18px);
+          opacity: 0; transform: translateY(18px);
           transition: opacity 0.5s, transform 0.5s;
         }
-        .slide-active .slide-content-inner {
-          opacity: 1;
-          transform: translateY(0);
-        }
-        .slide-active .slide-content-inner:nth-child(2) {
-          transition-delay: 0.15s;
-        }
+        .slide-active .slide-content-inner { opacity: 1; transform: translateY(0); }
+        .slide-active .slide-content-inner:nth-child(2) { transition-delay: 0.15s; }
 
-        /* ── Tablet ≤ 860px ── */
+        /* === DESKTOP: arc labels visible, row labels hidden === */
+        .arc-desktop-labels { display: block; }
+        .labels-row { display: none; }
+
+        /* === TABLET / MOBILE: arc hidden, row visible === */
         @media (max-width: 860px) {
           .arc-desktop-labels { display: none !important; }
           .arc-svg-bg { display: none !important; }
           .labels-row { display: flex !important; }
           .luminox-section { padding-top: 36px !important; padding-bottom: 36px !important; }
           .luminox-header { margin-bottom: 20px !important; }
-          .arc-stage { height: 380px !important; }
         }
 
-        /* ── Mobile ≤ 560px ── */
         @media (max-width: 560px) {
           .luminox-section { padding-top: 28px !important; padding-bottom: 28px !important; }
           .luminox-header { margin-bottom: 14px !important; }
-          .image-card { width: 96vw !important; }
-          .slide-content-pad { padding: 14px 18px 44px !important; }
-          .arc-stage { height: 320px !important; }
           .labels-row { margin-bottom: 12px !important; }
         }
 
-        /* ── Very small ≤ 380px ── */
         @media (max-width: 380px) {
-          .luminox-section { padding-top: 20px !important; padding-bottom: 20px !important; }
-          .arc-stage { height: 280px !important; }
-          .slide-content-pad { padding: 10px 14px 36px !important; }
+          .luminox-section { padding-top: 20px !important; }
         }
       `}</style>
 
       <section
         className="luminox-section relative w-full bg-white overflow-hidden"
-        style={{ paddingTop: 64, paddingBottom: 72 }}
+        style={{ paddingTop: isTiny ? 20 : isSmall ? 28 : isMobile ? 36 : 64, paddingBottom: 0 }}
       >
         {/* HEADER */}
         <div
           className="luminox-header text-center px-4"
-          style={{ marginBottom: 40 }}
+          style={{ marginBottom: isTiny ? 14 : isSmall ? 14 : isMobile ? 20 : 40 }}
         >
           <h2
             style={{
               color: "#1a1a2e",
-              fontSize: "clamp(1.5rem, 3vw, 2.5rem)",
+              fontSize: isTiny ? "1.3rem" : isSmall ? "1.45rem" : "clamp(1.5rem, 3vw, 2.5rem)",
               fontWeight: 700,
               letterSpacing: "0.02em",
             }}
@@ -181,7 +193,7 @@ export default function ServicesArc() {
               color: "#777",
               fontFamily: "'Jost', sans-serif",
               fontWeight: 300,
-              fontSize: "clamp(0.78rem, 1.2vw, 0.88rem)",
+              fontSize: isTiny ? "0.74rem" : isSmall ? "0.78rem" : "clamp(0.78rem, 1.2vw, 0.88rem)",
               maxWidth: "520px",
               margin: "10px auto 0",
               lineHeight: 1.75,
@@ -189,25 +201,21 @@ export default function ServicesArc() {
           >
             Together, these form the philosophy of{" "}
             <b style={{ fontWeight: 500, color: "#555" }}>Luminox – Skin | Hair | Laser</b>.
-            Three focused disciplines working together to restore confidence,
-            beauty, and long-term skin health.
+            Three focused disciplines working together to restore confidence, beauty, and long-term skin health.
           </p>
         </div>
 
-        {/* MOBILE/TABLET LABEL ROW */}
+        {/* MOBILE LABEL ROW */}
         <div
           className="labels-row"
-          style={{ display: "none", justifyContent: "center", marginBottom: 18 }}
+          style={{ justifyContent: "center", marginBottom: isSmall ? 12 : 18 }}
         >
           {SERVICES.map((s, i) => (
             <button
               key={s.id}
               className={`row-label-btn${active === i ? " active" : ""}`}
               onClick={() => handleSelect(i)}
-              style={{
-                color: active === i ? "#1a1a2e" : "#bbb",
-                fontWeight: active === i ? 600 : 400,
-              }}
+              style={{ color: active === i ? "#1a1a2e" : "#bbb", fontWeight: active === i ? 600 : 400 }}
             >
               {s.tag}
             </button>
@@ -216,18 +224,17 @@ export default function ServicesArc() {
 
         {/* ARC STAGE */}
         <div
-          className="arc-stage"
           style={{
             position: "relative",
-            width: "min(1000px, 100%)",
-            height: isMobile ? "380px" : "520px",
+            width: isMobile ? "100%" : `min(${STAGE_W}px, 100%)`,
+            height: stageHeight,
             margin: "0 auto",
             display: "flex",
             alignItems: "flex-end",
             justifyContent: "center",
           }}
         >
-          {/* ARC SVG BACKGROUND */}
+          {/* SVG ARC LINES — desktop only */}
           <div
             className="arc-svg-bg"
             style={{
@@ -235,33 +242,62 @@ export default function ServicesArc() {
               bottom: 0,
               left: "50%",
               transform: "translateX(-50%)",
-              width: 900,
-              height: 900,
+              width: "100%",
+              height: stageHeight,
               pointerEvents: "none",
               zIndex: 1,
             }}
           >
-            <svg viewBox="0 0 1000 1000" style={{ width: "100%", height: "100%", opacity: 0.15 }}>
-              <circle cx="500" cy="1000" r="430" fill="none" stroke="#414042" strokeWidth="1" />
-              <circle cx="500" cy="1000" r="450" fill="none" stroke="#414042" strokeWidth="0.5" strokeDasharray="8 12" />
+            <svg
+              viewBox={`0 0 ${STAGE_W} ${desktopStageH}`}
+              preserveAspectRatio="xMidYMax meet"
+              style={{ width: "100%", height: "100%" }}
+            >
+              {/* Outer arc — tighter gap now */}
+              <circle
+                cx={STAGE_W / 2}
+                cy={desktopStageH}
+                r={OUTER_ARC_RADIUS}
+                fill="none"
+                stroke="#b8b8b8"
+                strokeWidth="0.9"
+                strokeDasharray="6 12"
+                opacity="0.65"
+              />
+              {/* Inner arc */}
+              <circle
+                cx={STAGE_W / 2}
+                cy={desktopStageH}
+                r={INNER_ARC_RADIUS}
+                fill="none"
+                stroke="#c0c0c0"
+                strokeWidth="0.9"
+                opacity="0.55"
+              />
             </svg>
           </div>
 
-          {/* ARC LABELS (desktop only) */}
+          {/* ARC LABELS — desktop only */}
           <div className="arc-desktop-labels" style={{ position: "absolute", inset: 0, zIndex: 30 }}>
             {SERVICES.map((s, i) => {
-              const { x, y, angle } = getArcStyle(i);
+              const { x, y, angle } = getLabelPosition(i, SERVICES.length, active);
+              const isActive = active === i;
+              // Scale positions to the actual rendered stage width
+              const stageRenderedW = Math.min(STAGE_W, viewportW);
+              const leftPx = STAGE_W / 2 + x;
+              const bottomPx = -y;
               return (
                 <button
                   key={s.id}
                   className="arc-label-btn"
                   onClick={() => handleSelect(i)}
                   style={{
-                    left: `calc(50% + ${x}px)`,
-                    bottom: -y,
+                    left: `calc(${(leftPx / STAGE_W) * 100}%)`,
+                    bottom: bottomPx,
                     transform: `translateX(-50%) rotate(${angle}deg)`,
-                    color: active === i ? "#1a1a2e" : "#aaa",
-                    fontWeight: active === i ? 700 : 400,
+                    color: isActive ? "#1a1a2e" : "#aaa",
+                    fontWeight: isActive ? 700 : 400,
+                    opacity: isActive ? 1 : 0.7,
                   }}
                 >
                   {s.tag}
@@ -270,17 +306,18 @@ export default function ServicesArc() {
             })}
           </div>
 
-          {/* IMAGE CARD */}
+          {/* IMAGE CARD — semicircle */}
           <div
-            className="image-card"
+            className="image-card-wrap"
             style={{
               position: "relative",
-              width: "min(680px, 88vw)",
-              aspectRatio: "1 / 0.72",
-              borderRadius: "50% 50% 0 0 / 100% 100% 0 0",
+              width: cardWidth,
+              height: cardHeight,
+              borderRadius: `${cardWidth / 2}px ${cardWidth / 2}px 0 0`,
               overflow: "hidden",
               zIndex: 10,
-              boxShadow: "0 20px 80px rgba(0,0,0,0.18)",
+              boxShadow: "0 16px 60px rgba(0,0,0,0.14)",
+              flexShrink: 0,
             }}
           >
             {SERVICES.map((s, i) => (
@@ -297,11 +334,10 @@ export default function ServicesArc() {
                 <img
                   src={s.image}
                   alt={s.tag}
-                  style={{ width: "100%", height: "100%", objectFit: "cover", filter: "brightness(0.62)" }}
+                  style={{ width: "100%", height: "100%", objectFit: "cover", filter: "brightness(0.52)" }}
                 />
-                <div style={{ position: "absolute", inset: 0, background: "rgba(10,10,30,0.22)" }} />
+                <div style={{ position: "absolute", inset: 0, background: "rgba(10,10,30,0.18)" }} />
                 <div
-                  className="slide-content-pad"
                   style={{
                     position: "absolute",
                     inset: 0,
@@ -310,7 +346,7 @@ export default function ServicesArc() {
                     alignItems: "center",
                     justifyContent: "center",
                     textAlign: "center",
-                    padding: "30px 60px 55px",
+                    padding: `18px ${contentPadH}px ${contentPadB}px`,
                   }}
                 >
                   <div
@@ -318,9 +354,9 @@ export default function ServicesArc() {
                     style={{
                       color: "#fff",
                       fontFamily: "'Cormorant Garamond', serif",
-                      fontSize: "clamp(1rem, 2vw, 1.55rem)",
+                      fontSize: headlineFontSize,
                       fontWeight: 600,
-                      marginBottom: 10,
+                      marginBottom: isSmall ? 6 : 10,
                       letterSpacing: "0.03em",
                     }}
                   >
@@ -332,9 +368,9 @@ export default function ServicesArc() {
                       color: "rgba(255,255,255,0.88)",
                       fontFamily: "'Jost', sans-serif",
                       fontWeight: 300,
-                      fontSize: "clamp(0.72rem, 1.2vw, 0.88rem)",
+                      fontSize: descFontSize,
                       lineHeight: 1.7,
-                      maxWidth: 420,
+                      maxWidth: isSmall ? 280 : 400,
                     }}
                   >
                     {s.desc}
@@ -347,7 +383,7 @@ export default function ServicesArc() {
             <div
               style={{
                 position: "absolute",
-                bottom: 16,
+                bottom: 14,
                 left: "50%",
                 transform: "translateX(-50%)",
                 display: "flex",

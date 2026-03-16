@@ -45,6 +45,17 @@ const menuItems = [
       { label: "Prescription Skincare", href: "#", desc: "Clinically tailored regimens" },
     ],
   },
+    {
+    label: "Hair",
+    href: "#",
+    submenu: [
+      { label: "Chemical Peels", href: "#", desc: "Exfoliation & brightening" },
+      { label: "HydraFacial", href: "#", desc: "Multi-step deep cleanse" },
+      { label: "Microdermabrasion", href: "#", desc: "Surface skin renewal" },
+      { label: "LED Light Therapy", href: "#", desc: "Cellular repair & rejuvenation" },
+      { label: "Prescription Skincare", href: "#", desc: "Clinically tailored regimens" },
+    ],
+  },
   {
     label: "Aesthetics",
     href: "#",
@@ -186,7 +197,7 @@ const Header = () => {
 
           {/* ── Right Side: CTA + Hamburger/Close ── */}
           <div className="flex items-center gap-4 relative z-[80]">
-            <Link
+            {/* <Link
               href="#"
               className={`hidden lg:inline-flex items-center px-5 py-2 text-[11px] font-bold uppercase tracking-widest rounded-sm transition-all duration-200
                 ${scrolled
@@ -195,7 +206,7 @@ const Header = () => {
                 }`}
             >
               Book Now
-            </Link>
+            </Link> */}
 
             {/* Hamburger turns into "X" Close Button */}
             <button

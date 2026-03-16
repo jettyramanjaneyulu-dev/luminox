@@ -86,61 +86,55 @@ export default function Testimonials() {
 
         .t-section { font-family: 'Jost', sans-serif; }
 
-        /* Grid */
         .t-card-grid {
           display: grid;
           grid-template-columns: 1fr 1fr;
-          min-height: 520px;
+          min-height: 380px;
         }
 
-        /* Thumbs row — column on desktop, row on mobile */
         .t-thumbs {
           position: absolute;
-          bottom: 28px;
-          right: 16px;
+          bottom: 20px;
+          right: 12px;
           z-index: 20;
           display: flex;
           flex-direction: column;
-          gap: 8px;
+          gap: 6px;
         }
 
-        /* Arrow hover */
         .t-arrow-prev:hover { background: #292E4B !important; color: #fff !important; }
         .t-arrow-next:hover { background: #DFAA5E !important; }
 
-        /* ── Tablet ≤ 860px ── */
         @media (max-width: 860px) {
           .t-card-grid { grid-template-columns: 1fr !important; }
-          .t-img-panel { min-height: 320px !important; max-height: 360px !important; }
+          .t-img-panel { min-height: 240px !important; max-height: 280px !important; }
           .t-thumbs {
             flex-direction: row !important;
-            bottom: 14px !important;
+            bottom: 10px !important;
             right: 50% !important;
             transform: translateX(50%) !important;
           }
         }
 
-        /* ── Mobile ≤ 600px ── */
         @media (max-width: 600px) {
-          .t-section { padding: 52px 0 60px !important; }
-          .t-header { margin-bottom: 36px !important; }
-          .t-img-panel { min-height: 260px !important; max-height: 300px !important; }
-          .t-content-panel { padding: 22px 18px 26px !important; }
-          .t-google-strip { flex-wrap: wrap !important; gap: 10px !important; }
+          .t-section { padding: 40px 0 48px !important; }
+          .t-header { margin-bottom: 28px !important; }
+          .t-img-panel { min-height: 200px !important; max-height: 240px !important; }
+          .t-content-panel { padding: 16px 14px 20px !important; }
+          .t-google-strip { flex-wrap: wrap !important; gap: 8px !important; }
           .t-strip-divider { display: none !important; }
           .t-strip-stat { flex: 1; min-width: 55px; }
-          .t-nav-row { flex-direction: column !important; gap: 14px !important; align-items: flex-start !important; }
+          .t-nav-row { flex-direction: column !important; gap: 10px !important; align-items: flex-start !important; }
         }
 
-        /* ── Very small ≤ 400px ── */
         @media (max-width: 400px) {
-          .t-img-panel { min-height: 220px !important; max-height: 260px !important; }
+          .t-img-panel { min-height: 180px !important; max-height: 210px !important; }
         }
       `}</style>
 
       <section
         className="t-section relative w-full overflow-hidden"
-        style={{ background: "#FAF9F6", padding: "80px 0" }}
+        style={{ background: "#FAF9F6", padding: "60px 0" }}
       >
         {/* Background blobs */}
         <div className="absolute inset-0 pointer-events-none overflow-hidden">
@@ -155,27 +149,27 @@ export default function Testimonials() {
         <div style={{ maxWidth: 1280, margin: "0 auto", padding: "0 20px" }}>
 
           {/* Header */}
-          <div className="t-header" style={{ textAlign:"center", marginBottom:52 }}>
-            <div style={{ display:"inline-flex",alignItems:"center",gap:12,marginBottom:14 }}>
+          <div className="t-header" style={{ textAlign:"center", marginBottom:36 }}>
+            <div style={{ display:"inline-flex",alignItems:"center",gap:12,marginBottom:12 }}>
               <div style={{ height:1,width:32,background:"#DFAA5E" }}/>
               <span style={{ color:"#DFAA5E",fontWeight:700,fontSize:11,letterSpacing:".3em",textTransform:"uppercase" }}>Client Stories</span>
               <div style={{ height:1,width:32,background:"#DFAA5E" }}/>
             </div>
-            <h2 style={{ color:"#292E4B",fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(26px,4vw,46px)",fontWeight:700,lineHeight:1.15 }}>
+            <h2 style={{ color:"#292E4B",fontFamily:"'Cormorant Garamond',serif",fontSize:"clamp(24px,4vw,40px)",fontWeight:700,lineHeight:1.15 }}>
               Real People.{" "}
               <em style={{ color:"#DFAA5E",fontStyle:"italic" }}>Real Results.</em>
             </h2>
-            <p style={{ color:"#414042",fontSize:14,maxWidth:480,margin:"12px auto 0",lineHeight:1.75,fontWeight:300 }}>
+            <p style={{ color:"#414042",fontSize:13,maxWidth:460,margin:"10px auto 0",lineHeight:1.7,fontWeight:300 }}>
               Thousands of patients have transformed their skin and confidence at Luminox. Here are a few of their stories.
             </p>
           </div>
 
           {/* Card */}
-          <div style={{ borderRadius:28,overflow:"hidden",boxShadow:"0 24px 80px rgba(41,46,75,.12)",background:"#fff" }}>
+          <div style={{ borderRadius:24,overflow:"hidden",boxShadow:"0 20px 60px rgba(41,46,75,.11)",background:"#fff" }}>
             <div className="t-card-grid">
 
               {/* ── LEFT: Image panel ── */}
-              <div className="t-img-panel" style={{ position:"relative",overflow:"hidden",minHeight:400 }}>
+              <div className="t-img-panel" style={{ position:"relative",overflow:"hidden",minHeight:340 }}>
 
                 {/* Ghost cards */}
                 {[1,2].map((offset) => {
@@ -183,7 +177,7 @@ export default function Testimonials() {
                   return (
                     <div key={gIdx} style={{
                       position:"absolute",inset:0,
-                      transform:`scale(${1-offset*.03}) translateY(${offset*-12}px)`,
+                      transform:`scale(${1-offset*.03}) translateY(${offset*-10}px)`,
                       transformOrigin:"bottom center",
                       zIndex:2-offset, opacity:.28,
                     }}>
@@ -210,19 +204,19 @@ export default function Testimonials() {
                     <AnimatePresence mode="wait">
                       <motion.div
                         key={`info-${active}`}
-                        initial={{ opacity:0,y:16 }}
+                        initial={{ opacity:0,y:14 }}
                         animate={{ opacity:1,y:0 }}
                         exit={{ opacity:0,y:-8 }}
                         transition={{ duration:.35,delay:.2 }}
-                        style={{ position:"absolute",bottom:0,left:0,right:0,padding:"clamp(18px,3vw,28px)",zIndex:5 }}
+                        style={{ position:"absolute",bottom:0,left:0,right:0,padding:"clamp(14px,2.5vw,22px)",zIndex:5 }}
                       >
-                        <div style={{ display:"inline-flex",alignItems:"center",borderRadius:100,padding:"5px 14px",background:current.accent,marginBottom:10 }}>
-                          <span style={{ color:"#292E4B",fontSize:10,fontWeight:800,letterSpacing:".15em",textTransform:"uppercase" }}>
+                        <div style={{ display:"inline-flex",alignItems:"center",borderRadius:100,padding:"4px 12px",background:current.accent,marginBottom:8 }}>
+                          <span style={{ color:"#292E4B",fontSize:9,fontWeight:800,letterSpacing:".15em",textTransform:"uppercase" }}>
                             {current.treatment}
                           </span>
                         </div>
-                        <div style={{ color:"#fff",fontWeight:700,fontSize:"clamp(16px,2vw,20px)",lineHeight:1.2 }}>{current.name}</div>
-                        <div style={{ color:"rgba(255,255,255,.6)",fontSize:12,fontWeight:500,marginTop:4,letterSpacing:".05em" }}>{current.role}</div>
+                        <div style={{ color:"#fff",fontWeight:700,fontSize:"clamp(14px,1.8vw,18px)",lineHeight:1.2 }}>{current.name}</div>
+                        <div style={{ color:"rgba(255,255,255,.6)",fontSize:11,fontWeight:500,marginTop:3,letterSpacing:".05em" }}>{current.role}</div>
                       </motion.div>
                     </AnimatePresence>
                   </motion.div>
@@ -233,8 +227,8 @@ export default function Testimonials() {
                   {REVIEWS.map((r, i) => (
                     <button key={i} onClick={() => goTo(i)} aria-label={r.name}
                       style={{
-                        width: i===active ? 46 : 38,
-                        height: i===active ? 46 : 38,
+                        width: i===active ? 40 : 32,
+                        height: i===active ? 40 : 32,
                         borderRadius:"50%",overflow:"hidden",padding:0,cursor:"pointer",
                         border: i===active ? `2.5px solid ${r.accent}` : "2px solid rgba(255,255,255,.3)",
                         opacity: i===active ? 1 : 0.55,
@@ -250,15 +244,15 @@ export default function Testimonials() {
 
               {/* ── RIGHT: Content panel ── */}
               <div className="t-content-panel" style={{
-                padding:"clamp(24px,5vw,56px)",
+                padding:"clamp(20px,4vw,40px)",
                 display:"flex",flexDirection:"column",justifyContent:"space-between",background:"#fff"
               }}>
                 <div>
                   {/* Top row: stars + icon */}
-                  <div style={{ display:"flex",alignItems:"flex-start",justifyContent:"space-between",marginBottom:24 }}>
+                  <div style={{ display:"flex",alignItems:"flex-start",justifyContent:"space-between",marginBottom:16 }}>
                     <Stars />
-                    <div style={{ width:52,height:52,borderRadius:14,background:"linear-gradient(135deg,#292E4B,#5B326A)",display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0 }}>
-                      <svg viewBox="0 0 28 22" width="20" height="20" fill="white">
+                    <div style={{ width:44,height:44,borderRadius:12,background:"linear-gradient(135deg,#292E4B,#5B326A)",display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0 }}>
+                      <svg viewBox="0 0 28 22" width="18" height="18" fill="white">
                         <path d="M0 14C0 6 5 1 12 1L12 6C8 6 6 9 6 14L11 14L11 22L0 22Z"/>
                         <path d="M16 14C16 6 21 1 28 1L28 6C24 6 22 9 22 14L27 14L27 22L16 22Z"/>
                       </svg>
@@ -266,7 +260,7 @@ export default function Testimonials() {
                   </div>
 
                   {/* Quote */}
-                  <div style={{ display:"flex",alignItems:"center",minHeight:140 }}>
+                  <div style={{ display:"flex",alignItems:"center",minHeight:100 }}>
                     <AnimatePresence mode="wait">
                       <motion.blockquote
                         key={`q-${active}`}
@@ -276,10 +270,10 @@ export default function Testimonials() {
                         transition={{ duration:.45,ease:[.22,1,.36,1] }}
                         style={{
                           fontFamily:"'Cormorant Garamond',serif",
-                          fontSize:"clamp(15px,1.8vw,21px)",
+                          fontSize:"clamp(14px,1.6vw,19px)",
                           fontStyle:"italic",
                           color:"#292E4B",
-                          lineHeight:1.75,
+                          lineHeight:1.7,
                           margin:0,
                         }}
                       >
@@ -290,38 +284,38 @@ export default function Testimonials() {
                 </div>
 
                 <div>
-                  <div style={{ height:1,background:"rgba(41,46,75,.08)",margin:"22px 0" }}/>
+                  <div style={{ height:1,background:"rgba(41,46,75,.08)",margin:"16px 0" }}/>
 
                   {/* Nav row */}
-                  <div className="t-nav-row" style={{ display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:18 }}>
+                  <div className="t-nav-row" style={{ display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:14 }}>
                     {/* Dots + counter */}
-                    <div style={{ display:"flex",alignItems:"center",gap:8 }}>
+                    <div style={{ display:"flex",alignItems:"center",gap:7 }}>
                       {REVIEWS.map((r, i) => (
                         <button key={i} onClick={() => goTo(i)} aria-label={`Review ${i+1}`}
                           style={{
                             height:4,borderRadius:100,border:"none",cursor:"pointer",padding:0,
-                            width: i===active ? 32 : 10,
+                            width: i===active ? 28 : 9,
                             background: i===active ? r.accent : "rgba(41,46,75,.15)",
                             transition:"all .35s ease",
                           }}
                         />
                       ))}
-                      <span style={{ color:"#414042",opacity:.4,fontSize:11,fontWeight:700,marginLeft:8 }}>
+                      <span style={{ color:"#414042",opacity:.4,fontSize:11,fontWeight:700,marginLeft:6 }}>
                         {String(active+1).padStart(2,"0")} / {String(REVIEWS.length).padStart(2,"0")}
                       </span>
                     </div>
 
                     {/* Arrows */}
-                    <div style={{ display:"flex",gap:8 }}>
+                    <div style={{ display:"flex",gap:7 }}>
                       {[
                         { fn:()=>goTo((active-1+REVIEWS.length)%REVIEWS.length), label:"Prev", icon:"M15 19l-7-7 7-7", cls:"t-arrow-prev", bg:"transparent", border:"1.5px solid rgba(41,46,75,.2)", color:"#292E4B" },
                         { fn:()=>goTo((active+1)%REVIEWS.length), label:"Next", icon:"M9 5l7 7-7 7", cls:"t-arrow-next", bg:"#292E4B", border:"none", color:"#fff" },
                       ].map((btn, bi) => (
                         <button key={bi} onClick={btn.fn} aria-label={btn.label}
                           className={btn.cls}
-                          style={{ width:40,height:40,borderRadius:"50%",cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",background:btn.bg,border:btn.border,color:btn.color,transition:"all .2s ease" }}
+                          style={{ width:36,height:36,borderRadius:"50%",cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",background:btn.bg,border:btn.border,color:btn.color,transition:"all .2s ease" }}
                         >
-                          <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                          <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                             <path strokeLinecap="round" strokeLinejoin="round" d={btn.icon}/>
                           </svg>
                         </button>
@@ -330,26 +324,26 @@ export default function Testimonials() {
                   </div>
 
                   {/* Google strip */}
-                  <div className="t-google-strip" style={{ display:"flex",alignItems:"center",gap:14,background:"#FAF9F6",borderRadius:14,padding:"13px 16px",border:"1.5px solid rgba(41,46,75,.07)" }}>
-                    <svg viewBox="0 0 24 24" width="22" height="22" style={{ flexShrink:0 }}>
+                  <div className="t-google-strip" style={{ display:"flex",alignItems:"center",gap:12,background:"#FAF9F6",borderRadius:12,padding:"10px 14px",border:"1.5px solid rgba(41,46,75,.07)" }}>
+                    <svg viewBox="0 0 24 24" width="20" height="20" style={{ flexShrink:0 }}>
                       <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
                       <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
                       <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
                       <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
                     </svg>
                     <div>
-                      <div style={{ display:"flex",alignItems:"center",gap:6 }}><Stars /><span style={{ color:"#292E4B",fontWeight:800,fontSize:13 }}>4.9</span></div>
-                      <div style={{ color:"#414042",opacity:.55,fontSize:10,fontWeight:700,letterSpacing:".08em",textTransform:"uppercase",marginTop:2 }}>400+ Google Reviews</div>
+                      <div style={{ display:"flex",alignItems:"center",gap:5 }}><Stars /><span style={{ color:"#292E4B",fontWeight:800,fontSize:12 }}>4.9</span></div>
+                      <div style={{ color:"#414042",opacity:.55,fontSize:9,fontWeight:700,letterSpacing:".08em",textTransform:"uppercase",marginTop:2 }}>400+ Google Reviews</div>
                     </div>
                     {[
                       { num:"98%",  label:"Recommend Us" },
                       { num:"20K+", label:"Happy Patients" },
                     ].map((s,i) => (
                         <React.Fragment key={i}>
-                        <div key={`d${i}`} className="t-strip-divider" style={{ width:1,height:32,background:"rgba(41,46,75,.1)",flexShrink:0 }}/>
+                        <div key={`d${i}`} className="t-strip-divider" style={{ width:1,height:28,background:"rgba(41,46,75,.1)",flexShrink:0 }}/>
                         <div key={`s${i}`} className="t-strip-stat" style={{ textAlign:"center" }}>
-                          <div style={{ color:"#292E4B",fontWeight:700,fontSize:15,fontFamily:"'Cormorant Garamond',serif" }}>{s.num}</div>
-                          <div style={{ color:"#414042",opacity:.55,fontSize:9,fontWeight:700,letterSpacing:".08em",textTransform:"uppercase",marginTop:2 }}>{s.label}</div>
+                          <div style={{ color:"#292E4B",fontWeight:700,fontSize:14,fontFamily:"'Cormorant Garamond',serif" }}>{s.num}</div>
+                          <div style={{ color:"#414042",opacity:.55,fontSize:9,fontWeight:700,letterSpacing:".08em",textTransform:"uppercase",marginTop:1 }}>{s.label}</div>
                         </div>
                        </React.Fragment>
                     ))}

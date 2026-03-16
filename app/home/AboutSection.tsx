@@ -91,25 +91,26 @@ const AboutSection = () => {
           <motion.div
             style={{ rotate }}
             className="w-32 h-32 lg:w-44 lg:h-44 rounded-full flex items-center justify-center shadow-xl"
+            style={{
+              rotate,
+              background: "linear-gradient(135deg, #DFAA5E 50%, #FFFFFF 50%)",
+              border: "4px solid #DFAA5E",
+              borderRadius: "9999px",
+              boxShadow: "0 8px 32px rgba(223,170,94,0.35)",
+            }}
           >
-            <div
-              className="w-full h-full rounded-full flex items-center justify-center text-white font-bold tracking-widest"
-              style={{
-                background: "linear-gradient(90deg,#DFAA5E 50%, #FFFFFF 50%)",
-                border: "4px solid #DFAA5E",
-              }}
+            {/* Counter-rotate the logo so it stays upright while circle spins */}
+            <motion.div
+              style={{ rotate: useTransform(scrollYProgress, [0, 1], [0, -360]) }}
+              className="w-[65%] h-[65%] flex items-center justify-center"
             >
-              <span
-                className="text-[10px] lg:text-xs"
-                style={{
-                  color: "#292E4B",
-                  fontWeight: "700",
-                  letterSpacing: "4px",
-                }}
-              >
-                LUMINOX
-              </span>
-            </div>
+              <img
+                src="/header/Luminox.png"
+                alt="Luminox Logo"
+                className="w-full h-full object-contain"
+                style={{ filter: "drop-shadow(0 2px 6px rgba(41,46,75,0.18))" }}
+              />
+            </motion.div>
           </motion.div>
         </div>
 
