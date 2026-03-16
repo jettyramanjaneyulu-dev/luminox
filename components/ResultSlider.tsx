@@ -164,7 +164,7 @@ function Slider({ before, after }: SliderProps) {
 export default function ResultSlider() {
   const [current, setCurrent] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
-  const [ringKey, setRingKey] = useState(0);
+  // const [ringKey, setRingKey] = useState(0);
 
   // Separate refs to track both hover and touch activity
   const isHoveredRef = useRef(false);
@@ -188,17 +188,17 @@ export default function ResultSlider() {
   /* ── Navigation ── */
   const prev = useCallback(() => {
     setCurrent((c) => (c - 1 + total) % total);
-    setRingKey((k) => k + 1);
+    // setRingKey((k) => k + 1);
   }, [total]);
 
   const next = useCallback(() => {
     setCurrent((c) => (c + 1) % total);
-    setRingKey((k) => k + 1);
+    // setRingKey((k) => k + 1);
   }, [total]);
 
   const goTo = useCallback((i: number) => {
     setCurrent(i);
-    setRingKey((k) => k + 1);
+    // setRingKey((k) => k + 1);
   }, []);
 
   /* ── Auto-play interval ── */
@@ -206,7 +206,7 @@ export default function ResultSlider() {
     if (isPaused) return;
     const id = setInterval(() => {
       setCurrent((c) => (c + 1) % total);
-      setRingKey((k) => k + 1);
+      // setRingKey((k) => k + 1);
     }, AUTO_INTERVAL);
     return () => clearInterval(id);
   }, [isPaused, total]);
@@ -299,14 +299,14 @@ export default function ResultSlider() {
           </p>
 
           {/* Status pill */}
-          <div className="mt-3 inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-gray-100 text-xs text-gray-500 select-none transition-all duration-300">
+          {/* <div className="mt-3 inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-gray-100 text-xs text-gray-500 select-none transition-all duration-300">
             <span
               className={`w-1.5 h-1.5 rounded-full transition-colors duration-300 ${
                 isPlaying ? "bg-green-400 animate-pulse" : "bg-gray-400"
               }`}
             />
             {isPlaying ? "Auto-playing" : "Paused"}
-          </div>
+          </div> */}
         </div>
 
         {/* ── CAROUSEL TRACK ── */}
@@ -395,7 +395,7 @@ export default function ResultSlider() {
         </div>
 
         {/* COUNTER + PROGRESS RING */}
-        <div className="flex items-center justify-center gap-3 mt-4">
+        {/* <div className="flex items-center justify-center gap-3 mt-4">
           <div className="relative w-11 h-11 flex items-center justify-center">
             <ProgressRing
               key={`${ringKey}-${isPlaying}`}
@@ -419,7 +419,7 @@ export default function ResultSlider() {
           <p className="text-xs text-gray-400 tracking-widest">
             {current + 1} / {total}
           </p>
-        </div>
+        </div> */}
 
       </div>
     </section>
