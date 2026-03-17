@@ -11,26 +11,26 @@ type Stat = {
 
 const STATS: Stat[] = [
   {
-    number: "250+",
-    label: "Commercial Products",
+    number: "1500+",
+    label: "Happy Patients",
     image: "https://api.lotuspharm.com/storage/sections/home/our-pipeline/01K8WAVSM0FWPKJ2VA414GHKM0.png",
     fallback: "https://images.unsplash.com/photo-1587854692152-cbe660dbde88?w=600&q=80",
   },
   {
-    number: "80+",
-    label: "R&D Pipelines",
+    number: "30+",
+    label: "Procedures",
     image: "https://api.lotuspharm.com/storage/sections/home/our-pipeline/01K8WAVSM18SJS6HW2GC8BN6K6.png",
     fallback: "https://images.unsplash.com/photo-1532187863486-abf9dbad1b69?w=600&q=80",
   },
   {
-    number: "100+",
-    label: "Global Partnerships",
+    number: "3+",
+    label: "Expert Doctors",
     image: "https://api.lotuspharm.com/storage/sections/home/our-pipeline/getty-images-ulToeFfq338-unsplash.jpg",
     fallback: "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=600&q=80",
   },
   {
-    number: "265+",
-    label: "Licensing Deals Signed",
+    number: "10+",
+    label: "Years Experience",
     image: "https://api.lotuspharm.com/storage/sections/home/our-pipeline/gabrielle-henderson-HJckKnwCXxQ-unsplash.jpg.jpg",
     fallback: "https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=600&q=80",
   },

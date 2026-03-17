@@ -34,7 +34,7 @@ export default function Home() {
       <ResultSlider />
        <Appointment />
        <WhyChooseUs />
-       <CustomersCount />
+       {/* <CustomersCount /> */}
        <Testimonials />
       
     </>

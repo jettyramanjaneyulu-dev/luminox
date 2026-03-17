@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 
 const doctor = {
-  name: "Dr. Aradhana Rao",
+  name: "Dr. Name",
   spec: "Senior Dermatologist",
   qual: "MD (Dermatology), AIIMS Delhi",
   exp: "12+ Years",
