@@ -127,6 +127,10 @@ function ContactBlock() {
       {/* Phone */}
       <a href="tel:+916309917333" className="contact-link" style={contactLinkStyle}>
         <PhoneIcon />
+        <span>+91 630 991 7333</span>
+      </a>
+      <a href="tel:+916309918333" className="contact-link" style={contactLinkStyle}>
+        <PhoneIcon />
         <span>+91 630 991 8333</span>
       </a>
 
