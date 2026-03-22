@@ -14,68 +14,71 @@ import Image from "next/image";
 const menuItems = [
   {
     label: "Laser Treatments",
-    href: "#",
+    href: "/laser-treatments",
     submenu: [
-      { label: "Laser Hair Removal", href: "#", desc: "Permanent hair reduction" },
-      { label: "Fractional CO2 Laser", href: "#", desc: "Skin resurfacing & renewal" },
-      { label: "Nd:YAG Laser", href: "#", desc: "Vascular & pigment treatment" },
-      { label: "Picosecond Laser", href: "#", desc: "Tattoo & pigmentation removal" },
-      { label: "IPL Photofacial", href: "#", desc: "Broad-spectrum light therapy" },
+      { label: "Fraxel DUAL", href: "/laser-treatments", desc: "" },
+      { label: "Fraxel CO2", href: "/laser-treatments", desc: "" },
+      { label: "Clear + Brilliant", href: "/laser-treatments", desc: "" },
+      { label: "Vbeam Perfecta", href: "/laser-treatments", desc: "" },
+      { label: "Laser for Age Spots", href: "/laser-treatments", desc: "" },
+      { label: "Laser for Redness", href: "/laser-treatments", desc: "" },
+      { label: "Laser Hair Removal", href: "/laser-treatments", desc: "" },
+      { label: "Laser Tattoo Removal", href: "/laser-treatments", desc: "" },
     ],
   },
   {
     label: "Injectables",
-    href: "#",
+    href: "/injectables",
     submenu: [
-      { label: "Botulinum Toxin", href: "#", desc: "Dynamic wrinkle relaxation" },
-      { label: "Dermal Fillers", href: "#", desc: "Volume & contouring" },
-      { label: "PRP Therapy", href: "#", desc: "Platelet-rich plasma rejuvenation" },
-      { label: "Skin Boosters", href: "#", desc: "Deep hydration & glow" },
-      { label: "Mesotherapy", href: "#", desc: "Micronutrient infusions" },
+      { label: "BOTOX for Non-Surgical Jaw Reduction", href: "/injectables", desc: "" },
+      { label: "BOTOX Cosmetic", href: "/injectables", desc: "" },
+      { label: "Nefertiti Lift", href: "/injectables", desc: "" },
+      { label: "BOTOX for Hyperhidrosis", href: "/injectables", desc: "" },
+      { label: "BOTOX for Migraines", href: "/injectables", desc: "" },
+      { label: "BOTOX for TMD/TMJ", href: "/injectables", desc: "" },
+      { label: "Radiesse", href: "/injectables", desc: "" },
+      { label: "JUVÉDERM", href: "/injectables", desc: "" },
+      { label: "JUVÉDERM VOLUMA", href: "/injectables", desc: "" },
+      { label: "JUVÉDERM VOLLURE XC", href: "/injectables", desc: "" },
+      { label: "Belotero", href: "/injectables", desc: "" },
     ],
   },
   {
     label: "Skin Care",
-    href: "#",
-    submenu: [
-      { label: "Chemical Peels", href: "#", desc: "Exfoliation & brightening" },
-      { label: "HydraFacial", href: "#", desc: "Multi-step deep cleanse" },
-      { label: "Microdermabrasion", href: "#", desc: "Surface skin renewal" },
-      { label: "LED Light Therapy", href: "#", desc: "Cellular repair & rejuvenation" },
-      { label: "Prescription Skincare", href: "#", desc: "Clinically tailored regimens" },
-    ],
+    href: "/skin-care",
   },
     {
     label: "Hair",
-    href: "#",
-    submenu: [
-      { label: "Chemical Peels", href: "#", desc: "Exfoliation & brightening" },
-      { label: "HydraFacial", href: "#", desc: "Multi-step deep cleanse" },
-      { label: "Microdermabrasion", href: "#", desc: "Surface skin renewal" },
-      { label: "LED Light Therapy", href: "#", desc: "Cellular repair & rejuvenation" },
-      { label: "Prescription Skincare", href: "#", desc: "Clinically tailored regimens" },
-    ],
+    href: "-#",
+    },
+     {
+    label: "IVF Drips",
+    href: "-#",
   },
   {
     label: "Aesthetics",
-    href: "#",
+    href: "/aesthetics",
     submenu: [
-      { label: "Body Contouring", href: "#", desc: "Non-surgical fat reduction" },
-      { label: "Ultherapy", href: "#", desc: "Ultrasound skin tightening" },
-      { label: "RF Microneedling", href: "#", desc: "Collagen induction therapy" },
-      { label: "Thread Lift", href: "#", desc: "Minimally invasive lifting" },
-      { label: "Cryolipolysis", href: "#", desc: "Controlled fat freezing" },
+      { label: "Chemical Peels", href: "/aesthetics", desc: "" },
+      { label: "HydraFacial MD", href: "/aesthetics", desc: "" },
+      { label: "Sclerotherapy", href: "/aesthetics", desc: "" },
+      { label: "Micro-Needling", href: "/aesthetics", desc: "" },
+      { label: "PRP Therapy ", href: "/aesthetics", desc: "" },
     ],
   },
   {
     label: "Medical Dermatology",
-    href: "#",
+    href: "/medical-dermatology",
     submenu: [
-      { label: "Acne Treatment", href: "#", desc: "Advanced acne management" },
-      { label: "Eczema & Psoriasis", href: "#", desc: "Chronic skin condition care" },
-      { label: "Mole & Lesion Removal", href: "#", desc: "Safe lesion excision" },
-      { label: "Vitiligo Treatment", href: "#", desc: "Repigmentation therapies" },
-      { label: "Skin Cancer Screening", href: "#", desc: "Early detection & care" },
+      { label: "Mohs Surgery", href: "/medical-dermatology", desc: "" },
+      { label: "Skin Cancer", href: "/medical-dermatology", desc: "" },
+      { label: "Acne", href: "/medical-dermatology", desc: "" },
+      { label: "Acne Scars", href: "/medical-dermatology", desc: "" },
+      { label: "Rosacea", href: "/medical-dermatology", desc: "" },
+      { label: "Moles", href: "/medical-dermatology", desc: "" },
+      { label: "Warts", href: "/medical-dermatology", desc: "" },
+      { label: "Eczema", href: "/medical-dermatology", desc: "" },
+      { label: "Psoriasis", href: "/medical-dermatology", desc: "" },
     ],
   },
   { label: "About Us", href: "/about" },
@@ -131,11 +134,11 @@ const Header = () => {
           {/* ── Logo (Stays in place during mobile menu) ── */}
           <Link href="/" className="shrink-0 relative z-[80]" onClick={() => setMobileOpen(false)}>
             <Image
-              src="/header/Luminox.png"
-              alt="Luminox Skin Hair Laser"
+              src="/header/luminox-new.png"
+              alt="Luminox Skin Hair Laser IVF-Drips"
               width={160}
               height={60}
-              className="h-10 lg:h-12 w-auto object-contain"
+              className="h-10 lg:h-17 w-auto object-contain"
               priority
             />
           </Link>

@@ -24,6 +24,13 @@ const SERVICES = [
     tag: "Precision · Technology · Transformation",
     image: "https://images.unsplash.com/photo-1629909613654-28e377c37b09?w=1400&q=85",
   },
+  {
+    id: 3,
+    num: "IVF",
+    word: "IVF Drips",
+    tag: "Restore · Revive · All Stages",
+    image: "https://images.unsplash.com/photo-1631815589968-fdb09a223b1e?w=1400&q=85",
+  },
 ];
 
 const AUTO_MS = 5000;
@@ -68,13 +75,13 @@ export default function ServicesSection() {
         .lx-row {
           display: flex;
           align-items: center;
-          gap: clamp(14px, 3vw, 40px);
-          padding: 0 clamp(28px, 7vw, 88px);
+          gap: clamp(10px, 2.5vw, 36px);
+          padding: 0 clamp(20px, 6vw, 88px);
           border-bottom: 1px solid rgba(41,46,75,0.08);
           cursor: pointer;
           position: relative;
           overflow: hidden;
-          min-height: clamp(76px, 11vw, 116px);
+          min-height: clamp(64px, 9.5vw, 108px);
           transition: background 0.5s;
         }
 
@@ -134,6 +141,18 @@ export default function ServicesSection() {
           .lx-num    { display: none !important; }
           .lx-arrow  { display: none !important; }
           .lx-tag    { display: none !important; }
+          .lx-row {
+            min-height: 58px !important;
+            padding: 0 18px !important;
+            gap: 10px !important;
+          }
+        }
+
+        /* ── word size tweak for 4 items on small screens ── */
+        @media (max-width: 600px) {
+          .lx-word {
+            font-size: clamp(2rem, 9vw, 4rem) !important;
+          }
         }
       `}</style>
 
@@ -201,11 +220,11 @@ export default function ServicesSection() {
           >
             {/* header */}
             <div style={{
-              padding: "clamp(40px,6vw,80px) clamp(28px,7vw,88px) clamp(28px,4vw,48px)",
+              padding: "clamp(32px,5vw,80px) clamp(20px,6vw,88px) clamp(22px,3.5vw,48px)",
               borderBottom: "1px solid rgba(41,46,75,0.08)",
             }}>
               <div style={{
-                display: "flex", alignItems: "center", gap: 10, marginBottom: 16,
+                display: "flex", alignItems: "center", gap: 10, marginBottom: 14,
               }}>
                 <div style={{ height: 1, width: 24, background: "#DFAA5E" }} />
                 <span style={{
@@ -219,7 +238,7 @@ export default function ServicesSection() {
               <h2 style={{
                 fontFamily: "'Cormorant', serif",
                 fontStyle: "italic", fontWeight: 300,
-                fontSize: "clamp(2rem, 4.5vw, 3.6rem)",
+                fontSize: "clamp(1.8rem, 4vw, 3.6rem)",
                 color: "#292E4B", lineHeight: 1.05, margin: 0,
               }}>
                 Our Expertise
@@ -242,9 +261,9 @@ export default function ServicesSection() {
                     style={{
                       fontFamily: "'Cormorant', serif",
                       fontStyle: "italic", fontWeight: 300,
-                      fontSize: "clamp(0.72rem,1.1vw,0.82rem)",
+                      fontSize: "clamp(0.65rem,1vw,0.82rem)",
                       color: isOn ? "#DFAA5E" : "rgba(41,46,75,0.22)",
-                      width: 24, flexShrink: 0,
+                      width: 22, flexShrink: 0,
                       transition: "color 0.4s",
                       userSelect: "none",
                     }}
@@ -255,18 +274,19 @@ export default function ServicesSection() {
                   {/* big word */}
                   <span
                     key={`w-${i}-${isOn}`}
-                    className={isOn ? "lx-word-in" : ""}
+                    className={`lx-word${isOn ? " lx-word-in" : ""}`}
                     style={{
                       fontFamily: "'Cormorant', serif",
                       fontStyle: isOn ? "italic" : "normal",
                       fontWeight: isOn ? 700 : 300,
-                      fontSize: "clamp(2.6rem, 5.5vw, 5.2rem)",
+                      fontSize: "clamp(2.2rem, 4.8vw, 5rem)",
                       color: isOn ? "#292E4B" : "rgba(41,46,75,0.28)",
                       lineHeight: 1,
                       flexShrink: 0,
                       letterSpacing: isOn ? "-0.02em" : "0.01em",
                       transition: "color 0.4s",
                       userSelect: "none",
+                      whiteSpace: "nowrap",
                     }}
                   >
                     {s.word}
@@ -279,8 +299,8 @@ export default function ServicesSection() {
                     style={{
                       fontFamily: "'Jost', sans-serif",
                       fontWeight: 200,
-                      fontSize: "clamp(0.6rem, 1vw, 0.74rem)",
-                      letterSpacing: "0.2em",
+                      fontSize: "clamp(0.55rem, 0.9vw, 0.72rem)",
+                      letterSpacing: "0.18em",
                       textTransform: "uppercase",
                       color: "#414042",
                       opacity: isOn ? 0.7 : 0,
@@ -297,7 +317,7 @@ export default function ServicesSection() {
                     className="lx-arrow"
                     style={{
                       fontFamily: "'Cormorant', serif",
-                      fontSize: "clamp(1rem, 1.5vw, 1.15rem)",
+                      fontSize: "clamp(0.9rem, 1.4vw, 1.15rem)",
                       color: isOn ? "#DFAA5E" : "rgba(41,46,75,0.15)",
                       display: "inline-block",
                       transition: "color 0.4s, transform 0.4s",
@@ -327,19 +347,19 @@ export default function ServicesSection() {
 
             {/* footer */}
             <div style={{
-              padding: "clamp(18px,3vw,28px) clamp(28px,7vw,88px)",
+              padding: "clamp(14px,2.5vw,28px) clamp(20px,6vw,88px)",
               borderTop: "1px solid rgba(41,46,75,0.08)",
               display: "flex", alignItems: "center",
               justifyContent: "space-between", flexWrap: "wrap", gap: 12,
             }}>
               <p style={{
                 fontFamily: "'Cormorant', serif", fontStyle: "italic",
-                fontWeight: 300, fontSize: "clamp(0.82rem,1.2vw,0.95rem)",
+                fontWeight: 300, fontSize: "clamp(0.78rem,1.1vw,0.95rem)",
                 color: "rgba(41,46,75,0.38)", margin: 0,
               }}>
-                Three dimensions of confidence.
+                Four dimensions of confidence.
               </p>
-              <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
+              <div style={{ display: "flex", gap: 7, alignItems: "center" }}>
                 {SERVICES.map((_, i) => (
                   <button
                     key={i}
@@ -372,7 +392,7 @@ export default function ServicesSection() {
               />
             ))}
 
-            {/* subtle dark overlay — keeps image rich, not washed */}
+            {/* subtle dark overlay */}
             <div style={{
               position: "absolute", inset: 0, zIndex: 2,
               background: "linear-gradient(to bottom, rgba(20,22,40,0.18) 0%, rgba(20,22,40,0.42) 100%)",
@@ -383,7 +403,6 @@ export default function ServicesSection() {
               position: "absolute", bottom: 36, left: 36,
               zIndex: 3,
             }}>
-              {/* gold rule + tag */}
               <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 10 }}>
                 <div style={{ width: 28, height: 1, background: "#DFAA5E" }} />
                 <span
@@ -399,14 +418,13 @@ export default function ServicesSection() {
                   {SERVICES[active].tag}
                 </span>
               </div>
-              {/* big word echoed on image */}
               <p
                 key={`big-${active}`}
                 className="lx-label-in"
                 style={{
                   fontFamily: "'Cormorant', serif",
                   fontStyle: "italic", fontWeight: 700,
-                  fontSize: "clamp(2.8rem, 5vw, 4.8rem)",
+                  fontSize: "clamp(2.4rem, 4.5vw, 4.8rem)",
                   color: "#fff", lineHeight: 1,
                   margin: 0, letterSpacing: "-0.02em",
                   textShadow: "0 2px 24px rgba(0,0,0,0.25)",

@@ -15,7 +15,7 @@ const STATS = [
   {
     value: "20,000+",
     label: "Patients Transformed",
-    sub: "Across skin, hair & laser treatments",
+    sub: "Across skin, hair, laser and IVF Drips treatments ",
     accent: "#DFAA5E",
     rgb: "223,170,94",
     img: "https://images.unsplash.com/photo-1629909615957-be38d48fbbe4?w=800&q=85",

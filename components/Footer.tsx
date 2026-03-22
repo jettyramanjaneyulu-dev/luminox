@@ -6,17 +6,16 @@ import { useState } from "react";
 
 const NAV_LINKS = {
   Treatments: [
-    { label: "Laser Treatments", href: "/treatments/laser" },
-    { label: "Injectables & Fillers", href: "/treatments/injectables" },
-    { label: "Skin Care", href: "/treatments/skin" },
-    { label: "Hair Restoration", href: "/treatments/hair" },
-    { label: "Medical Dermatology", href: "/treatments/medical" },
+    { label: "Skin Care", href: "/skin-care" },
+    { label: "Hair Restoration", href: "/hair" },
+    { label: "Laser Treatments", href: "/laser-treatments" },
+    { label: "IVF Drips", href: "/ivf-drips" }, 
   ],
   Clinic: [
     { label: "About Luminox", href: "/about" },
-    { label: "Meet Our Doctors", href: "/doctors" },
-    { label: "Patient Stories", href: "/testimonials" },
-    { label: "Before & After", href: "/results" },
+    { label: "Meet Our Doctors", href: "/about" },
+    { label: "Patient Stories", href: "/home" },
+    { label: "Before & After", href: "/home" },
   ],
 };
 
@@ -135,9 +134,9 @@ function ContactBlock() {
       </a>
 
       {/* Email */}
-      <a href="mailto:info@luminoxclinic.com" className="contact-link" style={contactLinkStyle}>
+      <a href="mailto:luminoxdermaclinic@gmail.com" className="contact-link" style={contactLinkStyle}>
         <MailIcon />
-        <span>info@luminoxclinic.com</span>
+        <span>luminoxdermaclinic@gmail.com</span>
       </a>
 
       {/* Location */}
@@ -350,7 +349,7 @@ export default function Footer() {
                 Radiance Perfected
               </p>
               <p style={{ marginTop: "12px", color: "#5C3A14", fontSize: "13.5px", lineHeight: "1.7" }}>
-                Advanced dermatology clinic offering skin, hair and laser treatments with personalised care and modern technology.
+                Advanced dermatology clinic offering skin, hair, laser and IVF Drips treatments with personalised care and modern technology.
               </p>
             </div>
 
@@ -409,7 +408,7 @@ export default function Footer() {
               Radiance Perfected
             </p>
             <p style={{ marginTop: "10px", color: "#5C3A14", fontSize: "13px", lineHeight: "1.7" }}>
-              Advanced dermatology clinic offering skin, hair and laser treatments with personalised care and modern technology.
+              Advanced dermatology clinic offering skin, hair, laser and IVF Drips treatments with personalised care and modern technology.
             </p>
           </div>
 
@@ -440,7 +439,7 @@ export default function Footer() {
           }}
         >
           <p style={{ fontSize: "12.5px", color: "#5C3A14", margin: 0 }}>
-            © {year} Luminox Skin · Hair · Laser. All rights reserved.
+            © {year} Luminox Skin · Hair · Laser · IVF Drips. All rights reserved.
           </p>
 
           {/* SOCIAL ICONS */}

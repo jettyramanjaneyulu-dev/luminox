@@ -17,7 +17,7 @@ const slides = [
     desc2: "Not younger skin.",
     desc3: "Just skin that finally looks like you.",
     desc4:
-      "At Luminox – Skin | Hair | Laser, we don't chase trends or temporary fixes. We work with science, technology, and dermatology expertise to restore what your skin and hair were always meant to be.",
+      "At Luminox – Skin | Hair | Laser | IVF Drips, we don't chase trends or temporary fixes. We work with science, technology, and dermatology expertise to restore what your skin and hair were always meant to be.",
     highlight: "Healthy. Balanced. Radiant.",
     cta1: "Discover Luminox",
     cta1Href: "/about",
@@ -99,7 +99,7 @@ const Hero = () => {
             <div className="inline-flex items-center gap-3 mb-6">
               <div className="h-px w-6 md:w-10 bg-[#DFAA5E]" />
               <span className="text-[#DFAA5E] text-[10px] md:text-xs font-bold uppercase tracking-[0.3em]">
-                Luminox Skin · Hair · Laser
+                Luminox Skin · Hair · Laser · IVF Drips
               </span>
             </div>
 

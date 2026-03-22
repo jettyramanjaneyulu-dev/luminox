@@ -102,27 +102,70 @@ function InfoCard({
 }
 
 /* ─── Directions Banner ─────────────────── */
-function DirectionsBanner() {
+// function DirectionsBanner() {
+//   const { ref, visible } = useFadeUp();
+//   return (
+//     <div
+//       ref={ref}
+//       style={{ transitionDelay: "320ms" }}
+//       className={`w-full mb-5 transition-all duration-700 ease-out ${visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-7"}`}
+//     >
+//       <a
+//         href="https://maps.app.goo.gl/1y5k4zeDgatzo13X7?g_st=iw"
+//         target="_blank"
+//         rel="noopener noreferrer"
+//         className="group relative overflow-hidden w-full flex items-center justify-between gap-4
+//           rounded-2xl bg-[#292E4B] px-6 sm:px-8 py-5 sm:py-6
+//           shadow-[0_4px_24px_rgba(41,46,75,0.25)]
+//           hover:shadow-[0_12px_48px_rgba(41,46,75,0.38)]
+//           hover:-translate-y-0.5 transition-all duration-500"
+//       >
+//         {/* Shimmer sweep */}
+//         <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-700 ease-in-out bg-gradient-to-r from-transparent via-white/6 to-transparent pointer-events-none" />
+
+//         <div className="flex items-center gap-4">
+//           <div className="w-11 h-11 rounded-xl bg-[#DFAA5E]/15 border border-[#DFAA5E]/30 flex items-center justify-center flex-shrink-0">
+//             <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#DFAA5E" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+//               <polygon points="3 11 22 2 13 21 11 13 3 11" />
+//             </svg>
+//           </div>
+//           <div>
+//             <p className="text-[10px] uppercase tracking-[0.25em] text-[#DFAA5E] font-bold font-sans mb-0.5">
+//               Open in Google Maps
+//             </p>
+//             <p className="text-white font-display text-lg sm:text-xl font-medium leading-tight">
+//               Get Directions to Our Clinic
+//             </p>
+//           </div>
+//         </div>
+
+//         <div className="w-9 h-9 rounded-full border border-[#DFAA5E]/35 flex items-center justify-center text-[#DFAA5E] flex-shrink-0 group-hover:bg-[#DFAA5E]/15 group-hover:scale-110 transition-all duration-300">
+//           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+//             <path d="M5 12h14M12 5l7 7-7 7" />
+//           </svg>
+//         </div>
+//       </a>
+//     </div>
+//   );
+// }
+
+/* ─── Map Section ───────────────────────── */
+function MapSection() {
   const { ref, visible } = useFadeUp();
   return (
     <div
       ref={ref}
       style={{ transitionDelay: "320ms" }}
-      className={`w-full mb-5 transition-all duration-700 ease-out ${visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-7"}`}
+      className={`w-full transition-all duration-700 ease-out ${visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-7"}`}
     >
+      {/* Directions Banner */}
       <a
         href="https://maps.app.goo.gl/1y5k4zeDgatzo13X7?g_st=iw"
         target="_blank"
         rel="noopener noreferrer"
-        className="group relative overflow-hidden w-full flex items-center justify-between gap-4
-          rounded-2xl bg-[#292E4B] px-6 sm:px-8 py-5 sm:py-6
-          shadow-[0_4px_24px_rgba(41,46,75,0.25)]
-          hover:shadow-[0_12px_48px_rgba(41,46,75,0.38)]
-          hover:-translate-y-0.5 transition-all duration-500"
+        className="group relative overflow-hidden w-full flex items-center justify-between gap-4 rounded-2xl bg-[#292E4B] px-6 sm:px-8 py-5 sm:py-6 mb-4 shadow-[0_4px_24px_rgba(41,46,75,0.25)] hover:shadow-[0_12px_48px_rgba(41,46,75,0.38)] hover:-translate-y-0.5 transition-all duration-500"
       >
-        {/* Shimmer sweep */}
         <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-700 ease-in-out bg-gradient-to-r from-transparent via-white/6 to-transparent pointer-events-none" />
-
         <div className="flex items-center gap-4">
           <div className="w-11 h-11 rounded-xl bg-[#DFAA5E]/15 border border-[#DFAA5E]/30 flex items-center justify-center flex-shrink-0">
             <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#DFAA5E" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -138,26 +181,14 @@ function DirectionsBanner() {
             </p>
           </div>
         </div>
-
         <div className="w-9 h-9 rounded-full border border-[#DFAA5E]/35 flex items-center justify-center text-[#DFAA5E] flex-shrink-0 group-hover:bg-[#DFAA5E]/15 group-hover:scale-110 transition-all duration-300">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
             <path d="M5 12h14M12 5l7 7-7 7" />
           </svg>
         </div>
       </a>
-    </div>
-  );
-}
 
-/* ─── Map Section ───────────────────────── */
-function MapSection() {
-  const { ref, visible } = useFadeUp();
-  return (
-    <div
-      ref={ref}
-      style={{ transitionDelay: "400ms" }}
-      className={`w-full transition-all duration-700 ease-out ${visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-7"}`}
-    >
+      {/* Map */}
       <div
         className="w-full rounded-2xl overflow-hidden border border-[#DFAA5E]/25"
         style={{ boxShadow: "0 16px 50px rgba(41,46,75,0.13), 0 4px 14px rgba(41,46,75,0.08)" }}
@@ -168,16 +199,188 @@ function MapSection() {
             Luminox Derma Clinic — Srinagar Colony, Hyderabad
           </span>
         </div>
-       <iframe
-  title="Luminox Derma Clinic Location"
-  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3806.626940501426!2d78.444879!3d17.429682!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bcb915b8b6dcaa1%3A0x1bcbc00c25f76d8!2sLUMINOX%20DERMA%20CLINIC!5e0!3m2!1sen!2sin!4v1773680409956!5m2!1sen!2sin"
-  width="100%"
-  height="380"
-  style={{ border: 0, display: "block" }}
-  allowFullScreen
-  loading="lazy"
-  referrerPolicy="no-referrer-when-downgrade"
-/>
+        <iframe
+          title="Luminox Derma Clinic Location"
+          src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3806.626940501426!2d78.444879!3d17.429682!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bcb915b8b6dcaa1%3A0x1bcbc00c25f76d8!2sLUMINOX%20DERMA%20CLINIC!5e0!3m2!1sen!2sin!4v1773680409956!5m2!1sen!2sin"
+          width="100%"
+          height="380"
+          style={{ border: 0, display: "block" }}
+          allowFullScreen
+          loading="lazy"
+          referrerPolicy="no-referrer-when-downgrade"
+        />
+      </div>
+    </div>
+  );
+}
+
+/* ─── Hero Banner ───────────────────────── */
+function HeroBanner({ heroIn }: { heroIn: boolean }) {
+  return (
+    <div
+      className={`
+        w-full mb-12 sm:mb-16 rounded-3xl overflow-hidden relative
+        transition-all duration-1000 ease-out
+        ${heroIn ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"}
+      `}
+      style={{
+        transitionDelay: "80ms",
+        boxShadow: "0 24px 80px rgba(41,46,75,0.22), 0 6px 24px rgba(41,46,75,0.12)",
+        minHeight: "clamp(220px, 38vw, 460px)",
+      }}
+    >
+      {/* Background image */}
+      <img
+        src="https://images.unsplash.com/photo-1629909613654-28e377c37b09?w=1400&q=85"
+        alt="Luminox Derma Clinic — modern dermatology interior"
+        className="absolute inset-0 w-full h-full object-cover object-center"
+        loading="eager"
+        style={{ display: "block" }}
+      />
+
+      {/* Layered overlays for depth */}
+      <div className="absolute inset-0 bg-gradient-to-r from-[#292E4B]/88 via-[#292E4B]/55 to-transparent" />
+      <div className="absolute inset-0 bg-gradient-to-t from-[#1a1f36]/70 via-transparent to-transparent" />
+
+      {/* Gold accent bar — top */}
+      <div
+        className="absolute top-0 left-0 right-0 h-[4px]"
+        style={{
+          background: "linear-gradient(90deg, #B8843A 0%, #DFAA5E 40%, #F9DB9F 60%, #DFAA5E 80%, #B8843A 100%)",
+        }}
+      />
+
+      {/* Gold accent bar — bottom */}
+      <div
+        className="absolute bottom-0 left-0 right-0 h-[3px] opacity-60"
+        style={{
+          background: "linear-gradient(90deg, transparent, #DFAA5E 30%, #F9DB9F 50%, #DFAA5E 70%, transparent)",
+        }}
+      />
+
+      {/* Floating decorative circle */}
+      <div
+        className="absolute -right-16 -top-16 w-64 h-64 rounded-full opacity-10"
+        style={{ background: "radial-gradient(circle, #DFAA5E 0%, transparent 70%)" }}
+      />
+      <div
+        className="absolute right-8 bottom-8 w-32 h-32 rounded-full opacity-8"
+        style={{ background: "radial-gradient(circle, #DFAA5E 0%, transparent 70%)" }}
+      />
+
+      {/* Content */}
+      <div className="relative z-10 flex flex-col justify-center h-full px-8 sm:px-12 lg:px-16 py-10 sm:py-14"
+        style={{ minHeight: "clamp(220px, 38vw, 460px)" }}
+      >
+        {/* Eyebrow */}
+        <div className="flex items-center gap-2.5 mb-4">
+          <span className="h-px w-6 bg-[#DFAA5E]" />
+          <span
+            className="font-sans text-[10px] uppercase tracking-[0.35em] font-semibold"
+            style={{ color: "#DFAA5E" }}
+          >
+            Hyderabad's Trusted Skin Experts
+          </span>
+        </div>
+
+        {/* Headline */}
+        <h2
+          className="font-display font-bold leading-[1.08] tracking-tight mb-4"
+          style={{
+            color: "#FFFFFF",
+            fontSize: "clamp(1.7rem, 4.5vw, 3.6rem)",
+            maxWidth: "600px",
+            textShadow: "0 2px 20px rgba(0,0,0,0.3)",
+          }}
+        >
+          Where Science Meets<br />
+          <span
+            className="italic"
+            style={{
+              background: "linear-gradient(90deg, #DFAA5E, #F9DB9F, #DFAA5E)",
+              backgroundClip: "text",
+              WebkitBackgroundClip: "text",
+              WebkitTextFillColor: "transparent",
+            }}
+          >
+            Radiant Beauty
+          </span>
+        </h2>
+
+        {/* Sub-copy */}
+        <p
+          className="font-sans font-light leading-relaxed mb-7"
+          style={{
+            color: "rgba(255,255,255,0.78)",
+            fontSize: "clamp(0.85rem, 1.8vw, 1.05rem)",
+            maxWidth: "420px",
+          }}
+        >
+          Advanced laser treatments, clinical dermatology &amp; aesthetic care —
+          all under one roof in Srinagar Colony, Hyderabad.
+        </p>
+
+        {/* CTA Buttons */}
+        <div className="flex flex-wrap gap-3">
+          <a
+            href="tel:+916309917333"
+            className="group inline-flex items-center gap-2.5 rounded-full font-sans font-semibold transition-all duration-300 hover:-translate-y-0.5"
+            style={{
+              background: "#DFAA5E",
+              color: "#292E4B",
+              fontSize: "clamp(0.7rem, 1.5vw, 0.82rem)",
+              letterSpacing: "0.06em",
+              padding: "clamp(8px,1.5vw,13px) clamp(18px,2.5vw,28px)",
+              boxShadow: "0 4px 20px rgba(223,170,94,0.45)",
+            }}
+          >
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.68 12a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.59 1h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 8.91a16 16 0 0 0 6.07 6.07l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/>
+            </svg>
+            Book a Consultation
+          </a>
+          <a
+            href="https://wa.me/916309918333"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2.5 rounded-full font-sans font-semibold transition-all duration-300 hover:-translate-y-0.5"
+            style={{
+              background: "rgba(255,255,255,0.12)",
+              color: "#FFFFFF",
+              border: "1.5px solid rgba(255,255,255,0.3)",
+              backdropFilter: "blur(8px)",
+              fontSize: "clamp(0.7rem, 1.5vw, 0.82rem)",
+              letterSpacing: "0.06em",
+              padding: "clamp(8px,1.5vw,13px) clamp(18px,2.5vw,28px)",
+            }}
+          >
+            WhatsApp Us
+          </a>
+        </div>
+
+        {/* Stats strip */}
+        <div className="flex flex-wrap gap-x-6 gap-y-2 mt-8">
+          {[
+            { val: "5,000+", label: "Procedures" },
+            { val: "12+", label: "Years Exp." },
+            { val: "98%", label: "Satisfaction" },
+          ].map((s) => (
+            <div key={s.label} className="flex items-baseline gap-1.5">
+              <span
+                className="font-display font-bold"
+                style={{ color: "#DFAA5E", fontSize: "clamp(1.1rem, 2.2vw, 1.5rem)" }}
+              >
+                {s.val}
+              </span>
+              <span
+                className="font-sans uppercase tracking-wider"
+                style={{ color: "rgba(255,255,255,0.55)", fontSize: "clamp(0.6rem, 1vw, 0.7rem)" }}
+              >
+                {s.label}
+              </span>
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );
@@ -220,7 +423,7 @@ export default function ContactPage() {
           animation: shimmer 3s infinite linear;
         }
 
-        /* Drift orbs — each class has ALL animation props baked in, no inline animation needed */
+        /* Drift orbs */
         @keyframes drift {
           0%,100% { transform: translate(0,0) scale(1); }
           33%      { transform: translate(6px,-10px) scale(1.03); }
@@ -270,7 +473,7 @@ export default function ContactPage() {
         style={{ background: "linear-gradient(148deg, #f9f5ef 0%, #f1ebe0 52%, #ece3d4 100%)" }}
       >
 
-        {/* ── Ambient drifting orbs — animation 100% in CSS classes, zero inline animation ── */}
+        {/* ── Ambient drifting orbs ── */}
         <div className="fixed inset-0 pointer-events-none overflow-hidden z-0" aria-hidden="true">
           <div className="orb-1 absolute rounded-full" style={{ width:420, height:420, top:"2%",  left:"-10%", background:"radial-gradient(circle,rgba(223,170,94,0.12) 0%,transparent 68%)" }} />
           <div className="orb-2 absolute rounded-full" style={{ width:280, height:280, top:"60%", right:"-8%", background:"radial-gradient(circle,rgba(223,170,94,0.12) 0%,transparent 68%)" }} />
@@ -280,17 +483,21 @@ export default function ContactPage() {
         </div>
 
         {/* ════════════════════════════════
-            CONTENT WRAPPER — full width,
-            centred, properly padded
+            CONTENT WRAPPER
             ════════════════════════════════ */}
-        <div className="relative z-10 w-full max-w-5xl mx-auto px-5 sm:px-8 lg:px-10 py-16 sm:py-24">
+        <div className="relative z-10 w-full max-w-5xl mx-auto px-5 sm:px-8 lg:px-10 py-10 sm:py-26">
 
-          {/* ══ HERO ══ */}
+          {/* ══ HERO BANNER IMAGE ══ */}
+          <HeroBanner heroIn={heroIn} />
+
+          {/* ══ SECTION HEADER ══ */}
           <header className={`
-            w-full text-center mb-14 sm:mb-20
+            w-full text-center mb-10 sm:mb-14
             transition-all duration-1000 ease-out
             ${heroIn ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"}
-          `}>
+          `}
+            style={{ transitionDelay: "200ms" }}
+          >
             {/* Eyebrow */}
             <div className="inline-flex items-center gap-2.5 mb-5">
               <span className="h-px w-8 bg-[#DFAA5E]" />
@@ -329,7 +536,7 @@ export default function ContactPage() {
             <GoldDivider />
           </header>
 
-          {/* ══ INFO CARDS — full-width 2-col grid ══ */}
+          {/* ══ INFO CARDS — full-width grid ══ */}
           <div className="w-full grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5 mb-5">
 
             {/* Address */}
@@ -403,10 +610,28 @@ export default function ContactPage() {
                 Chat with us on WhatsApp →
               </p>
             </InfoCard>
+
+            {/* Gmail — full width spanning both columns */}
+            <div className="sm:col-span-2">
+              <InfoCard delay="360ms" label="Email Us" href="mailto:luminoxdermaclinic@gmail.com" icon={
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                  <polyline points="22,6 12,13 2,6"/>
+                </svg>
+              }>
+                <p className="font-display text-[1.15rem] font-semibold leading-snug break-all" style={{ color: "var(--heading)" }}>
+                  luminoxdermaclinic@gmail.com
+                </p>
+                <p className="text-xs mt-1.5" style={{ color: "var(--gold)" }}>
+                  Send us an email →
+                </p>
+              </InfoCard>
+            </div>
+
           </div>
 
           {/* ══ DIRECTIONS BANNER — full width ══ */}
-          <DirectionsBanner />
+          {/* <DirectionsBanner /> */}
 
           {/* ══ MAP — full width ══ */}
           <MapSection />

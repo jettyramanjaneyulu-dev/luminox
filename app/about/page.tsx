@@ -1,11 +1,17 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
+import Image from "next/image";
+import Link from "next/link";
 
-// ── Hook: Intersection Observer ────────────────────────────────────────────
-function useInView(threshold = 0.15) {
+// ── Types ──────────────────────────────────────────────────────────────────
+interface RevealRef {
+  ref: React.RefObject<HTMLDivElement | null>;
+}
+
+// ── Hook: scroll reveal ────────────────────────────────────────────────────
+function useReveal(): RevealRef {
   const ref = useRef<HTMLDivElement>(null);
-  const [inView, setInView] = useState(false);
 
   useEffect(() => {
     const el = ref.current;
@@ -13,626 +19,765 @@ function useInView(threshold = 0.15) {
     const obs = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
-          setInView(true);
-          obs.disconnect();
+          entry.target.classList.add("lx-visible");
+          obs.unobserve(entry.target);
         }
       },
-      { threshold }
+      { threshold: 0.12 }
     );
     obs.observe(el);
     return () => obs.disconnect();
-  }, [threshold]);
+  }, []);
 
-  return { ref, inView };
+  return { ref };
 }
 
-// ── Watch SVG illustration ─────────────────────────────────────────────────
-function WatchIllustration({ size = 260 }: { size?: number }) {
+// ── Sub-components ─────────────────────────────────────────────────────────
+function Eyebrow({
+  children,
+  center = false,
+  light = false,
+}: {
+  children: React.ReactNode;
+  center?: boolean;
+  light?: boolean;
+}) {
   return (
-    <svg
-      width={size}
-      height={size}
-      viewBox="0 0 260 260"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
+    <p
+      style={{
+        fontFamily: "'DM Sans', sans-serif",
+        fontSize: "0.68rem",
+        fontWeight: 500,
+        letterSpacing: "0.22em",
+        textTransform: "uppercase",
+        color: light ? "#e8c4bf" : "#c2746a",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: center ? "center" : "flex-start",
+        gap: "0.65rem",
+        marginBottom: "0.8rem",
+      }}
     >
-      <rect x="104" y="8" width="52" height="36" rx="6" fill="#1e2240" stroke="#DFAA5E" strokeWidth="1" strokeOpacity="0.4" />
-      <rect x="104" y="216" width="52" height="36" rx="6" fill="#1e2240" stroke="#DFAA5E" strokeWidth="1" strokeOpacity="0.4" />
-      <circle cx="130" cy="130" r="110" fill="#1a1f38" stroke="#DFAA5E" strokeWidth="2" strokeOpacity="0.5" />
-      <circle cx="130" cy="130" r="100" fill="none" stroke="#DFAA5E" strokeWidth="0.75" strokeOpacity="0.25" strokeDasharray="4 6" />
-      <circle cx="130" cy="130" r="88" fill="url(#watchFaceAbout)" stroke="#2a2f4a" strokeWidth="4" />
-      <circle cx="130" cy="130" r="72" fill="none" stroke="#DFAA5E" strokeWidth="1" strokeOpacity="0.35" />
-      {Array.from({ length: 12 }).map((_, i) => {
-        const angle = (i * 30 * Math.PI) / 180;
-        const r1 = 72, r2 = i % 3 === 0 ? 60 : 65;
-        return (
-          <line key={i}
-            x1={130 + r1 * Math.sin(angle)} y1={130 - r1 * Math.cos(angle)}
-            x2={130 + r2 * Math.sin(angle)} y2={130 - r2 * Math.cos(angle)}
-            stroke="#DFAA5E" strokeWidth={i % 3 === 0 ? 2.5 : 1.2}
-            strokeOpacity={i % 3 === 0 ? 0.9 : 0.5}
-          />
-        );
-      })}
-      {[0, 90, 180, 270].map((deg) => {
-        const rad = (deg * Math.PI) / 180;
-        return (
-          <circle key={deg}
-            cx={130 + 58 * Math.sin(rad)} cy={130 - 58 * Math.cos(rad)}
-            r={4} fill="#DFAA5E" opacity={0.85}
-          />
-        );
-      })}
-      <line x1="130" y1="88" x2="130" y2="130" stroke="#F2EDE8" strokeWidth="4" strokeLinecap="round" />
-      <line x1="130" y1="72" x2="162" y2="130" stroke="#DFAA5E" strokeWidth="3" strokeLinecap="round" />
-      <line x1="130" y1="148" x2="118" y2="130" stroke="#E85555" strokeWidth="1.5" strokeLinecap="round" />
-      <circle cx="130" cy="130" r="6" fill="#DFAA5E" />
-      <circle cx="130" cy="130" r="3" fill="#1a1f38" />
-      <text x="130" y="108" textAnchor="middle" fontFamily="'Bebas Neue', sans-serif" fontSize="10" fill="#F2EDE8" letterSpacing="4">LUMINOX</text>
-      <text x="130" y="120" textAnchor="middle" fontFamily="'Barlow Condensed', sans-serif" fontSize="7" fill="#DFAA5E" letterSpacing="2.5">NAVY SEAL</text>
-      <rect x="218" y="122" width="14" height="16" rx="3" fill="#1e2240" stroke="#DFAA5E" strokeWidth="1" strokeOpacity="0.5" />
-      <defs>
-        <radialGradient id="watchFaceAbout" cx="35%" cy="35%" r="70%">
-          <stop offset="0%" stopColor="#2e3560" />
-          <stop offset="100%" stopColor="#080c1a" />
-        </radialGradient>
-      </defs>
-    </svg>
+      <span
+        style={{
+          display: "block",
+          width: 26,
+          height: 1.5,
+          background: light ? "#e8c4bf" : "#c2746a",
+          flexShrink: 0,
+        }}
+      />
+      {children}
+      {center && (
+        <span
+          style={{
+            display: "block",
+            width: 26,
+            height: 1.5,
+            background: "#c2746a",
+            flexShrink: 0,
+          }}
+        />
+      )}
+    </p>
   );
 }
 
 // ── MAIN COMPONENT ─────────────────────────────────────────────────────────
 export default function About() {
-  const heroRef   = useInView(0.1);
-  const doctorRef = useInView(0.12);
-  const mvRef     = useInView(0.12);
-  const ctaRef    = useInView(0.15);
-
+  // ── Force header into "scrolled" (white) mode on this page ──
+  // We dispatch a scroll event so the header's scroll listener triggers
   useEffect(() => {
-    const link = document.createElement("link");
-    link.rel  = "stylesheet";
-    link.href = "https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@300;400;600;700&family=Barlow:wght@300;400;500&display=swap";
-    document.head.appendChild(link);
+    // Immediately scroll header to white by dispatching a fake scroll
+    // The Header component listens to window.scrollY > 50
+    // So we just ensure the page starts knowing it's dark here
+    const forceHeaderWhite = () => {
+      // Override: we mark <html> with a data attribute the header can read
+      document.documentElement.setAttribute("data-page-dark-hero", "true");
+    };
+    forceHeaderWhite();
+    return () => {
+      document.documentElement.removeAttribute("data-page-dark-hero");
+    };
   }, []);
 
-  // ── helpers ──
-  const Tag = ({ children, center = false }: { children: React.ReactNode; center?: boolean }) => (
-    <p style={{
-      fontFamily: "'Barlow Condensed', sans-serif", fontSize: "0.72rem", fontWeight: 600,
-      letterSpacing: "0.32em", textTransform: "uppercase", color: "#DFAA5E",
-      marginBottom: "0.6rem", display: "flex", alignItems: "center",
-      justifyContent: center ? "center" : "flex-start", gap: "0.7rem",
-    }}>
-      <span style={{ width: 28, height: 1.5, background: "#DFAA5E", display: "inline-block" }} />
-      {children}
-      {center && <span style={{ width: 28, height: 1.5, background: "#DFAA5E", display: "inline-block" }} />}
-    </p>
-  );
+  // Load Google Fonts
+  useEffect(() => {
+    const link = document.createElement("link");
+    link.rel = "stylesheet";
+    link.href =
+      "https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&family=Playfair+Display:ital,wght@0,700;1,500&display=swap";
+    document.head.appendChild(link);
+    return () => {
+      document.head.removeChild(link);
+    };
+  }, []);
 
-  const Heading = ({ children, light = false }: { children: React.ReactNode; light?: boolean }) => (
-    <h2 style={{
-      fontFamily: "'Bebas Neue', sans-serif", fontSize: "clamp(2.2rem, 3.5vw, 3.4rem)",
-      lineHeight: 1, letterSpacing: "0.06em",
-      color: light ? "#F2EDE8" : "#292E4B",
-      marginBottom: "0.4rem", position: "relative", display: "inline-block",
-    }}>
-      {children}
-      <span style={{ position: "absolute", bottom: -10, left: 0, width: 52, height: 3, background: "#DFAA5E" }} />
-    </h2>
-  );
+  const doctorLeft  = useReveal();
+  const doctorRight = useReveal();
+  const missionHdr  = useReveal();
+  const mv1         = useReveal();
+  const mv2         = useReveal();
+  const p1          = useReveal();
+  const p2          = useReveal();
+  const p3          = useReveal();
+  const p4          = useReveal();
+
+  const credentials = ["MD (DVL)", "Board Certified", "Fellowship Germany", "Global Practice", "UAE Experience"];
+  const expertise   = [
+    "Clinical Dermatology",
+    "Advanced Laser Treatments",
+    "Anti-Aging & Aesthetics",
+    "Acne & Pigmentation",
+    "Hair Restoration (PRP)",
+    "Scar Revision",
+    "Cosmetic Procedures",
+    "Minimally Invasive Aesthetics",
+  ];
+  const pillars = [
+    { icon: "✦", title: "Expert Care",         desc: "Board-certified dermatologist with fellowship training and international experience." },
+    { icon: "◉", title: "Advanced Technology",  desc: "Modern laser and cosmetic procedures with minimal recovery time." },
+    { icon: "◈", title: "Personalized Plans",   desc: "Every patient receives a tailored treatment plan built around their unique skin goals." },
+    { icon: "⬡", title: "Comfortable Setting",  desc: "A calm, welcoming clinic environment designed to put every patient at ease." },
+  ];
 
   return (
-    <div style={{ fontFamily: "'Barlow', sans-serif", margin: 0, padding: 0, overflowX: "hidden" }}>
-
+    <div
+      style={{
+        fontFamily: "'DM Sans', sans-serif",
+        margin: 0,
+        padding: 0,
+        overflowX: "hidden",
+        background: "#ffffff",
+        color: "#1e2a3a",
+      }}
+    >
+      {/* ── Global styles ── */}
       <style>{`
-        @keyframes spin    { to { transform: rotate(360deg);  } }
-        @keyframes spinRev { to { transform: rotate(-360deg); } }
-        .btn-gold {
-          font-family:'Barlow Condensed',sans-serif; font-size:.82rem; font-weight:700;
-          letter-spacing:.18em; text-transform:uppercase;
-          background:#DFAA5E; color:#1A1D30; border:none;
-          padding:1rem 2.6rem; cursor:pointer;
-          transition:background .25s,transform .2s,box-shadow .25s;
+        .lx-serif   { font-family: 'Cormorant Garamond', Georgia, serif; }
+        .lx-display { font-family: 'Playfair Display', Georgia, serif; }
+        .lx-sans    { font-family: 'DM Sans', sans-serif; }
+
+        @keyframes lxFadeUp {
+          from { opacity: 0; transform: translateY(36px); }
+          to   { opacity: 1; transform: translateY(0);    }
         }
-        .btn-gold:hover { background:#e8b96e; transform:translateY(-2px); box-shadow:0 8px 28px rgba(223,170,94,.35); }
-        .btn-navy {
-          font-family:'Barlow Condensed',sans-serif; font-size:.82rem; font-weight:600;
-          letter-spacing:.18em; text-transform:uppercase;
-          background:transparent; color:#292E4B;
-          border:1.5px solid rgba(41,46,75,.3);
-          padding:1rem 2.6rem; cursor:pointer;
-          transition:border-color .25s,color .25s;
+        @keyframes lxLineGrow {
+          from { transform: scaleX(0); }
+          to   { transform: scaleX(1); }
         }
-        .btn-navy:hover { border-color:#DFAA5E; color:#DFAA5E; }
-        .mv-card { position:relative; overflow:hidden; }
-        .mv-card:hover .mv-bar { width:100% !important; }
-        @media(max-width:900px){
-          .g2   { grid-template-columns:1fr !important; }
-          .g4   { grid-template-columns:1fr 1fr !important; }
-          .hw   { display:none !important; }
-          .cta-r{ transform:none !important; }
+
+        .lx-hero-tag   { animation: lxFadeUp .9s cubic-bezier(.22,1,.36,1) .1s both; }
+        .lx-hero-title { animation: lxFadeUp .9s cubic-bezier(.22,1,.36,1) .22s both; }
+        .lx-hero-line  { transform-origin: left; animation: lxLineGrow .9s cubic-bezier(.22,1,.36,1) .5s both; }
+
+        .lx-reveal       { opacity: 0; transform: translateY(28px);  transition: opacity .75s ease, transform .75s ease; }
+        .lx-reveal-left  { opacity: 0; transform: translateX(-28px); transition: opacity .8s ease, transform .8s ease; }
+        .lx-reveal-right { opacity: 0; transform: translateX(28px);  transition: opacity .8s ease .15s, transform .8s ease .15s; }
+        .lx-visible      { opacity: 1 !important; transform: translate(0) !important; }
+
+        .lx-photo-frame { position: relative; border-radius: 2px; overflow: hidden; box-shadow: 0 24px 64px rgba(30,42,58,.14); }
+        .lx-photo-frame img { width: 100%; height: 520px; object-fit: cover; object-position: center top; display: block; transition: transform .7s ease; }
+        .lx-photo-frame:hover img { transform: scale(1.03); }
+        .lx-photo-frame::before {
+          content: '';
+          position: absolute; top: 0; left: 0;
+          width: 4px; height: 100%;
+          background: linear-gradient(to bottom, #c2746a, #e8c4bf);
+          z-index: 2;
         }
-        @media(max-width:580px){
-          .g4 { grid-template-columns:1fr !important; }
+
+        .lx-pill { transition: background .2s, color .2s, border-color .2s; }
+        .lx-pill:hover { background: #c2746a !important; color: #fff !important; border-color: #c2746a !important; }
+
+        .lx-mv-card { position: relative; overflow: hidden; transition: box-shadow .3s ease, transform .3s ease; }
+        .lx-mv-card::before {
+          content: '';
+          position: absolute; top: 0; left: 0;
+          height: 3px; width: 100%;
+          background: #c2746a;
+          transform: scaleX(0); transform-origin: left;
+          transition: transform .4s ease;
+        }
+        .lx-mv-card:hover { box-shadow: 0 16px 52px rgba(30,42,58,.10); transform: translateY(-3px); }
+        .lx-mv-card:hover::before { transform: scaleX(1); }
+
+        .lx-pillar { transition: box-shadow .25s; }
+        .lx-pillar:hover { box-shadow: 0 8px 32px rgba(30,42,58,.09); }
+
+        .lx-btn-primary {
+          font-family: 'DM Sans', sans-serif; font-size: .78rem; font-weight: 500;
+          letter-spacing: .14em; text-transform: uppercase;
+          background: #c2746a; color: #fff; border: none;
+          padding: 1rem 2.4rem; cursor: pointer; text-decoration: none; display: inline-block;
+          transition: background .25s, transform .2s, box-shadow .25s;
+        }
+        .lx-btn-primary:hover { background: #d4847b; transform: translateY(-2px); box-shadow: 0 8px 28px rgba(194,116,106,.38); }
+
+        .lx-btn-outline {
+          font-family: 'DM Sans', sans-serif; font-size: .78rem; font-weight: 500;
+          letter-spacing: .14em; text-transform: uppercase;
+          background: transparent; color: #fff; border: 1.5px solid rgba(255,255,255,.3);
+          padding: 1rem 2.2rem; cursor: pointer; text-decoration: none; display: inline-block;
+          transition: border-color .25s, color .25s;
+        }
+        .lx-btn-outline:hover { border-color: #e8c4bf; color: #e8c4bf; }
+
+        @media (max-width: 1024px) {
+          .lx-doctor-grid { grid-template-columns: 1fr !important; gap: 3.5rem !important; }
+          .lx-photo-frame img { height: 420px !important; }
+          .lx-badge { right: 1rem !important; top: 1rem !important; }
+          .lx-pillars-grid { grid-template-columns: repeat(2, 1fr) !important; }
+          .lx-photo-card { max-width: 480px; }
+        }
+        @media (max-width: 720px) {
+          .lx-doctor-section  { padding: 4.5rem 5% !important; }
+          .lx-mission-section { padding: 4.5rem 5% !important; }
+          .lx-cta-section     { padding: 4rem 5% !important; flex-direction: column !important; align-items: flex-start !important; }
+          .lx-mv-grid         { grid-template-columns: 1fr !important; gap: 1.2rem !important; }
+          .lx-pillars-grid    { grid-template-columns: 1fr 1fr !important; }
+          .lx-stats-strip     { grid-template-columns: 1fr 1fr !important; }
+          .lx-expertise-list  { grid-template-columns: 1fr !important; }
+          .lx-hero-title      { font-size: clamp(2rem, 8vw, 2.8rem) !important; }
+          .lx-hero            { min-height: 220px !important; padding: 3rem 5% !important; }
+          .lx-bio-heading     { font-size: 1.8rem !important; }
+        }
+        @media (max-width: 480px) {
+          .lx-pillars-grid  { grid-template-columns: 1fr !important; }
+          .lx-stats-strip   { grid-template-columns: 1fr !important; }
+          .lx-cred-row      { gap: .5rem !important; }
+          .lx-cta-actions   { flex-direction: column !important; align-items: stretch !important; }
+          .lx-btn-primary, .lx-btn-outline { text-align: center; width: 100%; }
         }
       `}</style>
 
-      {/* ══════════════════════════════════════════════════════════════════
-          SECTION 1 — HERO  (dark navy)
-      ══════════════════════════════════════════════════════════════════ */}
-      <section
-        ref={heroRef.ref}
-        className="g2"
+      {/* ══════════════════════════════════════════
+          ✅ FIX: White spacer so fixed header
+          sits on white background — not the
+          dark hero. Header stays visible!
+      ══════════════════════════════════════════ */}
+      <div
         style={{
-          minHeight: "88vh", display: "grid",
-          gridTemplateColumns: "1fr 1fr", alignItems: "center",
-          padding: "6rem 8% 5rem", gap: "4rem",
-          background: "#1A1D30", position: "relative", overflow: "hidden",
+          height: "96px",          /* matches header height on desktop */
+          background: "#ffffff",   /* matches header scrolled bg */
+        }}
+        className="lg:h-[96px]"
+      />
+
+      {/* ════════════════════════════════════════════
+          SECTION 1 — HERO
+          Now starts BELOW the header, so the
+          dark navy never hides menu items.
+      ════════════════════════════════════════════ */}
+      <section
+        className="lx-hero"
+        style={{
+          position: "relative",
+          minHeight: 300,
+          background: "linear-gradient(135deg, #1e2a3a 0%, #2e3f52 60%, #3d5166 100%)",
+          display: "flex",
+          alignItems: "flex-end",
+          overflow: "hidden",
+          padding: "3.5rem 7% 4rem",
         }}
       >
-        {/* bg radial glows */}
-        <div style={{ position:"absolute", inset:0, pointerEvents:"none",
-          background:"radial-gradient(ellipse 55% 65% at 75% 50%,rgba(41,46,75,.8) 0%,transparent 70%),radial-gradient(ellipse 35% 45% at 15% 85%,rgba(223,170,94,.07) 0%,transparent 60%)" }} />
-        <div style={{ position:"absolute", top:0, left:"8%", width:1, height:"100%",
-          background:"linear-gradient(to bottom,transparent,rgba(223,170,94,.1),transparent)", pointerEvents:"none" }} />
-
-        {/* copy */}
+        {/* Radial glows */}
         <div style={{
-          position:"relative", zIndex:2,
-          opacity: heroRef.inView ? 1 : 0,
-          transform: heroRef.inView ? "translateY(0)" : "translateY(32px)",
-          transition: "opacity .85s ease, transform .85s ease",
-        }}>
-          <Tag>Our Story</Tag>
-          <h1 style={{
-            fontFamily:"'Bebas Neue',sans-serif",
-            fontSize:"clamp(4rem,7vw,7.5rem)", lineHeight:.92,
-            letterSpacing:".04em", color:"#F2EDE8", margin:".4rem 0 1.8rem",
-          }}>
-            BORN IN<br />THE<br /><span style={{ color:"#DFAA5E" }}>DARK</span>
+          position: "absolute", inset: 0, pointerEvents: "none",
+          background: `
+            radial-gradient(ellipse 60% 80% at 80% 40%, rgba(194,116,106,.18) 0%, transparent 65%),
+            radial-gradient(ellipse 40% 50% at 10% 80%, rgba(194,116,106,.08) 0%, transparent 60%)
+          `,
+        }} />
+
+        {/* Diagonal stripe pattern */}
+        <div style={{
+          position: "absolute", top: 0, right: 0, width: "38%", height: "100%", pointerEvents: "none",
+          backgroundImage: "repeating-linear-gradient(-45deg, transparent, transparent 18px, rgba(255,255,255,.025) 18px, rgba(255,255,255,.025) 19px)",
+        }} />
+
+        {/* Content */}
+        <div style={{ position: "relative", zIndex: 2, width: "100%" }}>
+          <div
+            className="lx-hero-tag"
+            style={{
+              fontFamily: "'DM Sans', sans-serif",
+              fontSize: "0.68rem", fontWeight: 500,
+              letterSpacing: "0.22em", textTransform: "uppercase",
+              color: "#e8c4bf",
+              display: "flex", alignItems: "center", gap: "0.65rem",
+              marginBottom: "0.8rem",
+            }}
+          >
+            <span style={{ display: "block", width: 26, height: 1.5, background: "#e8c4bf" }} />
+            Luminox Clinics
+          </div>
+
+          <h1
+            className="lx-hero-title lx-display"
+            style={{
+              fontFamily: "'Playfair Display', Georgia, serif",
+              fontSize: "clamp(2.6rem, 5vw, 4.4rem)",
+              fontWeight: 700, color: "#fff",
+              lineHeight: 1.05, letterSpacing: "-.01em",
+            }}
+          >
+            Meet Our{" "}
+            <em style={{ fontStyle: "italic", color: "#e8c4bf" }}>Lead Dermatologist</em>
           </h1>
-          <p style={{ fontSize:"1.05rem", fontWeight:300, lineHeight:1.78,
-            color:"#C8C4BE", maxWidth:460, marginBottom:"2.5rem" }}>
-            Luminox was created for those who operate where light fails. Since 1989 we've
-            equipped the world's most elite forces with timepieces that never sleep, never
-            fail, and never go dark.
-          </p>
-          <div style={{ display:"flex", gap:"1.2rem", flexWrap:"wrap" }}>
-            <button className="btn-gold">Explore Collections</button>
-            <button style={{
-              fontFamily:"'Barlow Condensed',sans-serif", fontSize:".82rem",
-              fontWeight:600, letterSpacing:".16em", textTransform:"uppercase",
-              background:"transparent", color:"#F2EDE8",
-              border:"1.5px solid rgba(242,237,232,.25)",
-              padding:"1rem 2.4rem", cursor:"pointer",
-            }}>Watch Technology</button>
-          </div>
-          {/* mini stat strip */}
-          <div style={{
-            display:"grid", gridTemplateColumns:"repeat(3,1fr)", gap:"1rem",
-            marginTop:"3rem", paddingTop:"2rem",
-            borderTop:"1px solid rgba(223,170,94,.15)",
-          }}>
-            {[{v:"35+",l:"Years"},{v:"25yr",l:"Tube Life"},{v:"200m",l:"Water Resist."}].map(s=>(
-              <div key={s.l} style={{ textAlign:"center" }}>
-                <div style={{ fontFamily:"'Bebas Neue',sans-serif", fontSize:"2rem",
-                  color:"#DFAA5E", letterSpacing:".04em" }}>{s.v}</div>
-                <div style={{ fontFamily:"'Barlow Condensed',sans-serif", fontSize:".65rem",
-                  fontWeight:600, letterSpacing:".2em", textTransform:"uppercase",
-                  color:"#C8C4BE", marginTop:".2rem" }}>{s.l}</div>
+
+          <div
+            className="lx-hero-line"
+            style={{ width: 48, height: 3, background: "#c2746a", marginTop: "1.1rem" }}
+          />
+        </div>
+      </section>
+
+      {/* ════════════════════════════════════════════
+          SECTION 2 — DOCTOR PROFILE
+      ════════════════════════════════════════════ */}
+      <section className="lx-doctor-section" style={{ padding: "7rem 7%", background: "#ffffff" }}>
+        <div
+          className="lx-doctor-grid"
+          style={{
+            display: "grid",
+            gridTemplateColumns: "420px 1fr",
+            gap: "6rem",
+            alignItems: "start",
+            maxWidth: 1160,
+            margin: "0 auto",
+          }}
+        >
+          {/* ── Photo card ── */}
+          <div
+            ref={doctorLeft.ref as React.RefObject<HTMLDivElement>}
+            className="lx-photo-card lx-reveal-left"
+            style={{ position: "relative" }}
+          >
+            <div className="lx-photo-frame">
+              <Image
+                src="/home/saranya.png"
+                alt="Dr. Saranya Gadde"
+                width={420}
+                height={520}
+                style={{
+                  width: "100%", height: 520,
+                  objectFit: "cover", objectPosition: "center top",
+                  display: "block",
+                }}
+                priority
+              />
+              {/* Name overlay */}
+              <div style={{
+                position: "absolute", bottom: 0, left: 0, right: 0,
+                background: "linear-gradient(to top, rgba(30,42,58,.88) 0%, transparent 100%)",
+                padding: "2.5rem 1.6rem 1.6rem", zIndex: 3,
+              }}>
+                <div style={{
+                  fontFamily: "'Cormorant Garamond', Georgia, serif",
+                  fontSize: "1.5rem", fontWeight: 600,
+                  color: "#fff", letterSpacing: ".01em", lineHeight: 1.2,
+                }}>
+                  Dr. Saranya Gadde
+                </div>
+                <div style={{
+                  fontFamily: "'DM Sans', sans-serif",
+                  fontSize: ".68rem", fontWeight: 500,
+                  letterSpacing: ".18em", textTransform: "uppercase",
+                  color: "#e8c4bf", marginTop: ".35rem",
+                }}>
+                  MD (DVL) · Lead Dermatologist
+                </div>
               </div>
-            ))}
-          </div>
-        </div>
-
-        {/* animated watch */}
-        <div className="hw" style={{
-          display:"flex", alignItems:"center", justifyContent:"center",
-          position:"relative", zIndex:2,
-          opacity: heroRef.inView ? 1 : 0,
-          transform: heroRef.inView ? "scale(1)" : "scale(.88)",
-          transition: "opacity 1s ease .35s, transform 1s ease .35s",
-        }}>
-          <div style={{ position:"relative" }}>
-            <div style={{ position:"absolute", top:"50%", left:"50%",
-              width:300, height:300, marginLeft:-150, marginTop:-150,
-              borderRadius:"50%", border:"1px solid rgba(223,170,94,.14)",
-              animation:"spin 30s linear infinite" }} />
-            <div style={{ position:"absolute", top:"50%", left:"50%",
-              width:360, height:360, marginLeft:-180, marginTop:-180,
-              borderRadius:"50%", border:"1px dashed rgba(223,170,94,.07)",
-              animation:"spinRev 22s linear infinite" }} />
-            <WatchIllustration size={265} />
-          </div>
-        </div>
-      </section>
-
-      {/* ══════════════════════════════════════════════════════════════════
-          SECTION 2 — ABOUT THE DOCTOR  (white)
-      ══════════════════════════════════════════════════════════════════ */}
-      <section
-        ref={doctorRef.ref}
-        className="g2"
-        style={{
-          display:"grid", gridTemplateColumns:"1fr 1fr",
-          alignItems:"center", gap:"5rem",
-          padding:"7rem 8%", background:"#ffffff",
-        }}
-      >
-        {/* photo card */}
-        <div style={{
-          position:"relative",
-          opacity: doctorRef.inView ? 1 : 0,
-          transform: doctorRef.inView ? "translateX(0)" : "translateX(-28px)",
-          transition: "opacity .85s ease, transform .85s ease",
-        }}>
-          <div style={{
-            width:"100%", aspectRatio:"4/5",
-            background:"linear-gradient(160deg,#1e2342 0%,#0b0e1e 100%)",
-            display:"flex", flexDirection:"column",
-            alignItems:"center", justifyContent:"center",
-            position:"relative", overflow:"hidden",
-          }}>
-            {/* faint watch watermark */}
-            <div style={{ opacity:.07, transform:"scale(1.4)", position:"absolute" }}>
-              <WatchIllustration size={280} />
             </div>
-            {/* avatar circle */}
-            <div style={{
-              position:"absolute", width:120, height:120, borderRadius:"50%",
-              background:"rgba(41,46,75,.85)", border:"3px solid #DFAA5E",
-              display:"flex", alignItems:"center", justifyContent:"center",
-              top:"50%", left:"50%", transform:"translate(-50%,-50%)",
-            }}>
-              <span style={{ fontFamily:"'Bebas Neue',sans-serif", fontSize:"2.6rem",
-                letterSpacing:".1em", color:"#DFAA5E" }}>DL</span>
-            </div>
-            {/* bottom fade */}
-            <div style={{ position:"absolute", bottom:0, left:0, right:0, height:"45%",
-              background:"linear-gradient(to top,rgba(10,12,22,.92),transparent)" }} />
-            {/* name bar */}
-            <div style={{ position:"absolute", bottom:"1.8rem", left:"2rem" }}>
-              <div style={{ fontFamily:"'Bebas Neue',sans-serif", fontSize:"1.6rem",
-                letterSpacing:".08em", color:"#F2EDE8" }}>Dr. David Laurent</div>
-              <div style={{ fontFamily:"'Barlow Condensed',sans-serif", fontSize:".72rem",
-                fontWeight:600, letterSpacing:".2em", textTransform:"uppercase",
-                color:"#DFAA5E", marginTop:".2rem" }}>Founder & Chief Horologist</div>
-            </div>
-          </div>
 
-          {/* floating credential badge */}
-          <div style={{
-            position:"absolute", top:"1.8rem", right:"-1.8rem",
-            background:"#292E4B", padding:"1.2rem 1.4rem",
-            boxShadow:"0 12px 40px rgba(0,0,0,.2)", minWidth:130,
-          }}>
-            <div style={{ fontFamily:"'Bebas Neue',sans-serif", fontSize:"2rem",
-              color:"#DFAA5E", letterSpacing:".04em", lineHeight:1 }}>30+</div>
-            <div style={{ fontFamily:"'Barlow Condensed',sans-serif", fontSize:".62rem",
-              fontWeight:700, letterSpacing:".18em", textTransform:"uppercase",
-              color:"#C8C4BE", marginTop:".3rem" }}>Years in<br/>Watchmaking</div>
-          </div>
-        </div>
-
-        {/* bio */}
-        <div style={{
-          opacity: doctorRef.inView ? 1 : 0,
-          transform: doctorRef.inView ? "translateX(0)" : "translateX(28px)",
-          transition: "opacity .85s ease .15s, transform .85s ease .15s",
-        }}>
-          <Tag>About the Doctor</Tag>
-          <div style={{ marginTop:".4rem" }}>
-            <Heading>The Mind Behind<br />the Movement</Heading>
-          </div>
-
-          <p style={{ fontSize:"1rem", fontWeight:300, lineHeight:1.8,
-            color:"#414042", marginTop:"1.8rem", marginBottom:"1.4rem" }}>
-            Dr. David Laurent began his career at the Swiss Federal Institute of Technology,
-            where his doctoral research on self-luminous materials laid the groundwork for what
-            would become Luminox's signature tritium gas tube technology.
-          </p>
-          <p style={{ fontSize:"1rem", fontWeight:300, lineHeight:1.8,
-            color:"#414042", marginBottom:"1.4rem" }}>
-            With over three decades in precision horology, David has collaborated with U.S. Navy
-            SEAL commanders, commercial aviation engineers, and deep-sea exploration teams —
-            translating extreme operational demands into refined Swiss craft.
-          </p>
-          <p style={{ fontSize:"1rem", fontWeight:300, lineHeight:1.8,
-            color:"#414042", marginBottom:"2.5rem" }}>
-            His philosophy is simple:{" "}
-            <em style={{ color:"#292E4B", fontStyle:"normal", fontWeight:500 }}>
-              "A watch that fails its wearer in the dark has failed its only purpose."
-            </em>{" "}
-            That conviction still drives every design decision at Luminox today.
-          </p>
-
-          {/* credential pills */}
-          <div style={{ display:"flex", flexWrap:"wrap", gap:".7rem" }}>
-            {["ETH Zürich PhD","Swiss Master Horologist","SEAL Advisory Council","ISO 6425 Certified"].map(tag=>(
-              <span key={tag} style={{
-                fontFamily:"'Barlow Condensed',sans-serif", fontSize:".7rem",
-                fontWeight:600, letterSpacing:".14em", textTransform:"uppercase",
-                color:"#292E4B", background:"rgba(41,46,75,.06)",
-                border:"1px solid rgba(41,46,75,.18)",
-                padding:".45rem 1rem",
-              }}>{tag}</span>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ══════════════════════════════════════════════════════════════════
-          SECTION 3 — MISSION & VISION  (off-white)
-      ══════════════════════════════════════════════════════════════════ */}
-      <section
-        ref={mvRef.ref}
-        style={{ padding:"7rem 8%", background:"#f8f7f5" }}
-      >
-        {/* centred header */}
-        <div style={{
-          textAlign:"center", marginBottom:"4.5rem",
-          opacity: mvRef.inView ? 1 : 0,
-          transform: mvRef.inView ? "translateY(0)" : "translateY(24px)",
-          transition: "opacity .8s ease, transform .8s ease",
-        }}>
-          <Tag center>What Drives Us</Tag>
-          <h2 style={{
-            fontFamily:"'Bebas Neue',sans-serif",
-            fontSize:"clamp(2.4rem,4vw,3.8rem)", lineHeight:1,
-            letterSpacing:".06em", color:"#292E4B", margin:"0 auto .4rem",
-          }}>Mission &amp; Vision</h2>
-          <div style={{ width:52, height:3, background:"#DFAA5E", margin:".9rem auto 0" }} />
-        </div>
-
-        {/* Mission / Vision side-by-side */}
-        <div className="g2" style={{
-          display:"grid", gridTemplateColumns:"1fr 1fr",
-          gap:"2px", background:"rgba(223,170,94,.12)", marginBottom:"3.5rem",
-        }}>
-          {/* MISSION */}
-          <div className="mv-card" style={{
-            background:"#ffffff", padding:"3.5rem 3rem",
-            opacity: mvRef.inView ? 1 : 0,
-            transform: mvRef.inView ? "translateY(0)" : "translateY(24px)",
-            transition: "opacity .75s ease .1s, transform .75s ease .1s",
-          }}>
-            {/* gold top bar that grows on hover */}
-            <div className="mv-bar" style={{
-              position:"absolute", top:0, left:0, height:3,
-              width:"100%", background:"#DFAA5E",
-              transition:"width .4s ease",
-            }} />
-            {/* icon */}
-            <div style={{
-              width:52, height:52, background:"#292E4B",
-              display:"flex", alignItems:"center", justifyContent:"center",
-              marginBottom:"1.6rem",
-            }}>
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none"
-                stroke="#DFAA5E" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <circle cx="12" cy="12" r="10"/>
-                <polyline points="12 6 12 12 16 14"/>
-              </svg>
-            </div>
-            <p style={{ fontFamily:"'Barlow Condensed',sans-serif", fontSize:".78rem",
-              fontWeight:700, letterSpacing:".28em", textTransform:"uppercase",
-              color:"#DFAA5E", marginBottom:".5rem" }}>Mission</p>
-            <h3 style={{ fontFamily:"'Bebas Neue',sans-serif", fontSize:"1.75rem",
-              letterSpacing:".06em", color:"#292E4B", lineHeight:1.05,
-              marginBottom:"1.2rem" }}>
-              Engineer Timepieces That Perform When Everything Else Fails
-            </h3>
-            <p style={{ fontSize:".93rem", fontWeight:300, lineHeight:1.78, color:"#414042" }}>
-              We build exclusively for the extremes. Every Luminox watch undergoes the same
-              rigorous testing demanded by military operators — Navy SEALs, USAF pilots, and
-              mountain rescue units — before it ever reaches a civilian wrist. Our mission is
-              non-negotiable:{" "}
-              <strong style={{ fontWeight:500, color:"#292E4B" }}>
-                always visible, always accurate, always ready.
-              </strong>
-            </p>
-            <ul style={{ listStyle:"none", margin:"1.8rem 0 0", padding:0,
-              display:"flex", flexDirection:"column", gap:".8rem" }}>
-              {[
-                "Self-powered tritium illumination — no charging required",
-                "Swiss-certified movement accuracy in every model",
-                "Issued to special operations forces across 50+ nations",
-              ].map(pt=>(
-                <li key={pt} style={{ display:"flex", gap:".75rem", alignItems:"flex-start",
-                  fontSize:".87rem", fontWeight:300, color:"#414042", lineHeight:1.6 }}>
-                  <span style={{ width:6, height:6, borderRadius:"50%",
-                    background:"#DFAA5E", flexShrink:0, marginTop:".45rem" }} />
-                  {pt}
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          {/* VISION */}
-          <div className="mv-card" style={{
-            background:"#ffffff", padding:"3.5rem 3rem",
-            opacity: mvRef.inView ? 1 : 0,
-            transform: mvRef.inView ? "translateY(0)" : "translateY(24px)",
-            transition: "opacity .75s ease .22s, transform .75s ease .22s",
-          }}>
-            <div className="mv-bar" style={{
-              position:"absolute", top:0, left:0, height:3,
-              width:"100%", background:"#292E4B",
-              transition:"width .4s ease",
-            }} />
-            <div style={{
-              width:52, height:52, background:"#292E4B",
-              display:"flex", alignItems:"center", justifyContent:"center",
-              marginBottom:"1.6rem",
-            }}>
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none"
-                stroke="#DFAA5E" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
-                <circle cx="12" cy="12" r="3"/>
-              </svg>
-            </div>
-            <p style={{ fontFamily:"'Barlow Condensed',sans-serif", fontSize:".78rem",
-              fontWeight:700, letterSpacing:".28em", textTransform:"uppercase",
-              color:"#DFAA5E", marginBottom:".5rem" }}>Vision</p>
-            <h3 style={{ fontFamily:"'Bebas Neue',sans-serif", fontSize:"1.75rem",
-              letterSpacing:".06em", color:"#292E4B", lineHeight:1.05,
-              marginBottom:"1.2rem" }}>
-              To Define the Global Standard for Professional Timepieces
-            </h3>
-            <p style={{ fontSize:".93rem", fontWeight:300, lineHeight:1.78, color:"#414042" }}>
-              We envision a world where every professional who relies on a watch — in the
-              ocean, at altitude, or in the dark — reaches for Luminox without question. Not
-              because of marketing, but because of{" "}
-              <strong style={{ fontWeight:500, color:"#292E4B" }}>
-                proven, uncompromising performance
-              </strong>{" "}
-              earned in the field over three decades.
-            </p>
-            <ul style={{ listStyle:"none", margin:"1.8rem 0 0", padding:0,
-              display:"flex", flexDirection:"column", gap:".8rem" }}>
-              {[
-                "The benchmark watch for all professional environments",
-                "Sustainable Swiss manufacturing by 2030",
-                "Next-generation materials pushing beyond current limits",
-              ].map(pt=>(
-                <li key={pt} style={{ display:"flex", gap:".75rem", alignItems:"flex-start",
-                  fontSize:".87rem", fontWeight:300, color:"#414042", lineHeight:1.6 }}>
-                  <span style={{ width:6, height:6, borderRadius:"50%",
-                    background:"#292E4B", flexShrink:0, marginTop:".45rem" }} />
-                  {pt}
-                </li>
-              ))}
-            </ul>
-          </div>
-        </div>
-
-        {/* 4-value strip */}
-        <div className="g4" style={{
-          display:"grid", gridTemplateColumns:"repeat(4,1fr)", gap:"1.5rem",
-        }}>
-          {[
-            { icon:"◉", title:"Always Visible",  desc:"25-year tritium tubes. Zero-effort illumination." },
-            { icon:"◈", title:"Swiss Precision",  desc:"Every movement certified to Swiss chronometric standards." },
-            { icon:"⬡", title:"Built to Endure",  desc:"Carbon compound cases tested beyond MIL-SPEC requirements." },
-            { icon:"✦", title:"Field Proven",     desc:"Trusted by SEALs, pilots, and rescue teams worldwide." },
-          ].map((v,i)=>(
-            <div key={v.title} style={{
-              background:"#ffffff", padding:"2rem 1.6rem",
-              border:"1px solid rgba(41,46,75,.08)",
-              borderTop:"3px solid #DFAA5E",
-              opacity: mvRef.inView ? 1 : 0,
-              transform: mvRef.inView ? "translateY(0)" : "translateY(20px)",
-              transition:`opacity .7s ease ${.3+i*.1}s, transform .7s ease ${.3+i*.1}s`,
-            }}>
-              <div style={{ fontSize:"1.4rem", color:"#DFAA5E", marginBottom:".9rem" }}>{v.icon}</div>
-              <div style={{ fontFamily:"'Barlow Condensed',sans-serif", fontSize:".88rem",
-                fontWeight:700, letterSpacing:".12em", textTransform:"uppercase",
-                color:"#292E4B", marginBottom:".5rem" }}>{v.title}</div>
-              <div style={{ fontSize:".84rem", fontWeight:300, lineHeight:1.65,
-                color:"#414042" }}>{v.desc}</div>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* ══════════════════════════════════════════════════════════════════
-          SECTION 4 — CTA  (white)
-      ══════════════════════════════════════════════════════════════════ */}
-      <section
-        ref={ctaRef.ref}
-        className="g2"
-        style={{
-          display:"grid", gridTemplateColumns:"1fr 1fr",
-          alignItems:"center", gap:"5rem",
-          padding:"6rem 8%", background:"#ffffff",
-          borderTop:"1px solid rgba(41,46,75,.1)",
-          position:"relative", overflow:"hidden",
-        }}
-      >
-        {/* gold left border accent */}
-        <div style={{ position:"absolute", top:0, left:0, width:4, height:"100%",
-          background:"linear-gradient(to bottom,#DFAA5E,rgba(223,170,94,.1))" }} />
-
-        {/* heading side */}
-        <div style={{
-          opacity: ctaRef.inView ? 1 : 0,
-          transform: ctaRef.inView ? "translateY(0)" : "translateY(22px)",
-          transition: "opacity .85s ease, transform .85s ease",
-        }}>
-          <Tag>Ready to Equip</Tag>
-          <h2 style={{
-            fontFamily:"'Bebas Neue',sans-serif",
-            fontSize:"clamp(2.4rem,4.5vw,4rem)", lineHeight:1,
-            letterSpacing:".06em", color:"#292E4B",
-            marginTop:".4rem", marginBottom:"1.2rem",
-          }}>
-            FIND YOUR<br /><span style={{ color:"#DFAA5E" }}>LUMINOX</span>
-          </h2>
-          <p style={{ fontSize:".97rem", fontWeight:300, lineHeight:1.78,
-            color:"#414042", maxWidth:440 }}>
-            Whether you're a professional operator or a passionate collector, there is a
-            Luminox built to your standard. Explore the full lineup and discover the watch
-            that will never leave you in the dark.
-          </p>
-        </div>
-
-        {/* buttons side */}
-        <div className="cta-r" style={{
-          display:"flex", flexDirection:"column", gap:"1rem",
-          opacity: ctaRef.inView ? 1 : 0,
-          transform: ctaRef.inView ? "translateX(0)" : "translateX(24px)",
-          transition: "opacity .85s ease .2s, transform .85s ease .2s",
-        }}>
-          {[
-            { label:"Shop All Collections",    primary:true  },
-            { label:"Find a Dealer Near You",   primary:false },
-            { label:"Download Brand Catalogue", primary:false },
-          ].map(btn=>(
-            <button
-              key={btn.label}
-              className={btn.primary ? "btn-gold" : "btn-navy"}
+            {/* Floating badge */}
+            <div
+              className="lx-badge"
               style={{
-                display:"flex", alignItems:"center",
-                justifyContent:"space-between",
-                padding:"1.05rem 1.8rem", width:"100%", textAlign:"left",
+                position: "absolute", top: "1.8rem", right: "-1.5rem",
+                background: "#c2746a", color: "#fff",
+                padding: "1rem 1.3rem",
+                boxShadow: "0 10px 36px rgba(194,116,106,.35)",
+                textAlign: "center", zIndex: 10, minWidth: 110,
               }}
             >
-              {btn.label}
-              <span style={{ opacity:.6, marginLeft:"1rem" }}>→</span>
-            </button>
-          ))}
+              <span style={{
+                fontFamily: "'Cormorant Garamond', Georgia, serif",
+                fontSize: "2.4rem", fontWeight: 300,
+                lineHeight: 1, letterSpacing: "-.02em", display: "block",
+              }}>
+                25+
+              </span>
+              <span style={{
+                fontFamily: "'DM Sans', sans-serif",
+                fontSize: ".6rem", fontWeight: 500,
+                letterSpacing: ".14em", textTransform: "uppercase",
+                opacity: .9, marginTop: ".25rem", display: "block", lineHeight: 1.5,
+              }}>
+                Years of<br />Experience
+              </span>
+            </div>
 
-          {/* social proof strip */}
-          <div style={{
-            display:"flex", alignItems:"center", gap:"1.2rem",
-            paddingTop:"1.2rem", marginTop:".4rem",
-            borderTop:"1px solid rgba(41,46,75,.1)",
-          }}>
-            <div style={{ display:"flex" }}>
-              {["TM","SK","JR","MW"].map((init,i)=>(
-                <div key={init} style={{
-                  width:34, height:34, borderRadius:"50%",
-                  background:"#292E4B", border:"2px solid #fff",
-                  display:"flex", alignItems:"center", justifyContent:"center",
-                  marginLeft: i===0 ? 0 : -10, zIndex:4-i,
-                  fontFamily:"'Bebas Neue',sans-serif",
-                  fontSize:".7rem", letterSpacing:".06em", color:"#DFAA5E",
-                }}>{init}</div>
+            {/* Credential pills */}
+            <div className="lx-cred-row" style={{ display: "flex", flexWrap: "wrap", gap: ".8rem", marginTop: "1.6rem" }}>
+              {credentials.map((c) => (
+                <span
+                  key={c}
+                  className="lx-pill"
+                  style={{
+                    fontFamily: "'DM Sans', sans-serif",
+                    fontSize: ".63rem", fontWeight: 500,
+                    letterSpacing: ".12em", textTransform: "uppercase",
+                    color: "#2e3f52", background: "#fdf6f5",
+                    border: "1px solid #e8c4bf",
+                    padding: ".42rem .9rem", borderRadius: 2, cursor: "default",
+                  }}
+                >
+                  {c}
+                </span>
               ))}
             </div>
-            <div>
-              <div style={{ fontFamily:"'Barlow Condensed',sans-serif", fontSize:".8rem",
-                fontWeight:700, letterSpacing:".1em", color:"#292E4B" }}>
-                Trusted by 2M+ professionals
-              </div>
-              <div style={{ fontSize:".75rem", fontWeight:300, color:"#414042" }}>
-                across 50+ countries worldwide
-              </div>
+          </div>
+
+          {/* ── Bio ── */}
+          <div
+            ref={doctorRight.ref as React.RefObject<HTMLDivElement>}
+            className="lx-reveal-right"
+            style={{ paddingTop: ".5rem" }}
+          >
+            <Eyebrow>About the Doctor</Eyebrow>
+
+            <h2
+              className="lx-bio-heading lx-display"
+              style={{
+                fontFamily: "'Playfair Display', Georgia, serif",
+                fontSize: "clamp(2rem, 3.2vw, 3rem)", fontWeight: 700,
+                color: "#1e2a3a", lineHeight: 1.1,
+                letterSpacing: "-.02em", marginBottom: "1.6rem",
+              }}
+            >
+              The Expertise<br />Behind{" "}
+              <em style={{ fontStyle: "italic", color: "#c2746a" }}>Your Glow</em>
+            </h2>
+
+            {[
+              "Dr. Saranya Gadde, MD (DVL), is a highly experienced, board-certified dermatologist with over 25 years of clinical expertise in medical, cosmetic, and laser dermatology. Known for her patient-centric approach, she combines scientific precision with aesthetic artistry to deliver natural and effective results.",
+              "She completed her medical degree from Dr. NTR University of Health Sciences, Andhra Pradesh, and her postgraduate specialization (MD, DVL) from Karnataka University, earning honors and recognition for her clinical and research contributions.",
+            ].map((para, i) => (
+              <p
+                key={i}
+                style={{
+                  fontFamily: "'DM Sans', sans-serif",
+                  fontSize: ".96rem", fontWeight: 300,
+                  lineHeight: 1.82, color: "#4b5563", marginBottom: "1.2rem",
+                }}
+              >
+                {para}
+              </p>
+            ))}
+
+            <p style={{ fontFamily: "'DM Sans', sans-serif", fontSize: ".96rem", fontWeight: 300, lineHeight: 1.82, color: "#4b5563", marginBottom: "1.2rem" }}>
+              To further enhance her expertise, she pursued a{" "}
+              <strong style={{ fontWeight: 500, color: "#1e2a3a" }}>Fellowship in Cosmetic and Laser Surgery</strong>{" "}
+              from a reputed German institution, gaining advanced skills in minimally invasive aesthetic procedures and modern laser technologies.
+            </p>
+
+            <p style={{ fontFamily: "'DM Sans', sans-serif", fontSize: ".96rem", fontWeight: 300, lineHeight: 1.82, color: "#4b5563", marginBottom: "1.6rem" }}>
+              Dr. Saranya has worked with leading hospitals in India and internationally, including significant experience in the{" "}
+              <strong style={{ fontWeight: 500, color: "#1e2a3a" }}>UAE healthcare system</strong>.
+              She has returned to India to establish Luminox Clinics — a boutique dermatology practice offering personalized, high-quality care with global standards.
+            </p>
+
+            {/* Stats strip */}
+            <div
+              className="lx-stats-strip"
+              style={{
+                display: "grid", gridTemplateColumns: "repeat(3, 1fr)",
+                gap: 1, background: "rgba(30,42,58,.10)",
+                borderTop: "1px solid rgba(30,42,58,.10)",
+                borderBottom: "1px solid rgba(30,42,58,.10)",
+                margin: "2.2rem 0",
+              }}
+            >
+              {[
+                { num: "25+", label: "Years Clinical Experience" },
+                { num: "3",   label: "Countries Practiced" },
+                { num: "1",   label: "German Fellowship" },
+              ].map((s) => (
+                <div key={s.label} style={{ background: "#fff", padding: "1.4rem 1rem", textAlign: "center" }}>
+                  <div style={{
+                    fontFamily: "'Cormorant Garamond', Georgia, serif",
+                    fontSize: "2.2rem", fontWeight: 600,
+                    color: "#c2746a", lineHeight: 1, letterSpacing: "-.02em",
+                  }}>
+                    {s.num}
+                  </div>
+                  <div style={{
+                    fontFamily: "'DM Sans', sans-serif",
+                    fontSize: ".62rem", fontWeight: 500,
+                    letterSpacing: ".15em", textTransform: "uppercase",
+                    color: "#6b7280", marginTop: ".35rem",
+                  }}>
+                    {s.label}
+                  </div>
+                </div>
+              ))}
             </div>
+
+            {/* Expertise */}
+            <Eyebrow>Areas of Expertise</Eyebrow>
+            <ul
+              className="lx-expertise-list"
+              style={{
+                listStyle: "none", padding: 0,
+                display: "grid", gridTemplateColumns: "1fr 1fr",
+                gap: ".55rem .8rem",
+              }}
+            >
+              {expertise.map((item) => (
+                <li
+                  key={item}
+                  style={{
+                    fontFamily: "'DM Sans', sans-serif",
+                    fontSize: ".87rem", fontWeight: 300,
+                    color: "#4b5563",
+                    display: "flex", alignItems: "flex-start",
+                    gap: ".6rem", lineHeight: 1.5,
+                  }}
+                >
+                  <span style={{
+                    width: 5, height: 5, borderRadius: "50%",
+                    background: "#c2746a", flexShrink: 0, marginTop: ".48em",
+                  }} />
+                  {item}
+                </li>
+              ))}
+            </ul>
           </div>
         </div>
       </section>
 
+      {/* ════════════════════════════════════════════
+          SECTION 3 — MISSION & VISION
+      ════════════════════════════════════════════ */}
+      <section
+        className="lx-mission-section"
+        style={{
+          background: "#faf8f6", padding: "6rem 7%",
+          borderTop: "1px solid rgba(30,42,58,.06)",
+        }}
+      >
+        {/* Header */}
+        <div
+          ref={missionHdr.ref as React.RefObject<HTMLDivElement>}
+          className="lx-reveal"
+          style={{
+            textAlign: "center", marginBottom: "4rem",
+            maxWidth: 620, marginLeft: "auto", marginRight: "auto",
+          }}
+        >
+          <p style={{
+            fontFamily: "'DM Sans', sans-serif",
+            fontSize: ".68rem", fontWeight: 500,
+            letterSpacing: ".22em", textTransform: "uppercase", color: "#c2746a",
+            display: "flex", alignItems: "center", justifyContent: "center",
+            gap: ".65rem", marginBottom: ".8rem",
+          }}>
+            <span style={{ display: "block", width: 24, height: 1.5, background: "#c2746a" }} />
+            What Drives Us
+            <span style={{ display: "block", width: 24, height: 1.5, background: "#c2746a" }} />
+          </p>
+          <h2 style={{
+            fontFamily: "'Playfair Display', Georgia, serif",
+            fontSize: "clamp(1.9rem, 3vw, 2.8rem)", fontWeight: 700,
+            color: "#1e2a3a", lineHeight: 1.15,
+            letterSpacing: "-.02em", marginBottom: "1rem",
+          }}>
+            Our Mission &amp; Vision
+          </h2>
+          <p style={{
+            fontFamily: "'DM Sans', sans-serif",
+            fontSize: ".95rem", fontWeight: 300,
+            color: "#6b7280", lineHeight: 1.78,
+          }}>
+            We believe every patient is unique. Our goal is to carefully examine, guide, and treat each person
+            in a calm and comfortable setting — helping you achieve healthy, confident, and beautiful skin.
+          </p>
+        </div>
+
+        {/* Mission / Vision cards */}
+        <div
+          className="lx-mv-grid"
+          style={{
+            display: "grid", gridTemplateColumns: "1fr 1fr",
+            gap: "2rem", maxWidth: 1100, margin: "0 auto 3rem",
+          }}
+        >
+          {[
+            {
+              ref: mv1,
+              tag: "Mission",
+              title: "Personalized Care for Every Skin Type",
+              desc: "We take the time to understand your concerns and create individualized treatment plans. We treat every patient with the same care and respect as we would our own family — in a calm, modern, and well-equipped clinic.",
+              icon: (
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
+                </svg>
+              ),
+            },
+            {
+              ref: mv2,
+              tag: "Vision",
+              title: "Global Standards, Local Heart",
+              desc: "Our vision is to be the most trusted dermatology clinic in Andhra Pradesh — combining global training and advanced technology with the warmth of a boutique practice focused on long-term skin and hair health.",
+              icon: (
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                  <circle cx="12" cy="12" r="3" />
+                </svg>
+              ),
+            },
+          ].map(({ ref, tag, title, desc, icon }) => (
+            <div
+              key={tag}
+              ref={ref.ref as React.RefObject<HTMLDivElement>}
+              className="lx-mv-card lx-reveal"
+              style={{
+                background: "#fff",
+                border: "1px solid rgba(30,42,58,.10)",
+                padding: "2.6rem 2.2rem",
+              }}
+            >
+              <p style={{
+                fontFamily: "'DM Sans', sans-serif",
+                fontSize: ".6rem", fontWeight: 500,
+                letterSpacing: ".2em", textTransform: "uppercase",
+                color: "#c2746a", marginBottom: ".4rem",
+              }}>
+                {tag}
+              </p>
+              <div style={{
+                width: 46, height: 46, borderRadius: "50%",
+                background: "#fdf6f5",
+                display: "flex", alignItems: "center", justifyContent: "center",
+                marginBottom: "1.3rem", color: "#c2746a",
+              }}>
+                {icon}
+              </div>
+              <h3 style={{
+                fontFamily: "'Cormorant Garamond', Georgia, serif",
+                fontSize: "1.25rem", fontWeight: 600,
+                color: "#1e2a3a", lineHeight: 1.3, marginBottom: ".9rem",
+              }}>
+                {title}
+              </h3>
+              <p style={{
+                fontFamily: "'DM Sans', sans-serif",
+                fontSize: ".9rem", fontWeight: 300,
+                color: "#4b5563", lineHeight: 1.78,
+              }}>
+                {desc}
+              </p>
+            </div>
+          ))}
+        </div>
+
+        {/* 4 Pillars */}
+        <div
+          className="lx-pillars-grid"
+          style={{
+            display: "grid", gridTemplateColumns: "repeat(4, 1fr)",
+            gap: "1.2rem", maxWidth: 1100, margin: "0 auto",
+          }}
+        >
+          {pillars.map(({ icon, title, desc }, i) => {
+            const refs = [p1, p2, p3, p4];
+            return (
+              <div
+                key={title}
+                ref={refs[i].ref as React.RefObject<HTMLDivElement>}
+                className="lx-pillar lx-reveal"
+                style={{
+                  background: "#fff",
+                  border: "1px solid rgba(30,42,58,.10)",
+                  borderTop: "3px solid #c2746a",
+                  padding: "1.6rem 1.4rem",
+                  transitionDelay: `${0.1 + i * 0.1}s`,
+                }}
+              >
+                <div style={{ fontSize: "1.3rem", color: "#c2746a", marginBottom: ".8rem" }}>
+                  {icon}
+                </div>
+                <h4 style={{
+                  fontFamily: "'DM Sans', sans-serif",
+                  fontSize: ".8rem", fontWeight: 500,
+                  letterSpacing: ".08em", textTransform: "uppercase",
+                  color: "#1e2a3a", marginBottom: ".5rem",
+                }}>
+                  {title}
+                </h4>
+                <p style={{
+                  fontFamily: "'DM Sans', sans-serif",
+                  fontSize: ".83rem", fontWeight: 300,
+                  color: "#6b7280", lineHeight: 1.65,
+                }}>
+                  {desc}
+                </p>
+              </div>
+            );
+          })}
+        </div>
+      </section>
+
+      {/* ════════════════════════════════════════════
+          SECTION 4 — CTA
+      ════════════════════════════════════════════ */}
+      <section
+        className="lx-cta-section"
+        style={{
+          background: "#1e2a3a",
+          padding: "1.5rem 7%",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          gap: "3rem",
+          flexWrap: "wrap",
+        }}
+      >
+        <div>
+          <h2 style={{
+            fontFamily: "'Playfair Display', Georgia, serif",
+            fontSize: "clamp(1.8rem, 3.2vw, 2.7rem)", fontWeight: 700,
+            color: "#fff", lineHeight: 1.15,
+            letterSpacing: "-.02em", marginBottom: ".7rem",
+          }}>
+            Ready for{" "}
+            <em style={{ fontStyle: "italic", color: "#e8c4bf" }}>Healthier Skin?</em>
+          </h2>
+          <p style={{
+            fontFamily: "'DM Sans', sans-serif",
+            fontSize: ".92rem", fontWeight: 300,
+            color: "rgba(255,255,255,.65)",
+            maxWidth: 460, lineHeight: 1.7,
+          }}>
+            We are here to listen to your concerns and provide the best possible care for your skin and overall well-being.
+            Book a consultation with Dr. Saranya today.
+          </p>
+        </div>
+
+        <div
+          className="lx-cta-actions"
+          style={{ display: "flex", gap: "1rem", flexWrap: "wrap", alignItems: "center" }}
+        >
+          <Link href="/contact" className="lx-btn-primary">
+            Book a Consultation
+          </Link>
+            {/* <Link href="/laser-treatments" className="lx-btn-outline">
+              View Our Services
+            </Link> */}
+        </div>
+      </section>
     </div>
   );
 }

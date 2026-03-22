@@ -33,7 +33,7 @@ export default function Home() {
       {/* <Clinicpipeline /> */}
       <ResultSlider />
        <Appointment />
-       <WhyChooseUs />
+       {/* <WhyChooseUs /> */}
        {/* <CustomersCount /> */}
        <Testimonials />
       

@@ -3,16 +3,16 @@
 import { useState, useEffect } from "react";
 
 const doctor = {
-  name: "Dr. Name",
-  spec: "Senior Dermatologist",
-  qual: "MD (Dermatology), AIIMS Delhi",
-  exp: "12+ Years",
+  name: "Dr. Saranya Gadde",
+  spec: "Dermatologist & Cosmetologist",
+  qual: "MD DVL",
+  reg: "Reg No TGMC/FMR/73867",
   tag: "Laser Specialist",
   accent: "#DFAA5E",
   accentBg: "rgba(223,170,94,.15)",
   accentRgb: "223,170,94",
   bio: "Pioneer in advanced laser therapies and clinical dermatology, with over 5,000 successful procedures and multiple national awards for excellence in dermatological care. Dr. Rao blends deep scientific expertise with an artist's eye — ensuring every patient's outcome is both medically sound and aesthetically refined.",
-  img: "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=800&q=85",
+  img: "/home/saranya.png",
   socials: { linkedin: "#", instagram: "#" },
   treats: ["Laser Resurfacing", "Acne Scars", "Pigmentation", "Skin Rejuvenation"],
   stats: [
@@ -295,7 +295,7 @@ export default function DoctorProfile() {
           display: flex;
           align-items: center;
           gap: 8px;
-          margin-bottom: 20px;
+          margin-bottom: 6px;
           flex-wrap: wrap;
         }
         .info-qual {
@@ -303,17 +303,21 @@ export default function DoctorProfile() {
           color: var(--text-muted);
           font-weight: 400;
         }
-        .qual-dot {
-          width: 3px;
-          height: 3px;
-          border-radius: 50%;
-          background: var(--gold);
-          flex-shrink: 0;
+        .info-reg {
+          font-size: 11px;
+          color: var(--text-muted);
+          font-weight: 400;
+          letter-spacing: .04em;
+          margin-bottom: 20px;
+          display: flex;
+          align-items: center;
+          gap: 6px;
         }
-        .info-exp {
-          font-size: 13px;
+        .reg-icon {
+          width: 14px;
+          height: 14px;
+          flex-shrink: 0;
           color: var(--gold-dark);
-          font-weight: 600;
         }
 
         /* Divider */
@@ -561,10 +565,17 @@ export default function DoctorProfile() {
               <p className="info-speciality">{doctor.spec}</p>
               <h3 className="info-name">{doctor.name}</h3>
 
+              {/* Qual row — exp removed */}
               <div className="info-qual-row">
                 <span className="info-qual">{doctor.qual}</span>
-                <span className="qual-dot" />
-                <span className="info-exp">{doctor.exp} Experience</span>
+              </div>
+
+              {/* Registration number */}
+              <div className="info-reg">
+                <svg className="reg-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
+                  <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                {doctor.reg}
               </div>
 
               <div className="info-divider" />

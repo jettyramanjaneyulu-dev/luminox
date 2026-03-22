@@ -51,7 +51,7 @@ const AboutSection = () => {
               className="text-sm md:text-base leading-relaxed mb-5"
               style={{ color: "#414042" }}
             >
-              At <strong>Luminox – Skin | Hair | Laser</strong>, our role is not
+              At <strong>Luminox – Skin | Hair | Laser | IVF DRIPS</strong>, our role is not
               to change who you are, but to help your skin and hair return to
               their healthiest state.
             </p>
