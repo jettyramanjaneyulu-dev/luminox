@@ -105,15 +105,6 @@ export default function Testimonials() {
         .t-arrow-prev:hover { background: #292E4B !important; color: #fff !important; }
         .t-arrow-next:hover { background: #DFAA5E !important; }
 
-        @media (max-width: 600px) {
- .t-section { 
-    display: block !important; 
-    visibility: visible !important;
-    background-color: #ffffff !important; 
-    min-height: 500px; /* Force minimum height */
-  }
-}
-
         @media (max-width: 860px) {
           .t-card-grid { grid-template-columns: 1fr !important; }
           .t-img-panel { min-height: 240px !important; max-height: 280px !important; }
@@ -126,19 +117,14 @@ export default function Testimonials() {
         }
 
         @media (max-width: 600px) {
-          .t-section { 
-    background-color: #ffffff !important; 
-    padding: 40px 0 48px !important; 
-  }
+          .t-section {
+            padding: 40px 0 48px !important;
+          }
           .t-header { margin-bottom: 28px !important; }
           .t-img-panel { min-height: 200px !important; max-height: 240px !important; }
-          .t-content-panel { 
-    background-color: #ffffff !important; 
-    padding: 16px 14px 20px !important; 
-  }
-    .t-card-grid {
-    background-color: #ffffff !important;
-  }
+          .t-content-panel {
+            padding: 16px 14px 20px !important;
+          }
           .t-google-strip { flex-wrap: wrap !important; gap: 8px !important; }
           .t-strip-divider { display: none !important; }
           .t-strip-stat { flex: 1; min-width: 55px; }
@@ -150,18 +136,34 @@ export default function Testimonials() {
         }
       `}</style>
 
- <section
-  className="t-section relative w-full overflow-hidden bg-white text-black"
-  style={{ 
-    backgroundColor: "#FFFFFF !important", 
-    padding: "60px 0", 
-    position: "relative",
-    zIndex: 99, // Vere color sections override cheyakunda high z-index
-    display: "block" 
-  }}
->
+      {/* 
+        FIX: 
+        1. z-index: 99 removed — idi scroll chestunappudu section ni header tho overlap chesindi
+        2. position: relative matrame set chesamu — "sticky" behaviour undadu
+        3. isolation: isolate add chesamu — inner z-index stacking context correct ga untundi
+        4. background blobs div ki position:absolute + inset:0 correct ga set chesamu
+      */}
+      <section
+        className="t-section"
+        style={{
+          position: "relative",
+          isolation: "isolate",
+          width: "100%",
+          overflow: "hidden",
+          backgroundColor: "#FFFFFF",
+          padding: "60px 0",
+        }}
+      >
         {/* Background blobs */}
-        <div className="absolute pointer-events-none overflow-hidden">
+        <div
+          style={{
+            position: "absolute",
+            inset: 0,
+            pointerEvents: "none",
+            overflow: "hidden",
+            zIndex: 0,
+          }}
+        >
           <div style={{ position:"absolute",top:-80,right:-80,width:500,height:500,borderRadius:"50%",background:"radial-gradient(circle,rgba(223,170,94,.07) 0%,transparent 65%)" }}/>
           <div style={{ position:"absolute",bottom:-80,left:-80,width:400,height:400,borderRadius:"50%",background:"radial-gradient(circle,rgba(91,50,106,.07) 0%,transparent 65%)" }}/>
           <svg style={{ position:"absolute",top:24,left:24,opacity:.03 }} width="200" height="170" viewBox="0 0 220 180" fill="#292E4B">
@@ -170,7 +172,8 @@ export default function Testimonials() {
           </svg>
         </div>
 
-        <div style={{ maxWidth: 1280, margin: "0 auto", padding: "0 20px" }}>
+        {/* Content wrapper — z-index 1 so it sits above blobs but below nothing else */}
+        <div style={{ position: "relative", zIndex: 1, maxWidth: 1280, margin: "0 auto", padding: "0 20px" }}>
 
           {/* Header */}
           <div className="t-header" style={{ textAlign:"center", marginBottom:36 }}>
@@ -363,13 +366,13 @@ export default function Testimonials() {
                       { num:"98%",  label:"Recommend Us" },
                       { num:"20K+", label:"Happy Patients" },
                     ].map((s,i) => (
-                        <React.Fragment key={i}>
-                        <div key={`d${i}`} className="t-strip-divider" style={{ width:1,height:28,background:"rgba(41,46,75,.1)",flexShrink:0 }}/>
-                        <div key={`s${i}`} className="t-strip-stat" style={{ textAlign:"center" }}>
+                      <React.Fragment key={i}>
+                        <div className="t-strip-divider" style={{ width:1,height:28,background:"rgba(41,46,75,.1)",flexShrink:0 }}/>
+                        <div className="t-strip-stat" style={{ textAlign:"center" }}>
                           <div style={{ color:"#292E4B",fontWeight:700,fontSize:14,fontFamily:"'Cormorant Garamond',serif" }}>{s.num}</div>
                           <div style={{ color:"#414042",opacity:.55,fontSize:9,fontWeight:700,letterSpacing:".08em",textTransform:"uppercase",marginTop:1 }}>{s.label}</div>
                         </div>
-                       </React.Fragment>
+                      </React.Fragment>
                     ))}
                   </div>
                 </div>

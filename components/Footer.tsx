@@ -292,7 +292,7 @@ export default function Footer() {
           {/* ── MOBILE LAYOUT ── */}
           <div className="footer-mobile" style={{ marginBottom: "40px" }}>
             <div style={{ marginBottom: "24px", paddingBottom: "24px", borderBottom: "1px solid rgba(59,31,10,0.15)" }}>
-              <Image src="/header/Luminox.png" alt="Luminox" width={140} height={54} />
+              <Image src="/header/luminox-new.png" alt="Luminox" width={140} height={54} />
               <p style={{ marginTop: "12px", fontStyle: "italic", fontFamily: "Georgia, serif", color: "#3B1F0A", fontSize: "16px" }}>Radiance Perfected</p>
               <p style={{ marginTop: "10px", color: "#5C3A14", fontSize: "13px", lineHeight: "1.7" }}>
                 Advanced dermatology clinic offering skin, hair, laser and IV Drips treatments with personalised care and modern technology.

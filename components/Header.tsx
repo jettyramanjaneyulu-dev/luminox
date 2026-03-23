@@ -132,7 +132,7 @@ const Header = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 flex items-center justify-between gap-4">
 
           {/* ── Logo (Stays in place during mobile menu) ── */}
-          <Link href="/" className="shrink-0 relative z-[80]" onClick={() => setMobileOpen(false)}>
+          <Link href="/" className="shrink-0 relative z-[80]" onClick={() => { setMobileOpen(false); window.scrollTo({ top: 0, behavior: "smooth" }); }}>
             <Image
               src="/header/luminox-new.png"
               alt="Luminox Skin Hair Laser IV-Drips"
