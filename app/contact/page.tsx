@@ -81,16 +81,15 @@ function MapSection() {
     <div ref={ref} style={{ transitionDelay: "320ms" }}
       className={`w-full transition-all duration-700 ease-out ${visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-7"}`}
     >
-      {/* ✅ Single card — header + map + address overlay */}
       <div
         className="w-full rounded-2xl overflow-hidden border border-[#DFAA5E]/25 relative"
         style={{ boxShadow: "0 16px 50px rgba(41,46,75,0.13), 0 4px 14px rgba(41,46,75,0.08)" }}
       >
-        {/* Top header bar with directions button */}
-        <div className="bg-[#292E4B] px-5 py-3.5 flex items-center justify-between gap-3">
-          <div className="flex items-center gap-3 min-w-0">
+        {/* Top header bar */}
+        <div className="bg-[#292E4B] px-4 py-3 sm:px-5 sm:py-3.5 flex items-center justify-between gap-3">
+          <div className="flex items-center gap-2 sm:gap-3 min-w-0">
             <span className="w-2 h-2 rounded-full bg-[#DFAA5E] animate-pulse flex-shrink-0" />
-            <span className="font-sans text-sm text-white/80 truncate tracking-wide">
+            <span className="font-sans text-[12px] sm:text-sm text-white/80 truncate tracking-wide">
               Luminox Derma Clinic — Srinagar Colony, Hyderabad
             </span>
           </div>
@@ -106,64 +105,71 @@ function MapSection() {
           </a>
         </div>
 
-        {/* Map + Address overlay */}
-        <div className="relative w-full">
+        {/* Map Container */}
+        <div className="relative w-full h-[380px] sm:h-[420px]">
           <iframe
             title="Luminox Derma Clinic Location"
             src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3806.626940501426!2d78.444879!3d17.429682!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bcb915b8b6dcaa1%3A0x1bcbc00c25f76d8!2sLUMINOX%20DERMA%20CLINIC!5e0!3m2!1sen!2sin!4v1773680409956!5m2!1sen!2sin"
             width="100%"
-            height="420"
+            height="100%"
             style={{ border: 0, display: "block" }}
             allowFullScreen loading="lazy" referrerPolicy="no-referrer-when-downgrade"
           />
 
-          {/* ✅ Address card — floating over map, bottom-left */}
+          {/* ✅ Floating Address Card - Fixed Alignment & Height */}
           <div
-            className="absolute bottom-4 left-4 z-10 rounded-xl overflow-hidden"
+            className="absolute bottom-3 left-3 sm:bottom-4 sm:left-4 z-10 rounded-xl overflow-hidden text-left"
             style={{
-              background: "rgba(41,46,75,0.93)",
-              backdropFilter: "blur(14px)",
-              border: "1px solid rgba(223,170,94,0.28)",
-              boxShadow: "0 8px 32px rgba(0,0,0,0.3)",
-              maxWidth: "240px",
-              width: "calc(100% - 32px)",
+              background: "rgba(41,46,75,0.96)",
+              backdropFilter: "blur(12px)",
+              border: "1px solid rgba(223,170,94,0.3)",
+              boxShadow: "0 10px 30px rgba(0,0,0,0.4)",
+              maxWidth: "230px",
+              width: "calc(100% - 24px)",
             }}
           >
-            {/* Gold top stripe */}
             <div style={{ height: 3, background: "linear-gradient(90deg,#B8843A,#DFAA5E,#F9DB9F,#DFAA5E,#B8843A)" }} />
-            <div className="p-4">
+            
+            <div className="p-3 sm:p-4 flex flex-col items-start w-full gap-2 sm:gap-2.5">
+              
               {/* Label */}
-              <div className="flex items-center gap-2 mb-2.5">
-                <div className="w-6 h-6 rounded-lg bg-[#DFAA5E]/15 border border-[#DFAA5E]/30 flex items-center justify-center flex-shrink-0">
-                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#DFAA5E" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <div className="flex items-center gap-2">
+                <div className="w-5 h-5 rounded-lg bg-[#DFAA5E]/15 border border-[#DFAA5E]/30 flex items-center justify-center flex-shrink-0">
+                  <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#DFAA5E" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                     <path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/>
                   </svg>
                 </div>
-                <p className="text-[#DFAA5E] text-[9px] font-bold uppercase tracking-[0.2em] font-sans">Our Location</p>
+                <p className="text-[#DFAA5E] text-[9px] font-bold uppercase tracking-[0.18em] font-sans">Our Location</p>
               </div>
-              {/* Address */}
-              <address className="not-italic text-white/85 text-[11px] leading-[1.75] font-sans mb-2.5">
-                444, Floor 3, Vishnu Lekha Plaza,<br />
-                Kesav Nagar, Srinagar Colony,<br />
-                <strong className="text-white font-semibold">Hyderabad — 500073</strong>
-              </address>
-              {/* Open status */}
-              <div className="flex items-center gap-1.5 mb-3">
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 flex-shrink-0 animate-pulse" />
-                <span className="text-emerald-400 text-[9px] font-sans font-medium">Open · 10 AM – 8 PM, All Days</span>
+
+              {/* Address - Forced Left Alignment */}
+              <div className="w-full text-left">
+                <address className="not-italic text-white/90 text-[10px] sm:text-[11px] leading-[1.4] sm:leading-[1.6] font-sans block">
+                  444, Floor 3, Vishnu Lekha Plaza,<br />
+                  Kesav Nagar, Srinagar Colony,<br />
+                  <span className="text-white font-semibold">Hyderabad — 500073</span>
+                </address>
               </div>
-              {/* CTA */}
-              <a
-                href="https://maps.app.goo.gl/1y5k4zeDgatzo13X7?g_st=iw"
-                target="_blank" rel="noopener noreferrer"
-                className="w-full flex items-center justify-center gap-1.5 rounded-lg py-2 font-sans text-[10px] font-bold uppercase tracking-[0.15em] transition-opacity duration-300 hover:opacity-90"
-                style={{ background: "#DFAA5E", color: "#292E4B" }}
-              >
-                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                  <polygon points="3 11 22 2 13 21 11 13 3 11" />
-                </svg>
-                Get Directions
-              </a>
+
+              {/* Status & CTA - Combined for space saving on mobile */}
+              <div className="w-full flex flex-col gap-2 mt-0.5">
+                <div className="flex items-center gap-1.5">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 flex-shrink-0 animate-pulse" />
+                  <span className="text-emerald-400 text-[9px] font-sans font-medium">Open · 10 AM – 8 PM</span>
+                </div>
+
+                <a
+                  href="https://maps.app.goo.gl/1y5k4zeDgatzo13X7?g_st=iw"
+                  target="_blank" rel="noopener noreferrer"
+                  className="w-full flex items-center justify-center gap-2 rounded-lg py-1.5 sm:py-2 font-sans text-[9px] sm:text-[10px] font-bold uppercase tracking-[0.12em] transition-all hover:brightness-110"
+                  style={{ background: "#DFAA5E", color: "#292E4B" }}
+                >
+                  <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                    <polygon points="3 11 22 2 13 21 11 13 3 11" />
+                  </svg>
+                  Directions
+                </a>
+              </div>
             </div>
           </div>
         </div>
@@ -190,7 +196,7 @@ function HeroBanner({ heroIn }: { heroIn: boolean }) {
         marginRight: "calc(-50vw + 50%)",
         width: "100vw",
         // ✅ Top space — navbar కింద banner start అవుతుంది
-        marginTop: "clamp(12px, 3vw, 24px)",
+        marginTop: "clamp(12px, 10vw, 24px)",
         marginBottom: "clamp(48px, 6vw, 64px)",
         position: "relative",
         overflow: "hidden",

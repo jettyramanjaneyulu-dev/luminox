@@ -105,6 +105,15 @@ export default function Testimonials() {
         .t-arrow-prev:hover { background: #292E4B !important; color: #fff !important; }
         .t-arrow-next:hover { background: #DFAA5E !important; }
 
+        @media (max-width: 600px) {
+ .t-section { 
+    display: block !important; 
+    visibility: visible !important;
+    background-color: #ffffff !important; 
+    min-height: 500px; /* Force minimum height */
+  }
+}
+
         @media (max-width: 860px) {
           .t-card-grid { grid-template-columns: 1fr !important; }
           .t-img-panel { min-height: 240px !important; max-height: 280px !important; }
@@ -117,10 +126,19 @@ export default function Testimonials() {
         }
 
         @media (max-width: 600px) {
-          .t-section { padding: 40px 0 48px !important; }
+          .t-section { 
+    background-color: #ffffff !important; 
+    padding: 40px 0 48px !important; 
+  }
           .t-header { margin-bottom: 28px !important; }
           .t-img-panel { min-height: 200px !important; max-height: 240px !important; }
-          .t-content-panel { padding: 16px 14px 20px !important; }
+          .t-content-panel { 
+    background-color: #ffffff !important; 
+    padding: 16px 14px 20px !important; 
+  }
+    .t-card-grid {
+    background-color: #ffffff !important;
+  }
           .t-google-strip { flex-wrap: wrap !important; gap: 8px !important; }
           .t-strip-divider { display: none !important; }
           .t-strip-stat { flex: 1; min-width: 55px; }
@@ -132,12 +150,18 @@ export default function Testimonials() {
         }
       `}</style>
 
-      <section
-        className="t-section relative w-full overflow-hidden"
-        style={{ background: "#FFF", padding: "60px 0" }}
-      >
+ <section
+  className="t-section relative w-full overflow-hidden bg-white text-black"
+  style={{ 
+    backgroundColor: "#FFFFFF !important", 
+    padding: "60px 0", 
+    position: "relative",
+    zIndex: 99, // Vere color sections override cheyakunda high z-index
+    display: "block" 
+  }}
+>
         {/* Background blobs */}
-        <div className="absolute inset-0 pointer-events-none overflow-hidden">
+        <div className="absolute pointer-events-none overflow-hidden">
           <div style={{ position:"absolute",top:-80,right:-80,width:500,height:500,borderRadius:"50%",background:"radial-gradient(circle,rgba(223,170,94,.07) 0%,transparent 65%)" }}/>
           <div style={{ position:"absolute",bottom:-80,left:-80,width:400,height:400,borderRadius:"50%",background:"radial-gradient(circle,rgba(91,50,106,.07) 0%,transparent 65%)" }}/>
           <svg style={{ position:"absolute",top:24,left:24,opacity:.03 }} width="200" height="170" viewBox="0 0 220 180" fill="#292E4B">
@@ -165,7 +189,7 @@ export default function Testimonials() {
           </div>
 
           {/* Card */}
-          <div style={{ borderRadius:24,overflow:"hidden",boxShadow:"0 20px 60px rgba(41,46,75,.11)",background:"#fff" }}>
+          <div style={{ borderRadius:24,overflow:"hidden",background:"#fff" }}>
             <div className="t-card-grid">
 
               {/* ── LEFT: Image panel ── */}

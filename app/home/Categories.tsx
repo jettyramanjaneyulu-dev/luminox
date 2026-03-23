@@ -40,13 +40,13 @@ const card: Variants = {
 export default function TreatmentSection() {
   return (
     <section className="w-full py-5 bg-[#5B326A]">
-      <div className="max-w-4xl mx-auto px-6">
+      <div className="max-w-4xl mx-auto px-4">
         <motion.div
           variants={container}
           initial="hidden"
           whileInView="show"
           viewport={{ once: true }}
-          className="grid grid-cols-1 sm:grid-cols-3 gap-6 text-center"
+          className="grid grid-cols-3 gap-4 text-center"
         >
           {CATEGORIES.map((item, i) => (
             <motion.div
@@ -55,7 +55,7 @@ export default function TreatmentSection() {
               whileHover={{ y: -3 }}
               className="flex flex-col items-center text-white"
             >
-              <div className="mb-2 w-10 h-10 relative">
+              <div className="mb-2 w-8 h-8 sm:w-10 sm:h-10 relative">
                 <Image
                   src={item.icon}
                   alt={item.title}
@@ -65,11 +65,11 @@ export default function TreatmentSection() {
                 />
               </div>
 
-              <h3 className="text-base font-semibold font-serif tracking-wide">
+              <h3 className="text-sm sm:text-base font-semibold font-serif tracking-wide">
                 {item.title}
               </h3>
 
-              <p className="text-[11px] mt-0.5 opacity-70 tracking-wide">
+              <p className="text-[10px] sm:text-[11px] mt-0.5 opacity-70 tracking-wide">
                 {item.subtitle}
               </p>
             </motion.div>
