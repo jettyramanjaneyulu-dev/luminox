@@ -49,11 +49,11 @@ const menuItems = [
   },
     {
     label: "Hair",
-    href: "-#",
+    href: "/hair",
     },
      {
     label: "IV Drips",
-    href: "-#",
+    href: "/ivf-drips",
   },
   {
     label: "Aesthetics",

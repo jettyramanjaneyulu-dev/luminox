@@ -248,19 +248,14 @@ export default function SkinCarePage() {
           </div>
 
           {/* Right: Content */}
-          <div className="lg:col-span-9">
-            <p className="text-[#414042] text-base md:text-lg leading-[1.8] mb-5">
-              The following brands have been hand-selected by our specialists
-              for their science-backed formulas and proven clinical results. We
-              carry these products in our office, and you are welcome to sample
-              them at your next visit.
-            </p>
-            <p className="text-[#414042]/70 text-sm md:text-base leading-[1.8]">
-              Each product line has been carefully evaluated for safety,
-              efficacy, and compatibility with our treatment protocols — so you
-              can trust what you're putting on your skin.
-            </p>
-          </div>
+         <div className="lg:col-span-9">
+  <p className="text-[#414042] text-base md:text-lg leading-[1.8] mb-5">
+    At Luminox – Skin|Hair|Laser, our skin treatments are designed to go beyond surface-level care, combining advanced dermatology with aesthetic precision. From acne and pigmentation to anti-ageing and skin rejuvenation, every treatment is tailored to your unique skin profile using clinically proven technologies and medical expertise. 
+  </p>
+  <p className="text-[#414042]/70 text-sm md:text-base leading-[1.8]">
+    We focus on restoring skin health, enhancing natural radiance, and delivering visible, long-lasting results with safety and sophistication at the core.
+  </p>
+</div>
         </div>
       </section>
 

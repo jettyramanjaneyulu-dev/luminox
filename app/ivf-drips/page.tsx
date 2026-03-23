@@ -1,71 +1,21 @@
-// app/hair/page.tsx
 "use client";
 
-import { useState } from "react";
 import Link from "next/link";
-
-const hairServices = [
-  {
-    id: 1,
-    title: "PRP Hair Restoration",
-    subtitle: "Platelet Rich Plasma therapy",
-    description:
-      "PRP therapy uses your blood's natural growth factors to stimulate dormant hair follicles and promote new hair growth. Safe, effective, and completely natural — no chemicals or surgery involved.",
-    tags: ["Hair Loss", "Natural Growth", "No Surgery", "3–6 Sessions"],
-    icon: "✦",
-  },
-  {
-    id: 2,
-    title: "Laser Hair Removal",
-    subtitle: "Permanent hair reduction",
-    description:
-      "Our Gentlelase system safely removes up to 80% of unwanted hair permanently after five monthly treatments. Equipped with a cryogen cooling system for skin protection during the process.",
-    tags: ["80% Permanent", "5 Sessions", "All Body Areas", "Cooling System"],
-    icon: "◈",
-  },
-  {
-    id: 3,
-    title: "Hair Loss Consultation",
-    subtitle: "Expert diagnosis & treatment plan",
-    description:
-      "A thorough scalp and hair analysis by our dermatologist to identify the root cause of your hair loss — whether hormonal, nutritional, or stress-related — and create a personalised treatment plan.",
-    tags: ["Diagnosis", "Personalised Plan", "Hormonal", "Nutritional"],
-    icon: "◇",
-  },
-  {
-    id: 4,
-    title: "Scalp Micro-Needling",
-    subtitle: "Collagen induction for scalp",
-    description:
-      "Micro-needling on the scalp stimulates collagen production and improves blood circulation to hair follicles, encouraging stronger, thicker hair growth over time.",
-    tags: ["Scalp Health", "Collagen Boost", "Circulation", "Thicker Hair"],
-    icon: "⬡",
-  },
-  {
-    id: 5,
-    title: "Nutrafol Hair Wellness",
-    subtitle: "Science-backed nutraceuticals",
-    description:
-      "Clinically effective oral supplements that target the root causes of hair thinning — stress, hormones, nutrition, and metabolism — for visibly thicker, stronger, faster-growing hair.",
-    tags: ["Supplements", "Root Cause", "Hormonal Balance", "Clinically Proven"],
-    icon: "◉",
-  },
-];
 
 const HeroImages = () => (
   <div className="grid grid-cols-3 gap-3 md:gap-4">
     {[
       {
-        src: "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=800&q=80",
-        alt: "Hair restoration treatment",
+        src: "https://images.unsplash.com/photo-1629909613654-28e377c37b09?w=800&q=80",
+        alt: "IV Drip therapy session",
       },
       {
-        src: "https://images.unsplash.com/photo-1560869713-7d0a29430803?w=800&q=80",
-        alt: "PRP hair therapy",
+        src: "https://images.unsplash.com/photo-1579152276532-a39c7ef2d00c?w=800&q=80",
+        alt: "Intravenous vitamin hydration",
       },
       {
-        src: "https://images.unsplash.com/photo-1519699047748-de8e457a634e?w=800&q=80",
-        alt: "Hair care clinic",
+        src: "https://images.unsplash.com/photo-1631217819938-549e701594d3?w=800&q=80",
+        alt: "Modern wellness clinic interior",
       },
     ].map((img, i) => (
       <div
@@ -84,72 +34,22 @@ const HeroImages = () => (
   </div>
 );
 
-const ServiceCard = ({ service }: { service: (typeof hairServices)[0] }) => {
-  const [hovered, setHovered] = useState(false);
-
-  return (
-    <div
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
-      className="group relative bg-white border border-[#292E4B]/10 rounded-sm p-6 md:p-8 transition-all duration-300 hover:border-[#DFAA5E]/50 hover:shadow-lg hover:-translate-y-1 cursor-pointer"
-    >
-      <div
-        className={`absolute top-0 left-0 h-[2px] bg-gradient-to-r from-[#DFAA5E] via-[#F9DB9F] to-[#D95CB9] rounded-t-sm transition-all duration-500 ${
-          hovered ? "w-full" : "w-0"
-        }`}
-      />
-      <div className="flex items-start justify-between mb-4">
-        <div>
-          <span className="block text-[#DFAA5E] text-2xl mb-2 leading-none" aria-hidden>
-            {service.icon}
-          </span>
-          <h3 className="text-[#292E4B] text-lg md:text-xl font-bold uppercase tracking-wide leading-tight">
-            {service.title}
-          </h3>
-          <p className="text-[#5B326A] text-[12px] uppercase tracking-widest font-medium mt-0.5">
-            {service.subtitle}
-          </p>
-        </div>
-        <span
-          className={`text-[#292E4B]/20 text-4xl font-bold leading-none select-none transition-colors duration-300 ${
-            hovered ? "text-[#DFAA5E]/30" : ""
-          }`}
-        >
-          {String(service.id).padStart(2, "0")}
-        </span>
-      </div>
-      <p className="text-[#414042]/80 text-sm leading-relaxed mb-5">
-        {service.description}
-      </p>
-      <div className="flex flex-wrap gap-2">
-        {service.tags.map((tag) => (
-          <span
-            key={tag}
-            className="text-[10px] uppercase tracking-widest font-bold px-3 py-1 bg-[#292E4B]/5 text-[#292E4B]/70 rounded-full border border-[#292E4B]/8 group-hover:bg-[#DFAA5E]/10 group-hover:text-[#292E4B] group-hover:border-[#DFAA5E]/30 transition-colors duration-300"
-          >
-            {tag}
-          </span>
-        ))}
-      </div>
-    </div>
-  );
-};
-
 export default function HairPage() {
   return (
     <main className="min-h-screen bg-white">
       <div className="h-20 lg:h-24" />
 
+      {/* Hero Section */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 pt-8 pb-12 md:pb-16">
         <div className="flex items-center gap-3 mb-6">
           <div className="h-[1px] w-8 bg-gradient-to-r from-[#DFAA5E] to-[#D95CB9]" />
           <span className="text-[11px] uppercase tracking-[0.2em] font-bold text-[#5B326A]">
-            Luminox · Hair
+            Luminox · IV
           </span>
         </div>
         <div className="mb-8 md:mb-10">
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-[#292E4B] uppercase tracking-tight leading-[1.05]">
-            Hair
+            IV
             <br />
             <span
               className="text-transparent bg-clip-text"
@@ -157,13 +57,14 @@ export default function HairPage() {
                 backgroundImage: "linear-gradient(90deg, #DFAA5E 0%, #D95CB9 100%)",
               }}
             >
-              Treatments
+              Drips
             </span>
           </h1>
         </div>
         <HeroImages />
       </section>
 
+      {/* About Section */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 py-10 md:py-14">
         <div className="grid lg:grid-cols-12 gap-8 items-start">
           <div className="lg:col-span-3">
@@ -177,15 +78,10 @@ export default function HairPage() {
           </div>
           <div className="lg:col-span-9">
             <p className="text-[#414042] text-base md:text-lg leading-[1.8] mb-5">
-              At Luminox, we understand that hair loss and thinning can deeply
-              affect your confidence and wellbeing. Our hair specialists combine
-              advanced clinical treatments with science-backed wellness solutions
-              to address hair concerns at the root level.
+              Our IV drip therapies are formulated to deliver essential vitamins, antioxidants, and nutrients directly into your bloodstream for maximum absorption and immediate benefits. Designed to support skin glow, hydration, detoxification, and overall wellness, these drips offer a quick and effective boost from within. 
             </p>
             <p className="text-[#414042]/70 text-sm md:text-base leading-[1.8]">
-              From PRP therapy and scalp micro-needling to laser hair removal
-              and Nutrafol supplements — every treatment is personalised to your
-              hair type, lifestyle, and goals.
+              At Luminox, each IV therapy is carefully curated and administered under medical supervision, ensuring safety, efficiency, and a revitalized you—inside and out.
             </p>
           </div>
         </div>
@@ -195,32 +91,8 @@ export default function HairPage() {
         <div className="h-[1px] bg-gradient-to-r from-transparent via-[#292E4B]/15 to-transparent" />
       </div>
 
+      {/* Call to Action Section */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 py-12 md:py-16">
-        <div className="flex items-center justify-between mb-8 md:mb-10">
-          <div>
-            <div className="flex items-center gap-3 mb-2">
-              <div className="h-[1px] w-6 bg-[#DFAA5E]" />
-              <span className="text-[11px] uppercase tracking-[0.2em] font-bold text-[#5B326A]">
-                Our Services
-              </span>
-            </div>
-            <h2 className="text-2xl md:text-3xl font-bold text-[#292E4B] uppercase tracking-wide">
-              All Hair Treatments
-            </h2>
-          </div>
-          <span className="text-[#292E4B]/20 text-4xl font-bold select-none hidden md:block">
-            {hairServices.length} treatments
-          </span>
-        </div>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-5">
-          {hairServices.map((service) => (
-            <ServiceCard key={service.id} service={service} />
-          ))}
-        </div>
-      </section>
-
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 pb-8 md:pb-12">
         <div className="relative overflow-hidden rounded-sm bg-[#292E4B] px-8 md:px-12 py-8 md:py-10">
           <div
             className="absolute -top-16 -left-16 w-56 h-56 rounded-full opacity-20 blur-3xl pointer-events-none"
