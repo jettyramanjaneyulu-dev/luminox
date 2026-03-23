@@ -12,12 +12,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
     <html lang="en">
       <body className="antialiased bg-black">
         <Header />
-
-        {/* Min-height ensures the footer stays at bottom on short pages */}
-        <main className="min-h-screen">
-          {children}
-        </main>
-
+        {children}  
         <Footer />
       </body>
     </html>
