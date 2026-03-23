@@ -52,7 +52,7 @@ const menuItems = [
     href: "-#",
     },
      {
-    label: "IVF Drips",
+    label: "IV Drips",
     href: "-#",
   },
   {
@@ -135,7 +135,7 @@ const Header = () => {
           <Link href="/" className="shrink-0 relative z-[80]" onClick={() => setMobileOpen(false)}>
             <Image
               src="/header/luminox-new.png"
-              alt="Luminox Skin Hair Laser IVF-Drips"
+              alt="Luminox Skin Hair Laser IV-Drips"
               width={160}
               height={60}
               className="h-10 lg:h-17 w-auto object-contain"

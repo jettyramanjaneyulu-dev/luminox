@@ -134,7 +134,7 @@ export default function Testimonials() {
 
       <section
         className="t-section relative w-full overflow-hidden"
-        style={{ background: "#FAF9F6", padding: "60px 0" }}
+        style={{ background: "#FFF", padding: "60px 0" }}
       >
         {/* Background blobs */}
         <div className="absolute inset-0 pointer-events-none overflow-hidden">

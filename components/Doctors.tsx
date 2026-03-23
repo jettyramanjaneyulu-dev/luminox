@@ -534,13 +534,19 @@ export default function DoctorProfile() {
 
             {/* ── Image Pane ── */}
             <div className="doctor-image-pane">
-              <img
+              {/* <img
                 className="doctor-img"
                 src={doctor.img}
                 alt={doctor.name}
                 onLoad={() => setImgLoaded(true)}
                 style={{ opacity: imgLoaded ? 1 : 0, transition: "opacity .5s ease" }}
-              />
+              /> */}
+
+              <img
+  className="doctor-img"
+  src={doctor.img}
+  alt={doctor.name}
+/>
               <div className="img-overlay" />
               <div className="img-accent-bar" />
 
@@ -615,11 +621,11 @@ export default function DoctorProfile() {
 
               {/* CTA */}
               <div className="cta-row">
-                <a href="#" className="btn-primary">
+                <a href="/contact" className="btn-primary">
                   <CalendarIcon />
                   Book Consultation
                 </a>
-                <a href="#" className="btn-secondary">
+                <a href="/about" className="btn-secondary">
                   View Full Profile
                 </a>
               </div>

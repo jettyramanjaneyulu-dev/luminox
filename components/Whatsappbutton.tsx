@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useState, useEffect } from "react";
 
 const WHATSAPP_NUMBER = "916309918333"; // Replace with your actual WhatsApp number (with country code, no +)
@@ -117,8 +118,14 @@ export default function WhatsAppButton() {
               overflow: "hidden",
             }}
           >
-            {/* Replace with <img src="/your-logo.png" ... /> if desired */}
-            <span style={{ fontSize: 20 }}>🏥</span>
+         <Image
+  src="/header/Luminox.png"
+  alt="Logo"
+  width={40}
+  height={40}
+  style={{ objectFit: "contain" }}
+/>
+            
           </div>
           <div>
             <p

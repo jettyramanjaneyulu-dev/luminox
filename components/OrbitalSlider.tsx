@@ -26,8 +26,8 @@ const SERVICES = [
   },
   {
     id: 3,
-    num: "IVF",
-    word: "IVF Drips",
+    num: "IV",
+    word: "IV Drips",
     tag: "Restore · Revive · All Stages",
     image: "https://images.unsplash.com/photo-1631815589968-fdb09a223b1e?w=1400&q=85",
   },
