@@ -108,17 +108,26 @@ const whyChoose = [
 ];
 
 // ─── Hero Image (single) ──────────────────────────────────────────────────────
-const HeroImage = () => (
-  <div
-    className="relative overflow-hidden rounded-sm w-full"
-    style={{ height: "420px" }}
-  >
-    <div className="absolute inset-0 z-10 bg-gradient-to-t from-[#292E4B]/30 via-transparent to-transparent" />
-    <img
-      src="services/hair/hair.png"
-      alt="Advanced hair care and restoration treatment"
-      className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 hover:scale-105"
-    />
+const HeroImages = () => (
+  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 md:gap-4">
+    {[
+      { src: "services/hair/hair1.png", alt: "Hair aesthetic treatment" },
+      { src: "services/hair/hair2.png", alt: "Hair contouring procedure" },
+      { src: "services/hair/hair3.png", alt: "Hair rejuvenation treatment" },
+    ].map((img, i) => (
+      <div
+        key={i}
+        className="relative overflow-hidden rounded-sm w-full"
+        style={{ height: "320px" }}
+      >
+        <div className="absolute inset-0 z-10 bg-gradient-to-t from-[#292E4B]/30 via-transparent to-transparent" />
+        <img
+          src={img.src}
+          alt={img.alt}
+          className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 hover:scale-105"
+        />
+      </div>
+    ))}
   </div>
 );
 const whyChooseLuminox = [
@@ -358,7 +367,7 @@ export default function HairCarePage() {
         </div>
 
         {/* Single Hero Image */}
-        <HeroImage />
+        <HeroImages />
       </section>
 
       {/* ── Intro / About ── */}

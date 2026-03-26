@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { usePathname, useRouter } from "next/navigation";
 
 // ─── Brand Color Tokens — 60 / 30 / 10 Rule ───────────────────────────────────
 // 60% DOMINANT  → #FFFFFF white
@@ -43,18 +44,9 @@ const menuItems = [
       { label: "Belotero", href: "/injectables", desc: "" },
     ],
   },
-  {
-    label: "Skin Care",
-    href: "/skin-care",
-  },
-    {
-    label: "Hair",
-    href: "/hair",
-    },
-     {
-    label: "IV Drips",
-    href: "/ivf-drips",
-  },
+  { label: "Skin Care", href: "/skin-care" },
+  { label: "Hair", href: "/hair" },
+  { label: "IV Drips", href: "/ivf-drips" },
   {
     label: "Aesthetics",
     href: "/aesthetics",
@@ -91,6 +83,9 @@ const Header = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [mobileExpanded, setMobileExpanded] = useState<string | null>(null);
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  
+  const pathname = usePathname();
+  const router = useRouter();
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 50);
@@ -105,17 +100,24 @@ const Header = () => {
   }, []);
 
   useEffect(() => {
-    if (mobileOpen) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "unset";
-    }
+    document.body.style.overflow = mobileOpen ? "hidden" : "unset";
   }, [mobileOpen]);
+
+  // ─── క్రొత్త ఫంక్షన్: అదే పేజీలో ఉంటే స్క్రోల్ చేస్తుంది, లేకపోతే నేవిగేట్ చేస్తుంది ───
+  const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+    setMobileOpen(false); // మొబైల్ మెనూ క్లోజ్ చేయడం కోసం
+    
+    if (pathname === href) {
+      e.preventDefault();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  };
 
   const handleMouseEnter = (label: string) => {
     if (timeoutRef.current) clearTimeout(timeoutRef.current);
     setActiveMenu(label);
   };
+
   const handleMouseLeave = () => {
     timeoutRef.current = setTimeout(() => setActiveMenu(null), 150);
   };
@@ -131,8 +133,12 @@ const Header = () => {
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 flex items-center justify-between gap-4">
 
-          {/* ── Logo (Stays in place during mobile menu) ── */}
-          <Link href="/" className="shrink-0 relative z-[80]" onClick={() => { setMobileOpen(false); window.scrollTo({ top: 0, behavior: "smooth" }); }}>
+          {/* ── Logo ── */}
+          <Link 
+            href="/" 
+            className="shrink-0 relative z-[80]" 
+            onClick={(e) => handleNavClick(e, "/")}
+          >
             <Image
               src="/header/luminox-new.png"
               alt="Luminox Skin Hair Laser IV-Drips"
@@ -154,6 +160,7 @@ const Header = () => {
               >
                 <Link
                   href={item.href}
+                  onClick={(e) => handleNavClick(e, item.href)}
                   className={`flex items-center gap-1 px-3 py-2 rounded-sm transition-colors duration-200 whitespace-nowrap
                     ${scrolled
                       ? activeMenu === item.label ? "text-[#DFAA5E]" : "text-[#292E4B] hover:text-[#DFAA5E]"
@@ -181,12 +188,13 @@ const Header = () => {
                     <ul className="py-1.5">
                       {item.submenu.map((sub) => (
                         <li key={sub.label}>
-                          <Link href={sub.href} className="group flex flex-col px-5 py-3 hover:bg-[#292E4B]/5 transition-colors">
+                          <Link 
+                            href={sub.href} 
+                            onClick={(e) => handleNavClick(e, sub.href)}
+                            className="group flex flex-col px-5 py-3 hover:bg-[#292E4B]/5 transition-colors"
+                          >
                             <span className="text-[#292E4B] text-[12px] uppercase tracking-wider group-hover:text-[#DFAA5E] font-bold">
                               {sub.label}
-                            </span>
-                            <span className="text-[#414042]/55 text-[11px] capitalize font-light mt-0.5">
-                              {sub.desc}
                             </span>
                           </Link>
                         </li>
@@ -198,52 +206,25 @@ const Header = () => {
             ))}
           </nav>
 
-          {/* ── Right Side: CTA + Hamburger/Close ── */}
+          {/* ── Mobile Hamburger ── */}
           <div className="flex items-center gap-4 relative z-[80]">
-            {/* <Link
-              href="#"
-              className={`hidden lg:inline-flex items-center px-5 py-2 text-[11px] font-bold uppercase tracking-widest rounded-sm transition-all duration-200
-                ${scrolled
-                  ? "bg-[#292E4B] text-white hover:bg-[#DFAA5E] hover:text-[#292E4B]"
-                  : "bg-white/15 backdrop-blur-sm text-white border border-white/40 hover:bg-[#DFAA5E]"
-                }`}
-            >
-              Book Now
-            </Link> */}
-
-            {/* Hamburger turns into "X" Close Button */}
             <button
               className="lg:hidden flex flex-col justify-center items-center w-10 h-10"
               onClick={() => setMobileOpen(!mobileOpen)}
-              aria-label={mobileOpen ? "Close menu" : "Open menu"}
             >
               <div className="flex flex-col gap-[6px] w-6">
-                <span className={`block h-[2px] w-full transition-all duration-300 origin-center
-                  ${scrolled || mobileOpen ? "bg-[#292E4B]" : "bg-white"}
-                  ${mobileOpen ? "rotate-45 translate-y-[8px]" : ""}`}
-                />
-                <span className={`block h-[2px] w-full transition-all duration-300
-                  ${scrolled || mobileOpen ? "bg-[#292E4B]" : "bg-white"}
-                  ${mobileOpen ? "opacity-0" : ""}`}
-                />
-                <span className={`block h-[2px] w-full transition-all duration-300 origin-center
-                  ${scrolled || mobileOpen ? "bg-[#292E4B]" : "bg-white"}
-                  ${mobileOpen ? "-rotate-45 -translate-y-[8px]" : ""}`}
-                />
+                <span className={`block h-[2px] w-full transition-all duration-300 ${scrolled || mobileOpen ? "bg-[#292E4B]" : "bg-white"} ${mobileOpen ? "rotate-45 translate-y-[8px]" : ""}`} />
+                <span className={`block h-[2px] w-full transition-all duration-300 ${scrolled || mobileOpen ? "bg-[#292E4B]" : "bg-white"} ${mobileOpen ? "opacity-0" : ""}`} />
+                <span className={`block h-[2px] w-full transition-all duration-300 ${scrolled || mobileOpen ? "bg-[#292E4B]" : "bg-white"} ${mobileOpen ? "-rotate-45 -translate-y-[8px]" : ""}`} />
               </div>
             </button>
           </div>
         </div>
       </header>
 
-      {/* ── Mobile Menu Overlay ── */}
-      <div
-        className={`fixed inset-0 z-[60] bg-white transition-transform duration-500 lg:hidden
-          ${mobileOpen ? "translate-y-0" : "-translate-y-full"}`}
-      >
-        {/* Gradient Top Bar */}
+      {/* ── Mobile Menu ── */}
+      <div className={`fixed inset-0 z-[60] bg-white transition-transform duration-500 lg:hidden ${mobileOpen ? "translate-y-0" : "-translate-y-full"}`}>
         <div className="h-[3px] bg-gradient-to-r from-[#DFAA5E] via-[#F9DB9F] to-[#D95CB9] fixed top-0 left-0 w-full" />
-
         <div className="overflow-y-auto h-full pt-24 pb-12 px-6">
           <ul className="space-y-1">
             {menuItems.map((item) => (
@@ -251,37 +232,18 @@ const Header = () => {
                 {item.submenu ? (
                   <>
                     <button
-                      className={`w-full flex items-center justify-between py-4 text-sm uppercase tracking-widest font-bold transition-colors
-                        ${mobileExpanded === item.label ? "text-[#DFAA5E]" : "text-[#292E4B]"}`}
-                      onClick={() =>
-                        setMobileExpanded(mobileExpanded === item.label ? null : item.label)
-                      }
+                      className={`w-full flex items-center justify-between py-4 text-sm uppercase tracking-widest font-bold ${mobileExpanded === item.label ? "text-[#DFAA5E]" : "text-[#292E4B]"}`}
+                      onClick={() => setMobileExpanded(mobileExpanded === item.label ? null : item.label)}
                     >
                       {item.label}
-                      <svg
-                        className={`w-4 h-4 transition-transform duration-200 ${mobileExpanded === item.label ? "rotate-180" : ""}`}
-                        fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}
-                      >
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
-                      </svg>
+                      <svg className={`w-4 h-4 transition-transform duration-200 ${mobileExpanded === item.label ? "rotate-180" : ""}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" /></svg>
                     </button>
-
-                    <div className={`overflow-hidden transition-all duration-300
-                      ${mobileExpanded === item.label ? "max-h-[600px] pb-4" : "max-h-0"}`}>
+                    <div className={`overflow-hidden transition-all duration-300 ${mobileExpanded === item.label ? "max-h-[600px] pb-4" : "max-h-0"}`}>
                       <ul className="pl-4 border-l-2 border-[#5B326A]/25 space-y-1">
                         {item.submenu.map((sub) => (
                           <li key={sub.label}>
-                            <Link
-                              href={sub.href}
-                              onClick={() => setMobileOpen(false)}
-                              className="group block py-3 px-3 hover:bg-[#292E4B]/5 rounded-sm"
-                            >
-                              <span className="block text-[#292E4B] text-[11px] uppercase tracking-wider font-bold">
-                                {sub.label}
-                              </span>
-                              <span className="block text-[#414042]/60 text-[10px] mt-0.5 font-light">
-                                {sub.desc}
-                              </span>
+                            <Link href={sub.href} onClick={(e) => handleNavClick(e, sub.href)} className="block py-3 px-3">
+                              <span className="block text-[#292E4B] text-[11px] uppercase tracking-wider font-bold">{sub.label}</span>
                             </Link>
                           </li>
                         ))}
@@ -289,34 +251,13 @@ const Header = () => {
                     </div>
                   </>
                 ) : (
-                  <Link
-                    href={item.href}
-                    onClick={() => setMobileOpen(false)}
-                    className="block py-4 text-[#292E4B] text-sm uppercase tracking-widest font-bold"
-                  >
+                  <Link href={item.href} onClick={(e) => handleNavClick(e, item.href)} className="block py-4 text-[#292E4B] text-sm uppercase tracking-widest font-bold">
                     {item.label}
                   </Link>
                 )}
               </li>
             ))}
           </ul>
-
-          <div className="mt-8 space-y-3">
-            <Link
-              href="#"
-              onClick={() => setMobileOpen(false)}
-              className="block w-full text-center py-4 bg-[#292E4B] text-white text-xs font-bold uppercase tracking-widest rounded-sm"
-            >
-              Book Appointment
-            </Link>
-            {/* <Link
-              href="/about"
-              onClick={() => setMobileOpen(false)}
-              className="block w-full text-center py-4 border border-[#5B326A]/30 text-[#5B326A] text-xs font-bold uppercase tracking-widest rounded-sm"
-            >
-              Explore Our Clinic
-            </Link> */}
-          </div>
         </div>
       </div>
     </>

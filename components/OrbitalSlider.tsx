@@ -8,28 +8,32 @@ const SERVICES = [
     num: "I",
     word: "Skin",
     tag: "Clarity · Balance · Radiance",
-    image: "https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=1400&q=85",
+    image: "services/skin/skin2.png",
+    link: "/skin",
   },
   {
     id: 1,
     num: "II",
     word: "Hair",
     tag: "Strength · Density · Vitality",
-    image: "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=1400&q=85",
+    image: "services/hair/hair2.png",
+    link: "/hair",
   },
   {
     id: 2,
     num: "III",
     word: "Laser",
     tag: "Precision · Technology · Transformation",
-    image: "https://images.unsplash.com/photo-1629909613654-28e377c37b09?w=1400&q=85",
+    image: "services/laser/laser1.png",
+    link: "/laser-treatments",
   },
   {
     id: 3,
     num: "IV",
     word: "IV Drips",
     tag: "Restore · Revive · All Stages",
-    image: "https://images.unsplash.com/photo-1631815589968-fdb09a223b1e?w=1400&q=85",
+    image: "services/iv/iv1.png",
+    link: "/iv-drips",
   },
 ];
 
@@ -42,17 +46,26 @@ export default function ServicesSection() {
   const resetTimer = useCallback(() => {
     if (timerRef.current) clearInterval(timerRef.current);
     timerRef.current = setInterval(
-      () => setActive(a => (a + 1) % SERVICES.length),
+      () => setActive((a) => (a + 1) % SERVICES.length),
       AUTO_MS
     );
   }, []);
 
   useEffect(() => {
     resetTimer();
-    return () => { if (timerRef.current) clearInterval(timerRef.current); };
+    return () => {
+      if (timerRef.current) clearInterval(timerRef.current);
+    };
   }, [resetTimer]);
 
-  const pick = (i: number) => { setActive(i); resetTimer(); };
+  const pick = (i: number) => {
+    setActive(i);
+    resetTimer();
+  };
+
+  const handleNavigate = (link: string) => {
+    window.location.href = link;
+  };
 
   return (
     <>
@@ -67,9 +80,11 @@ export default function ServicesSection() {
           width: 100%; height: 100%;
           object-fit: cover;
           transition: opacity 1s cubic-bezier(.4,0,.2,1), transform 1.4s cubic-bezier(.4,0,.2,1);
+          cursor: pointer;
+          z-index: 1;
         }
-        .lx-img.on  { opacity: 1; transform: scale(1);    }
-        .lx-img.off { opacity: 0; transform: scale(1.04); }
+        .lx-img.on  { opacity: 1; transform: scale(1); z-index: 2; }
+        .lx-img.off { opacity: 0; transform: scale(1.04); z-index: 1; }
 
         /* ── row ── */
         .lx-row {
@@ -160,7 +175,7 @@ export default function ServicesSection() {
         className="lx"
         style={{ position: "relative", fontFamily: "'Jost', sans-serif", background: "#fff" }}
       >
-        {/* ── MOBILE: small image strip (hidden on desktop) ── */}
+        {/* ── MOBILE: small image strip ── */}
         <div
           className="lx-mobile-img"
           style={{
@@ -168,6 +183,7 @@ export default function ServicesSection() {
             position: "relative",
             height: 220,
             overflow: "hidden",
+            cursor: "pointer"
           }}
         >
           {SERVICES.map((s, i) => (
@@ -175,17 +191,20 @@ export default function ServicesSection() {
               key={s.id}
               src={s.image}
               alt={s.word}
+              onClick={() => handleNavigate(s.link)}
               className={`lx-img ${i === active ? "on" : "off"}`}
             />
           ))}
           <div style={{
             position: "absolute", inset: 0,
             background: "linear-gradient(to bottom, transparent 30%, rgba(20,22,40,0.55))",
+            pointerEvents: "none", // Allows clicks to pass through to the image
+            zIndex: 3
           }} />
-          {/* active label over mobile image */}
           <div style={{
             position: "absolute", bottom: 20, left: 24,
             display: "flex", alignItems: "center", gap: 10,
+            zIndex: 4, pointerEvents: "none"
           }}>
             <div style={{ width: 24, height: 1, background: "#DFAA5E" }} />
             <span
@@ -205,9 +224,7 @@ export default function ServicesSection() {
           </div>
         </div>
 
-        {/* ── MAIN BODY ── */}
         <div style={{ display: "flex", alignItems: "stretch" }}>
-
           {/* LEFT: text list */}
           <div
             className="lx-left"
@@ -218,14 +235,11 @@ export default function ServicesSection() {
               background: "#fff",
             }}
           >
-            {/* header */}
             <div style={{
               padding: "clamp(32px,5vw,80px) clamp(20px,6vw,88px) clamp(22px,3.5vw,48px)",
               borderBottom: "1px solid rgba(41,46,75,0.08)",
             }}>
-              <div style={{
-                display: "flex", alignItems: "center", gap: 10, marginBottom: 14,
-              }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 14 }}>
                 <div style={{ height: 1, width: 24, background: "#DFAA5E" }} />
                 <span style={{
                   fontFamily: "'Jost', sans-serif",
@@ -245,7 +259,6 @@ export default function ServicesSection() {
               </h2>
             </div>
 
-            {/* service rows */}
             {SERVICES.map((s, i) => {
               const isOn = i === active;
               return (
@@ -255,23 +268,16 @@ export default function ServicesSection() {
                   onClick={() => pick(i)}
                   style={{ background: isOn ? "rgba(223,170,94,0.04)" : "transparent" }}
                 >
-                  {/* roman numeral */}
-                  <span
-                    className="lx-num"
-                    style={{
-                      fontFamily: "'Cormorant', serif",
-                      fontStyle: "italic", fontWeight: 300,
-                      fontSize: "clamp(0.65rem,1vw,0.82rem)",
-                      color: isOn ? "#DFAA5E" : "rgba(41,46,75,0.22)",
-                      width: 22, flexShrink: 0,
-                      transition: "color 0.4s",
-                      userSelect: "none",
-                    }}
-                  >
+                  <span className="lx-num" style={{
+                    fontFamily: "'Cormorant', serif",
+                    fontStyle: "italic", fontWeight: 300,
+                    fontSize: "clamp(0.65rem,1vw,0.82rem)",
+                    color: isOn ? "#DFAA5E" : "rgba(41,46,75,0.22)",
+                    width: 22, flexShrink: 0, transition: "color 0.4s",
+                  }}>
                     {s.num}
                   </span>
 
-                  {/* big word */}
                   <span
                     key={`w-${i}-${isOn}`}
                     className={`lx-word${isOn ? " lx-word-in" : ""}`}
@@ -281,30 +287,21 @@ export default function ServicesSection() {
                       fontWeight: isOn ? 700 : 300,
                       fontSize: "clamp(2.2rem, 4.8vw, 5rem)",
                       color: isOn ? "#292E4B" : "rgba(41,46,75,0.28)",
-                      lineHeight: 1,
-                      flexShrink: 0,
-                      letterSpacing: isOn ? "-0.02em" : "0.01em",
-                      transition: "color 0.4s",
-                      userSelect: "none",
-                      whiteSpace: "nowrap",
+                      lineHeight: 1, flexShrink: 0, letterSpacing: isOn ? "-0.02em" : "0.01em",
+                      transition: "color 0.4s", whiteSpace: "nowrap",
                     }}
                   >
                     {s.word}
                   </span>
 
-                  {/* tag */}
                   <span
                     key={`t-${i}-${isOn}`}
                     className={`lx-tag${isOn ? " lx-tag-in" : ""}`}
                     style={{
                       fontFamily: "'Jost', sans-serif",
-                      fontWeight: 200,
-                      fontSize: "clamp(0.55rem, 0.9vw, 0.72rem)",
-                      letterSpacing: "0.18em",
-                      textTransform: "uppercase",
-                      color: "#414042",
-                      opacity: isOn ? 0.7 : 0,
-                      transition: "opacity 0.4s",
+                      fontWeight: 200, fontSize: "clamp(0.55rem, 0.9vw, 0.72rem)",
+                      letterSpacing: "0.18em", textTransform: "uppercase",
+                      color: "#414042", opacity: isOn ? 0.7 : 0, transition: "opacity 0.4s",
                     }}
                   >
                     {s.tag}
@@ -312,27 +309,20 @@ export default function ServicesSection() {
 
                   <div style={{ flex: 1 }} />
 
-                  {/* arrow */}
-                  <span
-                    className="lx-arrow"
-                    style={{
-                      fontFamily: "'Cormorant', serif",
-                      fontSize: "clamp(0.9rem, 1.4vw, 1.15rem)",
-                      color: isOn ? "#DFAA5E" : "rgba(41,46,75,0.15)",
-                      display: "inline-block",
-                      transition: "color 0.4s, transform 0.4s",
-                      transform: isOn ? "translateX(0)" : "translateX(-5px)",
-                    }}
-                  >
+                  <span className="lx-arrow" style={{
+                    fontFamily: "'Cormorant', serif",
+                    fontSize: "clamp(0.9rem, 1.4vw, 1.15rem)",
+                    color: isOn ? "#DFAA5E" : "rgba(41,46,75,0.15)",
+                    display: "inline-block", transition: "color 0.4s, transform 0.4s",
+                    transform: isOn ? "translateX(0)" : "translateX(-5px)",
+                  }}>
                     →
                   </span>
 
-                  {/* progress hairline */}
                   {isOn && (
                     <div style={{
                       position: "absolute", bottom: 0, left: 0, right: 0,
-                      height: 1, overflow: "hidden",
-                      background: "rgba(223,170,94,0.2)",
+                      height: 1, overflow: "hidden", background: "rgba(223,170,94,0.2)",
                     }}>
                       <div
                         key={`p-${active}`}
@@ -345,12 +335,10 @@ export default function ServicesSection() {
               );
             })}
 
-            {/* footer */}
             <div style={{
               padding: "clamp(14px,2.5vw,28px) clamp(20px,6vw,88px)",
               borderTop: "1px solid rgba(41,46,75,0.08)",
-              display: "flex", alignItems: "center",
-              justifyContent: "space-between", flexWrap: "wrap", gap: 12,
+              display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 12,
             }}>
               <p style={{
                 fontFamily: "'Cormorant', serif", fontStyle: "italic",
@@ -365,8 +353,7 @@ export default function ServicesSection() {
                     key={i}
                     onClick={() => pick(i)}
                     style={{
-                      width: active === i ? 26 : 6,
-                      height: 2, borderRadius: 2,
+                      width: active === i ? 26 : 6, height: 2, borderRadius: 2,
                       background: active === i ? "#DFAA5E" : "rgba(41,46,75,0.18)",
                       border: "none", cursor: "pointer", padding: 0,
                       transition: "all 0.4s cubic-bezier(.22,1,.36,1)",
@@ -382,27 +369,23 @@ export default function ServicesSection() {
             className="lx-right"
             style={{ flex: 1, position: "relative", overflow: "hidden", minHeight: 520 }}
           >
-            {/* images */}
             {SERVICES.map((s, i) => (
               <img
                 key={s.id}
                 src={s.image}
                 alt={s.word}
+                onClick={() => handleNavigate(s.link)}
                 className={`lx-img ${i === active ? "on" : "off"}`}
               />
             ))}
 
-            {/* subtle dark overlay */}
             <div style={{
-              position: "absolute", inset: 0, zIndex: 2,
+              position: "absolute", inset: 0, zIndex: 3,
               background: "linear-gradient(to bottom, rgba(20,22,40,0.18) 0%, rgba(20,22,40,0.42) 100%)",
+              pointerEvents: "none" // Crucial: allows clicks to reach the images underneath
             }} />
 
-            {/* active label — bottom left over image */}
-            <div style={{
-              position: "absolute", bottom: 36, left: 36,
-              zIndex: 3,
-            }}>
+            <div style={{ position: "absolute", bottom: 36, left: 36, zIndex: 4, pointerEvents: "none" }}>
               <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 10 }}>
                 <div style={{ width: 28, height: 1, background: "#DFAA5E" }} />
                 <span
@@ -411,8 +394,7 @@ export default function ServicesSection() {
                   style={{
                     fontFamily: "'Jost', sans-serif",
                     fontSize: 10, letterSpacing: "0.3em",
-                    textTransform: "uppercase",
-                    color: "rgba(255,255,255,0.75)", fontWeight: 300,
+                    textTransform: "uppercase", color: "rgba(255,255,255,0.75)", fontWeight: 300,
                   }}
                 >
                   {SERVICES[active].tag}
@@ -422,25 +404,17 @@ export default function ServicesSection() {
                 key={`big-${active}`}
                 className="lx-label-in"
                 style={{
-                  fontFamily: "'Cormorant', serif",
-                  fontStyle: "italic", fontWeight: 700,
-                  fontSize: "clamp(2.4rem, 4.5vw, 4.8rem)",
-                  color: "#fff", lineHeight: 1,
-                  margin: 0, letterSpacing: "-0.02em",
-                  textShadow: "0 2px 24px rgba(0,0,0,0.25)",
+                  fontFamily: "'Cormorant', serif", fontStyle: "italic", fontWeight: 700,
+                  fontSize: "clamp(2.4rem, 4.5vw, 4.8rem)", color: "#fff", lineHeight: 1,
+                  margin: 0, letterSpacing: "-0.02em", textShadow: "0 2px 24px rgba(0,0,0,0.25)",
                 }}
               >
                 {SERVICES[active].word}
               </p>
             </div>
 
-            {/* thin gold bottom border */}
-            <div style={{
-              position: "absolute", bottom: 0, left: 0, right: 0,
-              height: 3, background: "#DFAA5E", zIndex: 3,
-            }} />
+            <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, height: 3, background: "#DFAA5E", zIndex: 5 }} />
           </div>
-
         </div>
       </section>
     </>

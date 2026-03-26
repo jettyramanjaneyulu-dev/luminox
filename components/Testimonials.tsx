@@ -165,7 +165,7 @@ export default function Testimonials() {
           }}
         >
           <div style={{ position:"absolute",top:-80,right:-80,width:500,height:500,borderRadius:"50%",background:"radial-gradient(circle,rgba(223,170,94,.07) 0%,transparent 65%)" }}/>
-          <div style={{ position:"absolute",bottom:-80,left:-80,width:400,height:400,borderRadius:"50%",background:"radial-gradient(circle,rgba(91,50,106,.07) 0%,transparent 65%)" }}/>
+          {/* <div style={{ position:"absolute",bottom:-80,left:-80,width:400,height:400,borderRadius:"50%",background:"radial-gradient(circle,rgba(91,50,106,.07) 0%,transparent 65%)" }}/> */}
           <svg style={{ position:"absolute",top:24,left:24,opacity:.03 }} width="200" height="170" viewBox="0 0 220 180" fill="#292E4B">
             <path d="M0 110C0 50 38 8 88 8L88 50C62 50 46 68 46 110L86 110L86 180L0 180Z"/>
             <path d="M120 110C120 50 158 8 208 8L208 50C182 50 166 68 166 110L206 110L206 180L120 180Z"/>
