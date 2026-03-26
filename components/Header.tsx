@@ -131,8 +131,8 @@ const Header = () => {
             : "bg-transparent py-5"
         }`}
       >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 flex items-center justify-between gap-4">
-
+        {/* <div className="max-w-7xl mx-auto px-4 sm:px-6 flex items-center justify-between gap-4"> */}
+<div className="max-w-[1440px] mx-auto pl-2 pr-4 sm:pl-4 sm:pr-6 flex items-center justify-between gap-4">
           {/* ── Logo ── */}
           <Link 
             href="/" 
@@ -144,7 +144,7 @@ const Header = () => {
               alt="Luminox Skin Hair Laser IV-Drips"
               width={160}
               height={60}
-              className="h-10 lg:h-17 w-auto object-contain"
+              className="h-15 lg:h-17 w-auto object-contain"
               priority
             />
           </Link>
